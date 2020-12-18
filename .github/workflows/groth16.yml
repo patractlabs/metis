@@ -17,17 +17,9 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-          override: true
           target: wasm32-unknown-unknown
-      - name: Cache Rust Outputs
-        uses: actions/cache@v1
-        env:
-          cache-name: rust-cache
-        with:
-          path: ./target
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*/Cargo.lock') }}
       - name: Pre
         run: cargo install cargo-contract
       - name: Build
-        run: cd groth16 && cargo +nightly contract build --verbose
+        run: cd groth16 && cargo contract build --verbose
           
