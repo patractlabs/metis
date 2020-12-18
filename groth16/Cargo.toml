@@ -17,8 +17,8 @@ scale-info = { version = "0.4.1", default-features = false, features = ["derive"
 
 [dependencies.curve]
 package = "megaclite-arkworks"
-# git = "https://github.com/patractlabs/megaclite"
-path = "../../megaclite/crates/curve/arkworks"
+git = "https://github.com/patractlabs/megaclite"
+# path = "../../megaclite/crates/curve/arkworks"
 features = [ "ink" ]
 
 [lib]
