@@ -18,6 +18,8 @@ jobs:
         with:
           toolchain: nightly
           target: wasm32-unknown-unknown
+          default: true
+          override: true
       - name: Pre
         run: cargo install cargo-contract
       - name: Build
