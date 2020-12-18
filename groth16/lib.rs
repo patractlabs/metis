@@ -5,10 +5,6 @@ use ink_lang as ink;
 #[ink::contract]
 mod groth16 {
     use ink_prelude::vec::Vec;
-    // use curve::{
-    //     curve::{Bls12_377, Bls12_381, Bn254, BW6_761},
-    //     groth16,
-    // };
 
     /// Groth16 exports
     #[ink(storage)]
@@ -23,13 +19,61 @@ mod groth16 {
         #[ink(message)]
         pub fn bls12_377_verify(
             &self,
-            vk_gamma_abc: Vec<u8>,
+            vk_gamma_abc: Vec<Vec<u8>>,
             vk: Vec<u8>,
             proof: Vec<u8>,
             public_inputs: Vec<Vec<u8>>,
-        ) -> Option<bool> {
-            // groth16::verify::<Bls12_377>(&vk_gamma_abc, &vk, &proof, &public_inputs).ok()
-            Some(true)
+        ) -> bool {
+            if let Ok(result) = curve::verify(0x0, vk_gamma_abc, vk, proof, public_inputs) {
+                result
+            } else {
+                false
+            }
+        }
+
+        #[ink(message)]
+        pub fn bls12_381_verify(
+            &self,
+            vk_gamma_abc: Vec<Vec<u8>>,
+            vk: Vec<u8>,
+            proof: Vec<u8>,
+            public_inputs: Vec<Vec<u8>>,
+        ) -> bool {
+            if let Ok(result) = curve::verify(0x1, vk_gamma_abc, vk, proof, public_inputs) {
+                result
+            } else {
+                false
+            }
+        }
+
+        #[ink(message)]
+        pub fn bn254_verify(
+            &self,
+            vk_gamma_abc: Vec<Vec<u8>>,
+            vk: Vec<u8>,
+            proof: Vec<u8>,
+            public_inputs: Vec<Vec<u8>>,
+        ) -> bool {
+            if let Ok(result) = curve::verify(0x1, vk_gamma_abc, vk, proof, public_inputs) {
+                result
+            } else {
+                false
+            }
+        }
+
+        #[ink(message)]
+        pub fn bw6_761(
+            &self,
+            vk_gamma_abc: Vec<Vec<u8>>,
+            vk: Vec<u8>,
+            proof: Vec<u8>,
+            public_inputs: Vec<Vec<u8>>,
+        ) -> bool {
+            if let Ok(result) = curve::verify(0x1, vk_gamma_abc, vk, proof, public_inputs) {
+                result
+            } else {
+                false
+            }
         }
     }
 }

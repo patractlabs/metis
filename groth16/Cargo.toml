@@ -18,16 +18,12 @@ scale-info = { version = "0.4.1", default-features = false, features = ["derive"
 [dependencies.curve]
 package = "megaclite-arkworks"
 git = "https://github.com/patractlabs/megaclite"
-# path = "../../megaclite/crates/curve/arkworks"
 features = [ "ink" ]
 
 [lib]
 name = "groth16"
 path = "lib.rs"
-crate-type = [
-	# Used for normal contract Wasm blobs.
-	"cdylib",
-]
+crate-type = [ "cdylib" ]
 
 [features]
 default = ["std"]
