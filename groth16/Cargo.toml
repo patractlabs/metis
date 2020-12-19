@@ -17,8 +17,12 @@ scale-info = { version = "0.4.1", default-features = false, features = ["derive"
 
 [dependencies.curve]
 package = "megaclite-arkworks"
-git = "https://github.com/patractlabs/megaclite"
+# git = "https://github.com/patractlabs/megaclite"
+path = "/Users/mercury/code/megaclite/crates/curve/arkworks"
 features = [ "ink" ]
+
+[dev-dependencies]
+hex = "0.4.2"
 
 [lib]
 name = "groth16"
@@ -26,7 +30,7 @@ path = "lib.rs"
 crate-type = [ "cdylib" ]
 
 [features]
-default = ["std"]
+default = [ "std" ]
 std = [
     "ink_metadata/std",
     "ink_env/std",
