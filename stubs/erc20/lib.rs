@@ -1,35 +1,22 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
+pub use self::erc20::{Erc20, StandardToken};
 use ink_lang as ink;
 
 #[ink::contract]
 mod erc20 {
-    #[cfg(not(feature = "ink-as-dependency"))]
+    use ink_lang as ink;
     use ink_prelude::string::String;
 
-    #[cfg(not(feature = "ink-as-dependency"))]
-    use ink_lang as ink;
-
-    /// The ERC-20 error types.
-    #[derive(Debug, PartialEq, Eq, scale::Encode)]
-    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-    pub enum Error {
-    }
-
     /// The ERC-20 result type.
-    pub type Result<T> = core::result::Result<T, Error>;
+    pub type Result<T> = core::result::Result<T, ()>;
 
     /// Trait implemented by all ERC-20 respecting smart contracts.
     #[ink::trait_definition]
     pub trait Erc20 {
         /// Creates a new ERC-20 contract with the specified initial supply.
         #[ink(constructor)]
-        fn new(
-            initial_supply: Balance,
-            name: String,
-            symbol: String,
-            decimals: u128,
-        ) -> Self;
+        fn new(initial_supply: Balance, name: String, symbol: String, decimals: u128) -> Self;
 
         /// Returns the total token supply.
         #[ink(message)]
@@ -61,12 +48,7 @@ mod erc20 {
 
         /// Transfers `value` tokens on the behalf of `from` to the account `to`.
         #[ink(message)]
-        fn transfer_from(
-            &mut self,
-            from: AccountId,
-            to: AccountId,
-            value: Balance,
-        ) -> Result<()>;
+        fn transfer_from(&mut self, from: AccountId, to: AccountId, value: Balance) -> Result<()>;
 
         /// Allows `spender` to withdraw from the caller's account multiple times, up to
         /// the `value` amount.
@@ -79,15 +61,9 @@ mod erc20 {
     pub struct StandardToken {}
 
     impl Erc20 for StandardToken {
-        /// Creates a new ERC-20 contract with the specified initial supply.
         #[ink(constructor)]
-        fn new(
-            _initial_supply: Balance,
-            _name: String,
-            _symbol: String,
-            _decimals: u128,
-        ) -> Self {
-            unreachable!()
+        fn new(_initial_supply: Balance, _name: String, _symbol: String, _decimals: u128) -> Self {
+            unimplemented!()
         }
 
         /// Returns the total token supply.
