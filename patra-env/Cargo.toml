@@ -10,7 +10,12 @@ ink_env = { version = "3.0.0-rc2", git = "https://github.com/paritytech/ink", de
 [lib]
 name = "patra_env"
 path = "lib.rs"
-crate-type = [ "cdylib" ]
+crate-type = [
+    # Used for normal contract Wasm blobs.
+    "cdylib",
+    # Used for ABI generation.
+    "rlib",
+]
 
 [features]
 default = ["std"]
