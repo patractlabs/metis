@@ -56,9 +56,6 @@ mod erc20 {
             symbol: Option<String>,
             decimals: Option<u8>,
         ) -> Self;
-        /// Returns the total token supply.
-        #[ink(message)]
-        fn total_supply(&self) -> Balance;
 
         /// Returns the token name.
         #[ink(message)]
@@ -71,7 +68,9 @@ mod erc20 {
         /// Returns the token decimals.
         #[ink(message)]
         fn token_decimals(&self) -> Option<u8>;
-
+        /// Returns the total token supply.
+        #[ink(message)]
+        fn total_supply(&self) -> Balance;
         /// Returns the account balance for the specified `owner`.
         #[ink(message)]
         fn balance_of(&self, owner: AccountId) -> Balance;

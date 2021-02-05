@@ -1,5 +1,5 @@
 [package]
-name = "erc20-issue"
+name = "erc20-stub"
 version = "0.1.0"
 authors = ["Patract Labs <tyler@patract.io>"]
 edition = "2018"
@@ -15,8 +15,10 @@ ink_prelude = { version = "3.0.0-rc2", git = "https://github.com/paritytech/ink"
 scale = { package = "parity-scale-codec", version = "2.0", default-features = false, features = ["derive"] }
 scale-info = { version = "0.5", default-features = false, features = ["derive"], optional = true }
 
+erc20-trait = { path = "../../../traits/token/erc20", default-features = false, features = ["ink-as-dependency"] }
+
 [lib]
-name = "erc20_issue"
+name = "erc20_stub"
 path = "lib.rs"
 crate-type = [
     # Used for normal contract Wasm blobs.
@@ -38,5 +40,7 @@ std = [
     "scale/std",
     "scale-info",
     "scale-info/std",
+
+    "erc20-trait/std",
 ]
 ink-as-dependency = []

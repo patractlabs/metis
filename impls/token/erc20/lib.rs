@@ -81,12 +81,6 @@ mod erc20 {
             instance
         }
 
-        /// Returns the total token supply.
-        #[ink(message)]
-        fn total_supply(&self) -> Balance {
-            *self.total_supply
-        }
-
         /// Returns the token name.
         #[ink(message)]
         fn token_name(&self) -> Option<String> {
@@ -103,6 +97,12 @@ mod erc20 {
         #[ink(message)]
         fn token_decimals(&self) -> Option<u8> {
             self.decimals
+        }
+
+        /// Returns the total token supply.
+        #[ink(message)]
+        fn total_supply(&self) -> Balance {
+            *self.total_supply
         }
 
         /// Returns the account balance for the specified `owner`.
