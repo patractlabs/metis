@@ -1,0 +1,8 @@
+# Ignore build artifacts from the local tests sub-crate.
+/target/
+
+# Ignore backup files creates by cargo fmt.
+**/*.rs.bk
+
+# impls crate means the contract could be rebuild, thus should commit the Cargo.lock to git.
+# Cargo.lock
