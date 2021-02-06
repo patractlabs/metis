@@ -13,7 +13,7 @@ use ink_lang as ink;
 ///
 ///     #[ink(storage)]
 ///     pub struct Ownership {
-///         owner: AccountId,
+///         owner: Option<AccountId>,
 ///     }
 ///
 ///     impl Ownable for Ownership {
@@ -25,26 +25,17 @@ use ink_lang as ink;
 ///         }
 ///
 ///         #[ink(message)]
-///         fn owner(&self) -> AccountId {
-///             self.owner
+///         fn owner(&self) -> Option<AccountId> {
+///             self.owner.clone()
 ///         }
 ///
 ///         #[ink(message)]
-///         fn only_owner(&self) {
-///             assert_eq!(self.env().caller(), self.owner);
-///         }
+///         fn transfer_ownership(&mut self, new_owner: Option<AccountId>) {
+///             assert_eq!(self.owner(), Some(self.env().caller()));
+///             if let Some(new_one) = new_owner {
 ///
-///         #[ink(message)]
-///         fn transfer_ownership(&mut self, new_owner: AccountId) {
-///             self.only_owner();
-///             assert_ne!(new_owner, Default::default());
+///             }
 ///             self.owner = new_owner;
-///         }
-///
-///         #[ink(message)]
-///         fn renounce_ownership(&mut self) {
-///             self.only_owner();
-///             self.owner = Default::default();
 ///         }
 ///     }
 /// }
@@ -58,18 +49,9 @@ pub trait Ownable {
 
     /// Returns the account id of the current owner.
     #[ink(message)]
-    fn owner(&self) -> AccountId;
-
-    /// Only owner has permission to access
-    #[ink(message)]
-    fn only_owner(&self);
+    fn owner(&self) -> Option<AccountId>;
 
     /// Transfer ownership to new owner.
     #[ink(message)]
-    fn transfer_ownership(&mut self, new_owner: AccountId);
-
-    /// Leave the contract without an owner,
-    /// thereby removing any functionality that is only available to the owner.
-    #[ink(message)]
-    fn renounce_ownership(&mut self);
+    fn transfer_ownership(&mut self, new_owner: Option<AccountId>);
 }
