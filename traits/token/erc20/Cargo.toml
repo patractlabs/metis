@@ -13,7 +13,7 @@ ink_lang = { version = "3.0.0-rc2", git = "https://github.com/paritytech/ink", d
 ink_prelude = { version = "3.0.0-rc2", git = "https://github.com/paritytech/ink", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.0", default-features = false, features = ["derive"] }
-scale-info = { version = "0.5", default-features = false, features = ["derive"], optional = true }
+scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
 
 [lib]
 name = "erc20_trait"
