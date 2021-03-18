@@ -16,8 +16,8 @@ scale = { package = "parity-scale-codec", version = "2.0", default-features = fa
 scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
 
 [dependencies.curve]
-package = "megaclite-arkworks"
-git = "https://github.com/patractlabs/megaclite"
+package = "zkmega-arkworks"
+git = "https://github.com/patractlabs/zkmega"
 features = [ "ink" ]
 default-features = false
 
