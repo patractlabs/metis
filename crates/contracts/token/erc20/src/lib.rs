@@ -2,7 +2,7 @@
 
 mod module;
 mod erc20;
-mod erc20_burnable;
+mod extensions;
 
 pub use metis_contract::{Env, EnvAccess};
 pub use module::{Data, Storage};
@@ -14,7 +14,7 @@ pub use erc20::{
     Impl,
 };
 
-pub use erc20_burnable::{
+pub use extensions::burnable::{
     ImplBurnable
 };
 

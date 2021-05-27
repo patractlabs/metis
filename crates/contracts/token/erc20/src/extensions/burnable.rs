@@ -1,7 +1,7 @@
-pub use super::module::{Data, Storage};
+pub use crate::module::{Data, Storage};
 pub use metis_contract::{Env, EnvAccess};
 
-pub use super::erc20::{Error, EventEmit, Impl, Result};
+pub use crate::erc20::{Error, EventEmit, Impl, Result};
 
 pub trait ImplBurnable<E>: Impl<E>
 where
