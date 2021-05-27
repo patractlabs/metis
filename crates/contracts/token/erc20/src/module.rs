@@ -31,21 +31,21 @@ impl<E: Env> Data<E> {
 }
 
 impl<E: Env> Data<E> {
-    pub fn get_balance(&self, owner: E::AccountId) -> E::Balance {
+    pub fn balance_of(&self, owner: &E::AccountId) -> E::Balance {
         self.balances
-            .get(&owner)
+            .get(owner)
             .copied()
-            .unwrap_or(E::Balance::from(0 as u8))
+            .unwrap_or(E::Balance::from(0_u8))
     }
 
-    pub fn get_allowance(&self, owner: E::AccountId, spender: E::AccountId) -> E::Balance {
+    pub fn allowance(&self, owner: &E::AccountId, spender: &E::AccountId) -> E::Balance {
         self.allowances
-            .get(&(owner, spender))
+            .get(&(owner.clone(), spender.clone()))
             .copied()
-            .unwrap_or(E::Balance::from(0 as u8))
+            .unwrap_or(E::Balance::from(0_u8))
     }
 
-    pub fn get_total_supply(&self) -> E::Balance {
+    pub fn total_supply(&self) -> E::Balance {
         *self.total_supply
     }
 
@@ -53,15 +53,16 @@ impl<E: Env> Data<E> {
         Lazy::set(&mut self.total_supply, total_supply);
     }
 
-    pub fn set_balance(&mut self, owner: E::AccountId, value: E::Balance) {
-        self.balances.insert(owner, value);
+    pub fn set_balance(&mut self, owner: &E::AccountId, value: E::Balance) {
+        self.balances.insert(owner.clone(), value);
     }
 
     pub fn set_allowance(
         &mut self,
-        owner_spender: (E::AccountId, E::AccountId),
+        owner: &E::AccountId,
+        spender: &E::AccountId,
         value: E::Balance,
     ) {
-        self.allowances.insert(owner_spender, value);
+        self.allowances.insert((owner.clone(), spender.clone()), value);
     }
 }

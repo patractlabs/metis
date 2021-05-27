@@ -18,8 +18,4 @@ pub trait Env: 'static {
 pub trait EnvAccess<E: Env> {
     fn caller() -> E::AccountId;
     fn transferred_balance() -> E::Balance;
-
-    fn emit_event<Event>(&mut self, event: Event)
-    where
-        Event: ink_env::Topics + scale::Encode;
 }

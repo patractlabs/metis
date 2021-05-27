@@ -1,37 +1,35 @@
-pub use metis_contract::{Env, EnvAccess};
 pub use super::module::{Data, Storage};
+pub use metis_contract::{Env, EnvAccess};
 
-pub use super::erc20::{
-    Error,
-    Result,
-    EventEmit,
-    Impl,
-};
+pub use super::erc20::{Error, EventEmit, Impl, Result};
 
-pub trait ImplBurnable<E>: Impl<E> where E: Env{
-    fn _burn(&mut self, account: E::AccountId, amount: E::Balance) -> Result<()> {
-        let account_balance = self.get().get_balance(account.clone());
-        let total_supply = self.get().get_total_supply();
+pub trait ImplBurnable<E>: Impl<E>
+where
+    E: Env,
+{
+    fn _burn(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
+        let account_balance = self.get().balance_of(account);
+        let total_supply = self.get().total_supply();
 
         assert!(account_balance >= amount);
-        self.get_mut().set_balance(account.clone(), account_balance - amount);
+        self.get_mut()
+            .set_balance(account, account_balance - amount);
         self.get_mut().set_total_supply(total_supply - amount);
 
-        self.emit_event_transfer(Some(account), None, amount);
+        self.emit_event_transfer(Some(account.clone()), None, amount);
 
         Ok(())
     }
 
     fn burn(&mut self, amount: E::Balance) -> Result<()> {
-        let caller = Self::caller();
-        self._burn(caller, amount)
+        self._burn(&Self::caller(), amount)
     }
 
-    fn burn_from(&mut self, account: E::AccountId, amount: E::Balance) -> Result<()> {
-        let caller = Self::caller();
-        let current_allowance = self.get().get_allowance(account.clone(), caller.clone());
+    fn burn_from(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
+        let caller = &Self::caller();
+        let current_allowance = self.get().allowance(account, caller);
         assert!(current_allowance >= amount);
-        self._approve(account.clone(), caller.clone(), amount);
+        self._approve(account, caller, amount);
         self._burn(account, amount)
     }
 }
