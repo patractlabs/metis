@@ -14,7 +14,7 @@ pub trait ImplBurnable<E>: Impl<E> where E: Env{
         let total_supply = self.get().get_total_supply();
 
         assert!(account_balance >= amount);
-        self.get_mut().balance_insert(account.clone(), account_balance - amount);
+        self.get_mut().set_balance(account.clone(), account_balance - amount);
         self.get_mut().set_total_supply(total_supply - amount);
 
         self.emit_event_transfer(Some(account), None, amount);

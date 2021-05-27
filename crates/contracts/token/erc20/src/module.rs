@@ -53,11 +53,11 @@ impl<E: Env> Data<E> {
         Lazy::set(&mut self.total_supply, total_supply);
     }
 
-    pub fn balance_insert(&mut self, owner: E::AccountId, value: E::Balance) {
+    pub fn set_balance(&mut self, owner: E::AccountId, value: E::Balance) {
         self.balances.insert(owner, value);
     }
 
-    pub fn allowance_insert(
+    pub fn set_allowance(
         &mut self,
         owner_spender: (E::AccountId, E::AccountId),
         value: E::Balance,

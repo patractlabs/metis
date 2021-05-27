@@ -33,7 +33,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
     fn _approve(&mut self, owner: E::AccountId, spender: E::AccountId, amount: E::Balance) {
         self.get_mut()
-            .allowance_insert((owner.clone(), spender.clone()), amount);
+            .set_allowance((owner.clone(), spender.clone()), amount);
         self.emit_event_approval(owner, spender, amount);
     }
 
@@ -41,8 +41,7 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
     fn init(&mut self, initial_supply: E::Balance) {
         let caller = Self::caller();
         self.get_mut().set_total_supply(initial_supply);
-        self.get_mut()
-            .balance_insert(caller.clone(), initial_supply);
+        self.get_mut().set_balance(caller.clone(), initial_supply);
 
         self.emit_event_transfer(None, Some(caller), initial_supply);
     }
@@ -69,7 +68,7 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
         }
         self.transfer_from_to(from.clone(), to, value)?;
         self.get_mut()
-            .allowance_insert((from, caller), allowance - value);
+            .set_allowance((from, caller), allowance - value);
         Ok(())
     }
 
@@ -84,10 +83,9 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
             return Err(Error::InsufficientBalance);
         }
         self.get_mut()
-            .balance_insert(from.clone(), from_balance - value);
+            .set_balance(from.clone(), from_balance - value);
         let to_balance = self.get().get_balance(to.clone());
-        self.get_mut()
-            .balance_insert(to.clone(), to_balance + value);
+        self.get_mut().set_balance(to.clone(), to_balance + value);
 
         self.emit_event_transfer(Some(from), Some(to), value);
 
