@@ -6,35 +6,40 @@ mod module;
 
 pub use module::{Data, Storage};
 
-pub trait EventEmit<E: Env>: EnvAccess<E> {}
+pub trait EventEmit<E: Env>: EnvAccess<E> {
+    fn emit_event_ownership_transferred(
+        &mut self,
+        previous_owner: Option<E::AccountId>,
+        new_owner: Option<E::AccountId>,
+    );
+}
 
 pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
     // logics
     fn init(&mut self) {
-        let caller = Self::caller();
-        self.get_mut().set_ownership(&Some(caller));
+        self.get_mut().set_ownership(&Some(Self::caller()));
     }
 
     fn renounce_ownership(&mut self) {
         self.ensure_caller_is_owner();
 
-        // Self::env().emit_event(OwnershipTransferred {
-        //    previous_owner: *self.get_ownership(),
-        //    new_owner: None,
-        //});
+        self.emit_event_ownership_transferred(
+            self.get().get_ownership().clone(),
+            None);
 
         self.get_mut().set_ownership(&None);
     }
 
-    fn transfer_ownership(&mut self, new_owner: E::AccountId) {
+    fn transfer_ownership(&mut self, new_owner: &E::AccountId) {
         self.ensure_caller_is_owner();
 
-        // Self::env().emit_event(OwnershipTransferred {
-        //    previous_owner: *self.get_ownership(),
-        //    new_owner: Some(new_owner),
-        //});
+        let new_owner_account = Some(new_owner.clone());
 
-        self.get_mut().set_ownership(&Some(new_owner));
+        self.emit_event_ownership_transferred(
+            self.get().get_ownership().clone(),
+            new_owner_account.clone());
+
+        self.get_mut().set_ownership(&new_owner_account);
     }
 
     /// Return the owner AccountId

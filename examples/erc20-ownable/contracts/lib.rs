@@ -18,9 +18,9 @@ use ink_lang as ink;
 
 #[ink::contract]
 pub mod erc20ownable {
+    use erc20::Result;
     use metis_erc20 as erc20;
     use metis_ownable as ownable;
-    use erc20::Result;
 
     #[cfg(not(feature = "ink-as-dependency"))]
     use ::ink_lang::{EmitEvent, Env, StaticEnv};
@@ -30,27 +30,6 @@ pub mod erc20ownable {
     pub struct Erc20Ownable {
         data_erc20: erc20::Data<Erc20Ownable>,
         data_owner: ownable::Data<Erc20Ownable>,
-    }
-
-    /// Event emitted when a token transfer occurs.
-    #[ink(event)]
-    pub struct Transfer {
-        #[ink(topic)]
-        from: Option<AccountId>,
-        #[ink(topic)]
-        to: Option<AccountId>,
-        value: Balance,
-    }
-
-    /// Event emitted when an approval occurs that `spender` is allowed to withdraw
-    /// up to the amount of `value` tokens from `owner`.
-    #[ink(event)]
-    pub struct Approval {
-        #[ink(topic)]
-        owner: AccountId,
-        #[ink(topic)]
-        spender: AccountId,
-        value: Balance,
     }
 
     // TODO: Make by macro
@@ -88,6 +67,26 @@ pub mod erc20ownable {
         }
     }
 
+    /// Event emitted when a token transfer occurs.
+    #[ink(event)]
+    pub struct Transfer {
+        #[ink(topic)]
+        from: Option<AccountId>,
+        #[ink(topic)]
+        to: Option<AccountId>,
+        value: Balance,
+    }
+
+    /// Event emitted when an approval occurs that `spender` is allowed to withdraw
+    /// up to the amount of `value` tokens from `owner`.
+    #[ink(event)]
+    pub struct Approval {
+        #[ink(topic)]
+        owner: AccountId,
+        #[ink(topic)]
+        spender: AccountId,
+        value: Balance,
+    }
     #[cfg(not(feature = "ink-as-dependency"))]
     impl erc20::EventEmit<Erc20Ownable> for Erc20Ownable {
         fn emit_event_transfer(
@@ -121,8 +120,30 @@ pub mod erc20ownable {
         }
     }
 
+    /// Event emitted when Owner AccountId Transferred
+    #[ink(event)]
+    pub struct OwnershipTransferred {
+        /// previous owner account id
+        #[ink(topic)]
+        previous_owner: Option<AccountId>,
+        /// new owner account id
+        #[ink(topic)]
+        new_owner: Option<AccountId>,
+    }
+
     #[cfg(not(feature = "ink-as-dependency"))]
-    impl ownable::EventEmit<Erc20Ownable> for Erc20Ownable {}
+    impl ownable::EventEmit<Erc20Ownable> for Erc20Ownable {
+        fn emit_event_ownership_transferred(
+            &mut self,
+            previous_owner: Option<AccountId>,
+            new_owner: Option<AccountId>,
+        ) {
+            self.env().emit_event(OwnershipTransferred {
+                previous_owner,
+                new_owner,
+            });
+        }
+    }
 
     // impl
     impl Erc20Ownable {
@@ -133,6 +154,7 @@ pub mod erc20ownable {
                 data_erc20: erc20::Data::new(),
                 data_owner: ownable::Data::new(),
             };
+
             erc20::Impl::init(&mut instance, initial_supply);
             ownable::Impl::init(&mut instance);
             instance
@@ -220,7 +242,7 @@ pub mod erc20ownable {
 
         #[ink(message)]
         pub fn transfer_ownership(&mut self, new_owner: AccountId) {
-            ownable::Impl::transfer_ownership(self, new_owner)
+            ownable::Impl::transfer_ownership(self, &new_owner)
         }
     }
 
