@@ -11,5 +11,7 @@ Cargo.lock
 # Dependency directory
 node_modules
 
+artifacts
+
 # macOS
 .DS_Store
