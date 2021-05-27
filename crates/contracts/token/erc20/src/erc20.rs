@@ -46,7 +46,7 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
     }
 
     fn transfer(&mut self, to: &E::AccountId, value: E::Balance) -> Result<()> {
-        self.transfer_from_to(&Self::caller(), to, value)
+        self._transfer_from_to(&Self::caller(), to, value)
     }
 
     fn approve(&mut self, spender: &E::AccountId, amount: E::Balance) -> Result<()> {
@@ -58,34 +58,39 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
         &mut self,
         from: &E::AccountId,
         to: &E::AccountId,
-        value: E::Balance,
+        amount: E::Balance,
     ) -> Result<()> {
         let caller = &Self::caller();
-        let allowance = self.get().allowance(from, caller);
-        if allowance < value {
+
+        let current_allowance = self.get().allowance(from, caller);
+        if current_allowance < amount {
             return Err(Error::InsufficientAllowance);
         }
-        self.transfer_from_to(from, to, value)?;
-        self.get_mut()
-            .set_allowance(from, caller, allowance - value);
+
+        self._transfer_from_to(from, to, amount)?;
+
+        self._approve(from, caller, current_allowance - amount);
+
         Ok(())
     }
 
-    fn transfer_from_to(
+    fn _transfer_from_to(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
-        value: E::Balance,
+        sender: &E::AccountId,
+        recipient: &E::AccountId,
+        amount: E::Balance,
     ) -> Result<()> {
-        let from_balance = self.get().balance_of(from);
-        if from_balance < value {
+        let sender_balance = self.get().balance_of(sender);
+        if sender_balance < amount {
             return Err(Error::InsufficientBalance);
         }
-        self.get_mut().set_balance(from, from_balance - value);
-        let to_balance = self.get().balance_of(to);
-        self.get_mut().set_balance(to, to_balance + value);
 
-        self.emit_event_transfer(Some(from.clone()), Some(to.clone()), value);
+        self.get_mut().set_balance(sender, sender_balance - amount);
+        let recipient_balance = self.get().balance_of(recipient);
+        self.get_mut()
+            .set_balance(recipient, recipient_balance + amount);
+
+        self.emit_event_transfer(Some(sender.clone()), Some(recipient.clone()), amount);
 
         Ok(())
     }
