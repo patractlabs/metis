@@ -1,7 +1,15 @@
+mod utils;
+mod extend;
+mod env;
+
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use ink_lang_ir::Contract;
 use syn::{Result};
+
+pub use{
+    extend::generate_code_for_extend,
+};
 
 pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2>{
     let item_mod = syn::parse2::<syn::ItemMod>(input.clone()).unwrap();
@@ -12,11 +20,6 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let attrs = module.attrs();
     let vis = module.vis();
     let storage_ident = module.storage().ident();
-
-    println!("{:#?}", attrs);
-    println!("{:#?}", vis);
-    println!("{:#?}", ident);
-    println!("{:#?}", storage_ident);
 
     let items = match item_mod.content {
         Some((_brace, items)) => items,
@@ -29,31 +32,7 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
     };
 
     // ext the env
-    let env = quote!{
-        #[cfg(not(feature = "ink-as-dependency"))]
-        use ::ink_lang::{EmitEvent, Env, StaticEnv};
-
-        #[cfg(not(feature = "ink-as-dependency"))]
-        impl metis_contract::Env for #storage_ident {
-            type BaseEvent = <#storage_ident as ::ink_lang::BaseEvent>::Type;
-            type AccountId = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::AccountId;
-            type Balance = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Balance;
-            type Hash = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Hash;
-            type Timestamp = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Timestamp;
-            type BlockNumber = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::BlockNumber;
-        }
-
-        #[cfg(not(feature = "ink-as-dependency"))]
-        impl metis_contract::EnvAccess<#storage_ident > for #storage_ident  {
-            fn caller() -> <#storage_ident  as metis_contract::Env>::AccountId {
-                Self::env().caller()
-            }
-    
-            fn transferred_balance() -> <#storage_ident  as metis_contract::Env>::Balance {
-                Self::env().transferred_balance()
-            }
-        }
-    };
+    let env = env::generate_code_for_env(&contract_ink, &storage_ident)?;
 
     let module_extend = quote! {
         #( #attrs )*

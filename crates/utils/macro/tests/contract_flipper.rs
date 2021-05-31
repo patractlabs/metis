@@ -1,8 +1,18 @@
-#[metis_util_macro::contract]
+use metis_util_macro::{
+    contract,
+    extend,
+};
+
+#[contract]
 mod flipper {
+    use super::*;
+
+    #[extend(metis_ownable, metis_erc20)]
     #[ink(storage)]
     pub struct Flipper {
-        data_owner: metis_ownable::Data<Flipper>, // Need generate?
+        data_metis_ownable: metis_ownable::Data<Flipper>,
+        data_metis_erc20: metis_erc20::Data<Flipper>,
+
         value: bool,
     }
 
@@ -16,13 +26,30 @@ mod flipper {
         #[ink(topic)]
         new_owner: Option<AccountId>,
     }
+    
+    // Need generate II Owner -------------------------------------------
+    #[cfg(not(feature = "ink-as-dependency"))]
+    impl metis_ownable::EventEmit<Flipper> for Flipper {
+        fn emit_event_ownership_transferred(
+            &mut self,
+            previous_owner: Option<AccountId>,
+            new_owner: Option<AccountId>,
+        ) {
+            self.env().emit_event(OwnershipTransferred {
+                previous_owner,
+                new_owner,
+            });
+        }
+    }
+    // Need generate II Owner -------------------------------------------
 
     impl Flipper {
         // Need generate III -------------------------------------------
         #[ink(constructor)]
         pub fn new(init_value: bool) -> Self {
             let mut instance = Self {
-                data_owner: metis_ownable::Data::new(),
+                data_metis_ownable: metis_ownable::Data::new(),
+                data_metis_erc20: metis_erc20::Data::new(),
                 value: init_value,
             };
 
@@ -61,38 +88,6 @@ mod flipper {
             metis_ownable::Impl::transfer_ownership(self, &new_owner)
         }
     }
-
-    // Need generate II Owner -------------------------------------------
-    #[cfg(not(feature = "ink-as-dependency"))]
-    use metis_ownable;
-
-    #[cfg(not(feature = "ink-as-dependency"))]
-    impl metis_ownable::EventEmit<Flipper> for Flipper {
-        fn emit_event_ownership_transferred(
-            &mut self,
-            previous_owner: Option<AccountId>,
-            new_owner: Option<AccountId>,
-        ) {
-            self.env().emit_event(OwnershipTransferred {
-                previous_owner,
-                new_owner,
-            });
-        }
-    }
-    // Need generate II Owner -------------------------------------------
-
-    // Need generate I Owner -------------------------------------------
-    #[cfg(not(feature = "ink-as-dependency"))]
-    impl metis_ownable::Storage<Flipper> for Flipper {
-        fn get(&self) -> &metis_ownable::Data<Flipper> {
-            &self.data_owner
-        }
-
-        fn get_mut(&mut self) -> &mut metis_ownable::Data<Flipper> {
-            &mut self.data_owner
-        }
-    }
-    // Need generate I Owner -------------------------------------------
 
     #[cfg(test)]
     mod tests {
