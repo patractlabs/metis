@@ -66,6 +66,9 @@ mod flipper {
 
     // Need generate Owner -------------------------------------------
     #[cfg(not(feature = "ink-as-dependency"))]
+    use metis_ownable;
+
+    #[cfg(not(feature = "ink-as-dependency"))]
     impl metis_ownable::EventEmit<Flipper> for Flipper {
         fn emit_event_ownership_transferred(
             &mut self,

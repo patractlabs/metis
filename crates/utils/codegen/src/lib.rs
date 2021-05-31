@@ -31,9 +31,6 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
     // ext the env
     let env = quote!{
         #[cfg(not(feature = "ink-as-dependency"))]
-        use metis_ownable;
-    
-        #[cfg(not(feature = "ink-as-dependency"))]
         use ::ink_lang::{EmitEvent, Env, StaticEnv};
 
         #[cfg(not(feature = "ink-as-dependency"))]
