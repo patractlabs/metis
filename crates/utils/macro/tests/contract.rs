@@ -1,10 +1,9 @@
 #[test]
-
 fn tests() {
     let t = trybuild::TestCases::new();
-    t.pass("tests/contract/01-flipper-contract.rs");
+    //t.pass("tests/contract/01-flipper-contract.rs");
     t.pass("tests/contract/02-flipper-owner-contract.rs");
-    t.pass("tests/contract/parse.rs");
+    // t.pass("tests/contract/parse.rs");
     // t.pass("tests/02-create-builder.rs");
     // t.pass("tests/03-call-setters.rs");
     // t.pass("tests/04-call-build.rs");

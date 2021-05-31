@@ -2,7 +2,7 @@
 mod flipper {
     #[ink(storage)]
     pub struct Flipper {
-        data_owner: metis_ownable::Data<Flipper>, // Need generate
+        data_owner: metis_ownable::Data<Flipper>, // Need generate?
         value: bool,
     }
 
@@ -18,8 +18,7 @@ mod flipper {
     }
 
     impl Flipper {
-        // Need generate -------------------------------------------
-
+        // Need generate III -------------------------------------------
         #[ink(constructor)]
         pub fn new(init_value: bool) -> Self {
             let mut instance = Self {
@@ -30,8 +29,7 @@ mod flipper {
             metis_ownable::Impl::init(&mut instance);
             instance
         }
-
-        // Need generate -------------------------------------------
+        // Need generate III -------------------------------------------
 
         #[ink(constructor)]
         pub fn default() -> Self {
@@ -64,7 +62,7 @@ mod flipper {
         }
     }
 
-    // Need generate Owner -------------------------------------------
+    // Need generate II Owner -------------------------------------------
     #[cfg(not(feature = "ink-as-dependency"))]
     impl metis_ownable::EventEmit<Flipper> for Flipper {
         fn emit_event_ownership_transferred(
@@ -78,7 +76,9 @@ mod flipper {
             });
         }
     }
+    // Need generate II Owner -------------------------------------------
 
+    // Need generate I Owner -------------------------------------------
     #[cfg(not(feature = "ink-as-dependency"))]
     impl metis_ownable::Storage<Flipper> for Flipper {
         fn get(&self) -> &metis_ownable::Data<Flipper> {
@@ -89,7 +89,7 @@ mod flipper {
             &mut self.data_owner
         }
     }
-    // Need generate Owner -------------------------------------------
+    // Need generate I Owner -------------------------------------------
 
     #[cfg(test)]
     mod tests {
@@ -128,5 +128,3 @@ mod flipper {
         }
     }
 }
-
-fn main() {}
