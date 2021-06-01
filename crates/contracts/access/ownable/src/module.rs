@@ -25,6 +25,17 @@ where
     E: Env,
 {
     pub fn new() -> Self {
+        let instance = Self::default();
+
+        instance
+    }
+}
+
+impl<E> Default for Data<E>
+where
+    E: Env,
+{
+    fn default() -> Self {
         Self {
             owner: Lazy::default(),
         }

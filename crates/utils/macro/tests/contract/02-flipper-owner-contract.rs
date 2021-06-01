@@ -1,13 +1,24 @@
-#[metis_util_macro::contract]
+use metis_util_macro::{
+    metis,
+    contract,
+    extend,
+};
+
+#[contract]
 mod flipper {
+    use super::*;
+
     #[ink(storage)]
+    #[extend(metis_ownable)]
     pub struct Flipper {
-        data_owner: metis_ownable::Data<Flipper>, // Need generate
+        metis_ownable: metis_ownable::Data<Flipper>,
+
         value: bool,
     }
 
     /// Event emitted when Owner AccountId Transferred
     #[ink(event)]
+    #[metis(metis_ownable)]
     pub struct OwnershipTransferred {
         /// previous owner account id
         #[ink(topic)]
@@ -18,20 +29,17 @@ mod flipper {
     }
 
     impl Flipper {
-        // Need generate -------------------------------------------
-
         #[ink(constructor)]
         pub fn new(init_value: bool) -> Self {
             let mut instance = Self {
-                data_owner: metis_ownable::Data::new(),
+                metis_ownable: metis_ownable::Data::default(),
+
                 value: init_value,
             };
 
             metis_ownable::Impl::init(&mut instance);
             instance
         }
-
-        // Need generate -------------------------------------------
 
         #[ink(constructor)]
         pub fn default() -> Self {
@@ -63,36 +71,6 @@ mod flipper {
             metis_ownable::Impl::transfer_ownership(self, &new_owner)
         }
     }
-
-    // Need generate Owner -------------------------------------------
-    #[cfg(not(feature = "ink-as-dependency"))]
-    use metis_ownable;
-
-    #[cfg(not(feature = "ink-as-dependency"))]
-    impl metis_ownable::EventEmit<Flipper> for Flipper {
-        fn emit_event_ownership_transferred(
-            &mut self,
-            previous_owner: Option<AccountId>,
-            new_owner: Option<AccountId>,
-        ) {
-            self.env().emit_event(OwnershipTransferred {
-                previous_owner,
-                new_owner,
-            });
-        }
-    }
-
-    #[cfg(not(feature = "ink-as-dependency"))]
-    impl metis_ownable::Storage<Flipper> for Flipper {
-        fn get(&self) -> &metis_ownable::Data<Flipper> {
-            &self.data_owner
-        }
-
-        fn get_mut(&mut self) -> &mut metis_ownable::Data<Flipper> {
-            &mut self.data_owner
-        }
-    }
-    // Need generate Owner -------------------------------------------
 
     #[cfg(test)]
     mod tests {

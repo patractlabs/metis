@@ -22,6 +22,15 @@ pub trait Storage<E: Env> {
 
 impl<E: Env> Data<E> {
     pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+impl<E> Default for Data<E>
+where
+    E: Env,
+{
+    fn default() -> Self {
         Self {
             total_supply: Lazy::default(),
             balances: StorageHashMap::new(),

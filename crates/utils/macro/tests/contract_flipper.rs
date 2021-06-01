@@ -8,18 +8,17 @@ use metis_util_macro::{
 mod flipper {
     use super::*;
 
-    #[extend(metis_ownable, metis_erc20)]
     #[ink(storage)]
+    #[extend(metis_ownable)]
     pub struct Flipper {
         metis_ownable: metis_ownable::Data<Flipper>,
-        metis_erc20: metis_erc20::Data<Flipper>,
 
         value: bool,
     }
 
     /// Event emitted when Owner AccountId Transferred
-    #[metis(metis_ownable)]
     #[ink(event)]
+    #[metis(metis_ownable)]
     pub struct OwnershipTransferred {
         /// previous owner account id
         #[ink(topic)]
@@ -30,19 +29,17 @@ mod flipper {
     }
 
     impl Flipper {
-        // Need generate III -------------------------------------------
         #[ink(constructor)]
         pub fn new(init_value: bool) -> Self {
             let mut instance = Self {
-                metis_ownable: metis_ownable::Data::new(),
-                metis_erc20: metis_erc20::Data::new(),
+                metis_ownable: metis_ownable::Data::default(),
+
                 value: init_value,
             };
 
             metis_ownable::Impl::init(&mut instance);
             instance
         }
-        // Need generate III -------------------------------------------
 
         #[ink(constructor)]
         pub fn default() -> Self {
