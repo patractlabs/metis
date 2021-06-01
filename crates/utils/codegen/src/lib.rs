@@ -1,17 +1,15 @@
-mod utils;
-mod extend;
 mod env;
-
+mod event;
+mod extend;
+mod utils;
+use ink_lang_ir::Contract;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
-use ink_lang_ir::Contract;
-use syn::{Result};
+use syn::Result;
 
-pub use{
-    extend::generate_code_for_extend,
-};
+pub use extend::generate_code_for_extend;
 
-pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2>{
+pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
     let item_mod = syn::parse2::<syn::ItemMod>(input.clone()).unwrap();
 
     let contract_ink = Contract::new(attr.clone(), input).unwrap();
@@ -25,27 +23,27 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
         Some((_brace, items)) => items,
         None => {
             return Err(ink_lang_ir::format_err_spanned!(
-                item_mod,
-                "out-of-line ink! modules are not supported, use `#[ink::contract] mod name {{ ... }}`",
-            ))
+            item_mod,
+            "out-of-line ink! modules are not supported, use `#[ink::contract] mod name {{ ... }}`",
+        ))
         }
     };
 
-    // ext the env
-    let env = env::generate_code_for_env(&contract_ink, &storage_ident)?;
+    let envs = env::generate_code(&contract_ink, &storage_ident)?;
+    let events = event::generate_code(&contract_ink, &storage_ident)?;
 
     let module_extend = quote! {
         #( #attrs )*
         #vis mod #ident {
             #( #items )*
 
-            #env
+            #envs
+            #events
         }
     };
 
     // For codegen in ink
-    let ink_contract = ink_lang_codegen::generate_code(
-        &Contract::new(attr, module_extend).unwrap());
-   
+    let ink_contract =
+        ink_lang_codegen::generate_code(&Contract::new(attr, module_extend).unwrap());
     Ok(ink_contract)
 }

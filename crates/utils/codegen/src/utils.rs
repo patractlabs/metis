@@ -24,3 +24,27 @@ impl Parse for Args {
         })
     }
 }
+
+pub fn is_metis_item<'a, I>(attrs: I) -> bool
+where
+    I: IntoIterator<Item = &'a syn::Attribute>,
+{
+    attrs.into_iter().any(|attr| attr.path.is_ident("metis"))
+}
+
+pub fn get_metis_item_attr<'a, I>(attrs: I) -> Set<Ident>
+where
+    I: IntoIterator<Item = &'a syn::Attribute>,
+{
+    for attr in attrs.into_iter() {
+        if attr.path.is_ident("metis") {
+            let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).unwrap();
+            let tags = syn::parse2::<Args>(vars.stream()).unwrap();
+
+            return tags.vars;
+        }
+    }
+
+    Set::default()
+}
+

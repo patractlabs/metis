@@ -1,4 +1,5 @@
 use metis_util_macro::{
+    metis,
     contract,
     extend,
 };
@@ -10,13 +11,14 @@ mod flipper {
     #[extend(metis_ownable, metis_erc20)]
     #[ink(storage)]
     pub struct Flipper {
-        data_metis_ownable: metis_ownable::Data<Flipper>,
-        data_metis_erc20: metis_erc20::Data<Flipper>,
+        metis_ownable: metis_ownable::Data<Flipper>,
+        metis_erc20: metis_erc20::Data<Flipper>,
 
         value: bool,
     }
 
     /// Event emitted when Owner AccountId Transferred
+    #[metis(metis_ownable)]
     #[ink(event)]
     pub struct OwnershipTransferred {
         /// previous owner account id
@@ -26,30 +28,14 @@ mod flipper {
         #[ink(topic)]
         new_owner: Option<AccountId>,
     }
-    
-    // Need generate II Owner -------------------------------------------
-    #[cfg(not(feature = "ink-as-dependency"))]
-    impl metis_ownable::EventEmit<Flipper> for Flipper {
-        fn emit_event_ownership_transferred(
-            &mut self,
-            previous_owner: Option<AccountId>,
-            new_owner: Option<AccountId>,
-        ) {
-            self.env().emit_event(OwnershipTransferred {
-                previous_owner,
-                new_owner,
-            });
-        }
-    }
-    // Need generate II Owner -------------------------------------------
 
     impl Flipper {
         // Need generate III -------------------------------------------
         #[ink(constructor)]
         pub fn new(init_value: bool) -> Self {
             let mut instance = Self {
-                data_metis_ownable: metis_ownable::Data::new(),
-                data_metis_erc20: metis_erc20::Data::new(),
+                metis_ownable: metis_ownable::Data::new(),
+                metis_erc20: metis_erc20::Data::new(),
                 value: init_value,
             };
 

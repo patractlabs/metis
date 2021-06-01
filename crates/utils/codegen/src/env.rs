@@ -3,7 +3,7 @@ use quote::quote;
 use ink_lang_ir::Contract;
 use syn::{Result};
 
-pub fn generate_code_for_env(_contract: &Contract, storage_ident: &syn::Ident) -> Result<TokenStream2>{
+pub fn generate_code(_contract: &Contract, storage_ident: &syn::Ident) -> Result<TokenStream2>{
     let env = quote!{
         #[cfg(not(feature = "ink-as-dependency"))]
         use ::ink_lang::{EmitEvent, Env, StaticEnv};

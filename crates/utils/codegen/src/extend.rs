@@ -1,8 +1,7 @@
-use proc_macro2::TokenStream as TokenStream2;
-use quote::{
-    quote,format_ident};
-use syn::{Result};
 use proc_macro2::Ident;
+use proc_macro2::TokenStream as TokenStream2;
+use quote::{format_ident, quote};
+use syn::Result;
 
 use super::utils::Args;
 
@@ -10,11 +9,12 @@ pub fn generate_code_for_extend(attr: TokenStream2, input: TokenStream2) -> Resu
     let mods = syn::parse2::<Args>(attr)?;
     let storage_struct = syn::parse2::<syn::ItemStruct>(input.clone())?;
 
-    let code_for_mods = mods.vars.iter().map(|ext_mod| {
-        generate_extand_mod(&storage_struct.ident, ext_mod)
-    });
+    let code_for_mods = mods
+        .vars
+        .iter()
+        .map(|ext_mod| generate_extand_mod(&storage_struct.ident, ext_mod));
 
-    let gen = quote!{
+    let gen = quote! {
         #input
 
         #(#code_for_mods)*
@@ -24,13 +24,13 @@ pub fn generate_code_for_extend(attr: TokenStream2, input: TokenStream2) -> Resu
 }
 
 fn ext_mod_data_ident(ext_mod: &Ident) -> Ident {
-    format_ident!("data_{}", ext_mod)
+    format_ident!("{}", ext_mod)
 }
 
-fn generate_extand_mod(storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2{
+fn generate_extand_mod(storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2 {
     let data_ident = ext_mod_data_ident(ext_mod);
 
-    quote!{
+    quote! {
         #[cfg(not(feature = "ink-as-dependency"))]
         const _: () = {
             use #ext_mod;
@@ -39,7 +39,6 @@ fn generate_extand_mod(storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2{
                 fn get(&self) -> &#ext_mod::Data<#storage_ident> {
                     &self.#data_ident
                 }
-        
                 fn get_mut(&mut self) -> &mut #ext_mod::Data<#storage_ident> {
                     &mut self.#data_ident
                 }

@@ -14,3 +14,8 @@ pub fn contract(attr: TokenStream, item: TokenStream) -> TokenStream {
 pub fn extend(attr: TokenStream, item: TokenStream) -> TokenStream {
     extend::generate(attr.into(), item.into()).into()
 }
+
+#[proc_macro_attribute]
+pub fn metis(_: TokenStream, item: TokenStream) -> TokenStream {
+    item
+}
