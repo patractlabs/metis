@@ -470,9 +470,9 @@ dependencies = [
  "ink_prelude",
  "ink_primitives",
  "ink_storage",
- "megaclite-arkworks",
  "parity-scale-codec",
  "scale-info",
+ "zkmega-arkworks",
 ]
 
 [[package]]
@@ -722,28 +722,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4fabed175da42fed1fa0746b0ea71f412aa9d35e76e95e59b192c64b9dc2bf8b"
 dependencies = [
  "cfg-if 0.1.10",
-]
-
-[[package]]
-name = "megaclite-arkworks"
-version = "0.1.0"
-source = "git+https://github.com/patractlabs/megaclite?branch=hex#d5343dcf5dd36fc5abea7c18b8b6c67a246d4070"
-dependencies = [
- "ark-bls12-377",
- "ark-bls12-381",
- "ark-bn254",
- "ark-bw6-761",
- "ark-cp6-782",
- "ark-ec",
- "ark-ff",
- "ark-serialize",
- "ark-std",
- "hex",
- "ink_env",
- "num-bigint",
- "parity-scale-codec",
- "rand 0.7.3",
- "rustc-hex",
 ]
 
 [[package]]
@@ -1479,4 +1457,26 @@ dependencies = [
  "quote",
  "syn",
  "synstructure",
+]
+
+[[package]]
+name = "zkmega-arkworks"
+version = "0.1.0"
+source = "git+https://github.com/patractlabs/zkmega#9b3104e5a71ee01245463dce8af18adfba354f2d"
+dependencies = [
+ "ark-bls12-377",
+ "ark-bls12-381",
+ "ark-bn254",
+ "ark-bw6-761",
+ "ark-cp6-782",
+ "ark-ec",
+ "ark-ff",
+ "ark-serialize",
+ "ark-std",
+ "hex",
+ "ink_env",
+ "num-bigint",
+ "parity-scale-codec",
+ "rand 0.7.3",
+ "rustc-hex",
 ]
