@@ -1,7 +1,7 @@
 use std::collections::HashSet as Set;
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
-use syn::{ Ident, Token};
+use syn::{Ident, Token};
 
 /// Parses a list of variable names separated by commas.
 ///
@@ -47,4 +47,3 @@ where
 
     Set::default()
 }
-

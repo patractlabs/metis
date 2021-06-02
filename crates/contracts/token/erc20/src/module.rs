@@ -72,6 +72,7 @@ impl<E: Env> Data<E> {
         spender: &E::AccountId,
         value: E::Balance,
     ) {
-        self.allowances.insert((owner.clone(), spender.clone()), value);
+        self.allowances
+            .insert((owner.clone(), spender.clone()), value);
     }
 }

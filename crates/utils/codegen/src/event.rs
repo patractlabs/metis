@@ -1,14 +1,10 @@
+use convert_case::{Case, Casing};
+use ink_lang_ir::{Contract, Event};
 use proc_macro2::Ident;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{
-    quote,
-    quote_spanned,
-    format_ident,
-};
-use syn::Result;
-use ink_lang_ir::{Contract, Event};
+use quote::{format_ident, quote, quote_spanned};
 use syn::spanned::Spanned;
-use convert_case::{Case, Casing};
+use syn::Result;
 
 use super::utils::{get_metis_item_attr, is_metis_item};
 
@@ -60,7 +56,10 @@ fn generate_event_emit_impl(evt: &Event) -> TokenStream2 {
         )
     });
 
-    let evt_name_snake = ident.to_string().from_case(Case::Camel).to_case(Case::Snake);
+    let evt_name_snake = ident
+        .to_string()
+        .from_case(Case::Camel)
+        .to_case(Case::Snake);
     let impl_func_name = format_ident!("emit_event_{}", evt_name_snake);
 
     quote_spanned!(span =>

@@ -1,15 +1,11 @@
-use metis_util_macro::{
-    metis,
-    contract,
-    extend,
-};
+use metis_util_macro::{contract, import, metis};
 
 #[contract]
 mod flipper {
     use super::*;
 
     #[ink(storage)]
-    #[extend(metis_ownable)]
+    #[import(metis_ownable)]
     pub struct Flipper {
         metis_ownable: metis_ownable::Data<Flipper>,
 

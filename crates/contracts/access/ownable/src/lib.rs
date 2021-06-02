@@ -23,9 +23,7 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
     fn renounce_ownership(&mut self) {
         self.ensure_caller_is_owner();
 
-        self.emit_event_ownership_transferred(
-            self.get().get_ownership().clone(),
-            None);
+        self.emit_event_ownership_transferred(self.get().get_ownership().clone(), None);
 
         self.get_mut().set_ownership(&None);
     }
@@ -37,12 +35,14 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
 
         self.emit_event_ownership_transferred(
             self.get().get_ownership().clone(),
-            new_owner_account.clone());
+            new_owner_account.clone(),
+        );
 
         self.get_mut().set_ownership(&new_owner_account);
     }
 
-    /// Return the owner AccountId
+    /// Return the owner AccountId \
+    /// '
     fn owner(&self) -> &Option<E::AccountId> {
         self.get().get_ownership()
     }
