@@ -35,7 +35,7 @@ fn generate_extand_mod(storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2 {
         const _: () = {
             use #ext_mod;
 
-            impl #ext_mod::Storage<#storage_ident> for #storage_ident {
+            impl metis_contract::Storage<#storage_ident, #ext_mod::Data<#storage_ident>> for #storage_ident {
                 fn get(&self) -> &#ext_mod::Data<#storage_ident> {
                     &self.#data_ident
                 }

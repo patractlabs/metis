@@ -1,10 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub use metis_contract::{Env, EnvAccess};
+pub use metis_contract::{Env, EnvAccess, Storage};
 
 mod module;
 
-pub use module::{Data, Storage};
+pub use module::Data;
 
 pub trait EventEmit<E: Env>: EnvAccess<E> {
     fn emit_event_ownership_transferred(
@@ -14,7 +14,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
     );
 }
 
-pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
+pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     // logics
     fn init(&mut self) {
         self.get_mut().set_ownership(&Some(Self::caller()));
@@ -63,4 +63,4 @@ pub trait Impl<E: Env>: Storage<E> + EventEmit<E> {
     }
 }
 
-impl<E: Env, T: Storage<E> + EventEmit<E>> Impl<E> for T {}
+impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> Impl<E> for T {}

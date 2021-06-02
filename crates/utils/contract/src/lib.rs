@@ -15,6 +15,15 @@ pub trait Env: 'static {
     type Timestamp: Timestamp;
 }
 
+pub trait Storage<E, D>
+where
+    E: Env,
+{
+    fn get(&self) -> &D;
+    fn get_mut(&mut self) -> &mut D;
+}
+
+
 pub trait EnvAccess<E: Env> {
     fn caller() -> E::AccountId;
     fn transferred_balance() -> E::Balance;

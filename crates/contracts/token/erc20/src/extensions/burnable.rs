@@ -1,5 +1,5 @@
-pub use crate::module::{Data, Storage};
-pub use metis_contract::{Env, EnvAccess};
+pub use crate::module::Data;
+pub use metis_contract::{Env, EnvAccess, Storage};
 
 pub use crate::erc20::{Error, EventEmit, Impl, Result};
 

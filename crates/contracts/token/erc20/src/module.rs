@@ -15,11 +15,6 @@ pub struct Data<E: Env> {
     allowances: StorageHashMap<(E::AccountId, E::AccountId), E::Balance>,
 }
 
-pub trait Storage<E: Env> {
-    fn get(&self) -> &Data<E>;
-    fn get_mut(&mut self) -> &mut Data<E>;
-}
-
 impl<E: Env> Data<E> {
     pub fn new() -> Self {
         Self::default()

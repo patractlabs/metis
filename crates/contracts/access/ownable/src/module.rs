@@ -12,14 +12,6 @@ where
     owner: Lazy<Option<E::AccountId>>,
 }
 
-pub trait Storage<E>
-where
-    E: Env,
-{
-    fn get(&self) -> &Data<E>;
-    fn get_mut(&mut self) -> &mut Data<E>;
-}
-
 impl<E> Data<E>
 where
     E: Env,
