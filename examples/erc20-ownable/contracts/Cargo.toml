@@ -17,10 +17,8 @@ num-traits = { version = "0.2", default-features = false, features = ["i128"] }
 
 metis_lang = { path = "../../../crates/lang", default-features = false }
 
-metis-erc20 = { path = "../../../crates/contracts/token/erc20", default-features = false }
-metis-ownable = { path = "../../../crates/contracts/access/ownable", default-features = false }
-
-
+metis-erc20 = { path = "../../../crates/components/token/erc20", default-features = false }
+metis-ownable = { path = "../../../crates/components/access/ownable", default-features = false }
 [lib]
 name = "erc20ownable"
 path = "lib.rs"
