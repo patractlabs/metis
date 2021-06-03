@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "crates/components/access/ownable",
+    "crates/components/token/erc20",
+    "crates/lang/",
+    "crates/lang/macro",
+    "crates/lang/contract",
+    "crates/lang/codegen",
+]
+exclude = [
+    "examples/",
+]
+
+[profile.release]
+panic = "abort"
+lto = true

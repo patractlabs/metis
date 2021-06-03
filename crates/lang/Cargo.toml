@@ -19,6 +19,3 @@ std = [
     "metis_contract/std",
     "metis_lang_macro/std",
 ]
-
-[workspace]
-members = ["contract", "macro", "codegen"]
