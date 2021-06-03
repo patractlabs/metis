@@ -1,6 +1,6 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub use metis_contract::{Env, EnvAccess, Storage};
+pub use metis_lang::{Env, EnvAccess, Storage};
 
 mod module;
 

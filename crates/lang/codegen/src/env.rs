@@ -9,7 +9,7 @@ pub fn generate_code(_contract: &Contract, storage_ident: &syn::Ident) -> Result
         use ::ink_lang::{EmitEvent, Env, StaticEnv};
 
         #[cfg(not(feature = "ink-as-dependency"))]
-        impl metis_contract::Env for #storage_ident {
+        impl metis_lang::Env for #storage_ident {
             type BaseEvent = <#storage_ident as ::ink_lang::BaseEvent>::Type;
             type AccountId = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::AccountId;
             type Balance = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Balance;
@@ -19,11 +19,11 @@ pub fn generate_code(_contract: &Contract, storage_ident: &syn::Ident) -> Result
         }
 
         #[cfg(not(feature = "ink-as-dependency"))]
-        impl metis_contract::EnvAccess<#storage_ident > for #storage_ident  {
-            fn caller() -> <#storage_ident  as metis_contract::Env>::AccountId {
+        impl metis_lang::EnvAccess<#storage_ident > for #storage_ident  {
+            fn caller() -> <#storage_ident  as metis_lang::Env>::AccountId {
                 Self::env().caller()
             }
-            fn transferred_balance() -> <#storage_ident  as metis_contract::Env>::Balance {
+            fn transferred_balance() -> <#storage_ident  as metis_lang::Env>::Balance {
                 Self::env().transferred_balance()
             }
         }

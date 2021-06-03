@@ -105,21 +105,15 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "3.6.1"
+version = "3.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63396b8a4b9de3f4fdfb320ab6080762242f66a8ef174c49d8e19b674db4cdbe"
+checksum = "9c59e7af012c713f529e7a3ee57ce9b31ddd858d4b512923602f74608b009631"
 
 [[package]]
 name = "byte-slice-cast"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "65c1bf4a04a88c54f589125563643d773f3254b5c38571395e2b591c693bbc81"
-
-[[package]]
-name = "byteorder"
-version = "1.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "cast"
@@ -227,9 +221,9 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-epoch"
-version = "0.9.4"
+version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "52fb27eab85b17fbb9f6fd667089e07d6a2eb8743d02639ee7f6a7a7729c9c94"
+checksum = "4ec02e091aa634e2c3ada4a392989e7c3116673ef0ac5b72232439094d73b7fd"
 dependencies = [
  "cfg-if 1.0.0",
  "crossbeam-utils",
@@ -240,11 +234,10 @@ dependencies = [
 
 [[package]]
 name = "crossbeam-utils"
-version = "0.8.4"
+version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4feb231f0d4d6af81aed15928e58ecf5816aa62a2393e2c82f46973e92a9a278"
+checksum = "d82cfc11ce7f2c3faef78d8a684447b40d503d9681acebed6cb728d45940c4db"
 dependencies = [
- "autocfg",
  "cfg-if 1.0.0",
  "lazy_static",
 ]
@@ -302,6 +295,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dissimilar"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fc4b29f4b9bb94bf267d57269fd0706d343a160937108e9619fe380645428abb"
+
+[[package]]
 name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -335,6 +334,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "glob"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b919933a397b79c37e33b77bb2aa3dc8eb6e165ad809e58ff75bc7db2e34574"
+
+[[package]]
 name = "half"
 version = "1.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -342,9 +347,9 @@ checksum = "62aca2aba2d62b4a7f5b33f3712cb1b0692779a56fb510499d5c0aa594daeaf3"
 
 [[package]]
 name = "heck"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87cbf45460356b7deeb5e3415b5563308c0a9b057c85e12b06ad551f98d0a6ac"
+checksum = "6d621efb26863f0e9924c6ac577e8275e5e6b77455db64ffa6c65c904e9e132c"
 dependencies = [
  "unicode-segmentation",
 ]
@@ -370,7 +375,7 @@ dependencies = [
 [[package]]
 name = "ink_allocator"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "wee_alloc",
 ]
@@ -378,7 +383,7 @@ dependencies = [
 [[package]]
 name = "ink_env"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "arrayref",
  "blake2",
@@ -402,7 +407,7 @@ dependencies = [
 [[package]]
 name = "ink_lang"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "derive_more",
  "ink_env",
@@ -418,7 +423,7 @@ dependencies = [
 [[package]]
 name = "ink_lang_codegen"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "blake2",
  "derive_more",
@@ -437,7 +442,7 @@ dependencies = [
 [[package]]
 name = "ink_lang_ir"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "blake2",
  "either",
@@ -451,7 +456,7 @@ dependencies = [
 [[package]]
 name = "ink_lang_macro"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "ink_lang_codegen",
  "ink_lang_ir",
@@ -464,7 +469,7 @@ dependencies = [
 [[package]]
 name = "ink_metadata"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "derive_more",
  "impl-serde",
@@ -477,7 +482,7 @@ dependencies = [
 [[package]]
 name = "ink_prelude"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "cfg-if 1.0.0",
 ]
@@ -485,7 +490,7 @@ dependencies = [
 [[package]]
 name = "ink_primitives"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "ink_prelude",
  "parity-scale-codec",
@@ -495,7 +500,7 @@ dependencies = [
 [[package]]
 name = "ink_storage"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "array-init",
  "cfg-if 1.0.0",
@@ -513,7 +518,7 @@ dependencies = [
 [[package]]
 name = "ink_storage_derive"
 version = "3.0.0-rc3"
-source = "git+https://github.com/paritytech/ink#cbf08a02963aeb8e4b520471be5eb26f0a7a4dce"
+source = "git+https://github.com/paritytech/ink#2310400ce4bae025c982de345a33365ce17763c8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -598,9 +603,9 @@ checksum = "b16bd47d9e329435e309c58469fe0791c2d0d1ba96ec0954152a5ae2b04387dc"
 
 [[package]]
 name = "memoffset"
-version = "0.6.3"
+version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f83fb6581e8ed1f85fd45c116db8405483899489e38406156c25eb743554361d"
+checksum = "59accc507f1338036a0477ef61afdae33cde60840f4dfe481319ce3ad116ddf9"
 dependencies = [
  "autocfg",
 ]
@@ -613,6 +618,18 @@ checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
 
 [[package]]
 name = "metis-erc20"
+version = "0.1.0"
+dependencies = [
+ "ink_metadata",
+ "ink_storage",
+ "metis_lang",
+ "num-traits",
+ "parity-scale-codec",
+ "scale-info",
+]
+
+[[package]]
+name = "metis-ownable"
 version = "0.1.0"
 dependencies = [
  "ink_metadata",
@@ -669,14 +686,24 @@ dependencies = [
 name = "metis_lang_macro"
 version = "0.1.0"
 dependencies = [
+ "ink_env",
+ "ink_lang",
  "ink_lang_codegen",
  "ink_lang_ir",
+ "ink_metadata",
+ "ink_primitives",
+ "ink_storage",
+ "metis-erc20",
+ "metis-ownable",
+ "metis_contract",
+ "metis_lang",
  "metis_lang_codegen",
  "num-traits",
  "parity-scale-codec",
  "proc-macro2",
  "scale-info",
  "syn",
+ "trybuild",
 ]
 
 [[package]]
@@ -895,12 +922,9 @@ dependencies = [
 
 [[package]]
 name = "regex-automata"
-version = "0.1.9"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae1ded71d66a4a97f5e961fd0cb25a5f366a42a41570d16a763a69c092c26ae4"
-dependencies = [
- "byteorder",
-]
+checksum = "6c230d73fb8d8c1b9c0b3135c5142a8acee3a0558fb8db5cf1cb65f8d7862132"
 
 [[package]]
 name = "regex-syntax"
@@ -1119,6 +1143,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
+name = "termcolor"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2dfed899f0eb03f32ee8c6a0aabdb8a7949659e3466561fc0adf54e26d88c5f4"
+dependencies = [
+ "winapi-util",
+]
+
+[[package]]
 name = "textwrap"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1144,6 +1177,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a31142970826733df8241ef35dc040ef98c679ab14d7c3e54d827099b3acecaa"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "trybuild"
+version = "1.0.42"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1768998d9a3b179411618e377dbb134c58a88cda284b0aa71c42c40660127d46"
+dependencies = [
+ "dissimilar",
+ "glob",
+ "lazy_static",
+ "serde",
+ "serde_json",
+ "termcolor",
+ "toml",
 ]
 
 [[package]]

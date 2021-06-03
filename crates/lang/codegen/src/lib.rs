@@ -2,6 +2,7 @@ mod env;
 mod event;
 mod extend;
 mod utils;
+
 use ink_lang_ir::Contract;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;

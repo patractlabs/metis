@@ -1,5 +1,5 @@
 [package]
-name = "metis-contract"
+name = "metis_contract"
 version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"

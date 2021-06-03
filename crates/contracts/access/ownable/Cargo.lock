@@ -154,6 +154,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "convert_case"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6245d59a3e82a7fc217c5828a6692dbc6dfb63a0c8c90495621f7b9d79704a0e"
+
+[[package]]
 name = "cpufeatures"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -606,7 +612,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
 
 [[package]]
-name = "metis-contract"
+name = "metis-ownable"
+version = "0.1.0"
+dependencies = [
+ "ink_metadata",
+ "ink_storage",
+ "metis_lang",
+ "num-traits",
+ "parity-scale-codec",
+ "scale-info",
+]
+
+[[package]]
+name = "metis_contract"
 version = "0.1.0"
 dependencies = [
  "ink_env",
@@ -620,16 +638,45 @@ dependencies = [
 ]
 
 [[package]]
-name = "metis-ownable"
+name = "metis_lang"
 version = "0.1.0"
 dependencies = [
- "ink_env",
- "ink_metadata",
- "ink_storage",
- "metis-contract",
+ "metis_contract",
+ "metis_lang_macro",
+]
+
+[[package]]
+name = "metis_lang_codegen"
+version = "0.1.0"
+dependencies = [
+ "blake2",
+ "convert_case",
+ "derive_more",
+ "either",
+ "heck",
+ "impl-serde",
+ "ink_lang_codegen",
+ "ink_lang_ir",
+ "itertools 0.10.0",
+ "parity-scale-codec",
+ "proc-macro2",
+ "quote",
+ "regex",
+ "syn",
+]
+
+[[package]]
+name = "metis_lang_macro"
+version = "0.1.0"
+dependencies = [
+ "ink_lang_codegen",
+ "ink_lang_ir",
+ "metis_lang_codegen",
  "num-traits",
  "parity-scale-codec",
+ "proc-macro2",
  "scale-info",
+ "syn",
 ]
 
 [[package]]

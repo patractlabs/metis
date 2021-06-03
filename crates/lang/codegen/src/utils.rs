@@ -32,6 +32,16 @@ where
     attrs.into_iter().any(|attr| attr.path.is_ident("metis"))
 }
 
+
+#[allow(dead_code)]
+pub fn is_metis_item_has_attr<'a, I>(attrs: I, expect_attr: &Ident) -> bool
+where
+    I: IntoIterator<Item = &'a syn::Attribute>,
+{
+    get_metis_item_attr(attrs).iter().any(|attr| attr == expect_attr)
+}
+
+
 pub fn get_metis_item_attr<'a, I>(attrs: I) -> Set<Ident>
 where
     I: IntoIterator<Item = &'a syn::Attribute>,

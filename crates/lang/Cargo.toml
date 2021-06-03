@@ -1,0 +1,24 @@
+[package]
+name = "metis_lang"
+version = "0.1.0"
+authors = ["patract labs <https://github.com/patractlabs>"]
+edition = "2018"
+
+license = "Apache-2.0"
+keywords = ["wasm", "parity", "webassembly", "blockchain", "edsl"]
+categories = ["no-std", "embedded"]
+include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE"]
+
+[dependencies]
+metis_contract = { path = "contract", default-features = false }
+metis_lang_macro = { path = "macro", default-features = false  }
+
+[features]
+default = ["std"]
+std = [
+    "metis_contract/std",
+    "metis_lang_macro/std",
+]
+
+[workspace]
+members = ["contract", "macro", "codegen"]

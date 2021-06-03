@@ -1,4 +1,4 @@
-pub use metis_contract::Env;
+pub use metis_lang::Env;
 
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{collections::HashMap as StorageHashMap, lazy::Lazy, traits::SpreadLayout};

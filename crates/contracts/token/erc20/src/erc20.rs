@@ -1,5 +1,5 @@
 pub use super::module::{Data};
-pub use metis_contract::{Env, EnvAccess, Storage};
+pub use metis_lang::{Env, EnvAccess, Storage};
 
 /// The ERC-20 error types.
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -31,6 +31,18 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 }
 
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
+    fn total_supply(&self) -> E::Balance {
+        self.get().total_supply()
+    }
+
+    fn balance_of(&self, owner: &E::AccountId) -> E::Balance {
+        self.get().balance_of(owner)
+    }
+
+    fn allowance(&self, owner: &E::AccountId, spender: &E::AccountId) -> E::Balance {
+        self.get().allowance(owner, spender)
+    }
+
     fn _approve(&mut self, owner: &E::AccountId, spender: &E::AccountId, amount: E::Balance) {
         self.get_mut().set_allowance(owner, spender, amount);
         self.emit_event_approval(owner.clone(), spender.clone(), amount);

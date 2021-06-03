@@ -15,9 +15,11 @@ scale = { package = "parity-scale-codec", version = "2.1", default-features = fa
 scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
 num-traits = { version = "0.2", default-features = false, features = ["i128"] }
 
-metis-contract = { path = "../../../crates/utils/contract", default-features = false }
+metis_lang = { path = "../../../crates/lang", default-features = false }
+
 metis-erc20 = { path = "../../../crates/contracts/token/erc20", default-features = false }
 metis-ownable = { path = "../../../crates/contracts/access/ownable", default-features = false }
+
 
 [lib]
 name = "erc20ownable"
@@ -39,7 +41,7 @@ std = [
     "scale/std",
     "scale-info",
     "scale-info/std",
-    "metis-contract/std",
+    "metis_lang/std",
     "metis-erc20/std",
     "metis-ownable/std"
 ]

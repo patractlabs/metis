@@ -1,4 +1,3 @@
-use metis_codegen::generate_code;
 use proc_macro2::TokenStream as TokenStream2;
 use syn::Result;
 
@@ -10,5 +9,5 @@ pub fn generate(attr: TokenStream2, input: TokenStream2) -> TokenStream2 {
 }
 
 pub fn generate_or_err(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
-    generate_code(attr, input)
+    metis_lang_codegen::generate_code_for_extend(attr, input)
 }
