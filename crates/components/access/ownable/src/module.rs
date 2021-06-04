@@ -38,10 +38,12 @@ impl<E> Data<E>
 where
     E: Env,
 {
+    /// get_ownership get owner for contract
     pub fn get_ownership(&self) -> &Option<E::AccountId> {
         &self.owner
     }
 
+    /// set_ownership set owner for contract
     pub fn set_ownership(&mut self, owner: &Option<E::AccountId>) {
         Lazy::set(&mut self.owner, owner.clone());
     }
