@@ -1,3 +1,5 @@
+//! Implementation of the ERC20 component.
+
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod erc20;
@@ -8,7 +10,12 @@ pub use metis_lang::{Env, EnvAccess, Storage};
 
 pub use module::Data;
 
-pub use erc20::{Error, EventEmit, Impl, Result};
+pub use erc20::{
+    Error,
+    EventEmit,
+    Impl,
+    Result
+};
 
 pub use extensions::burnable::ImplBurnable;
 

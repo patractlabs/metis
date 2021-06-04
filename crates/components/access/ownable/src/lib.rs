@@ -19,7 +19,7 @@ pub use module::Data;
 
 /// The `EventEmit` impl the event emit api for ownable component.
 pub trait EventEmit<E: Env>: EnvAccess<E> {
-    /// emit_event_ownership_transferred emit OwnershipTransferred event
+    /// Emit OwnershipTransferred event
     fn emit_event_ownership_transferred(
         &mut self,
         previous_owner: Option<E::AccountId>,
