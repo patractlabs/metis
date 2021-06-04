@@ -1,7 +1,6 @@
 extern crate proc_macro;
 
 mod contract;
-mod import;
 
 use proc_macro::TokenStream;
 
@@ -11,8 +10,8 @@ pub fn contract(attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn import(attr: TokenStream, item: TokenStream) -> TokenStream {
-    import::generate(attr.into(), item.into()).into()
+pub fn import(_: TokenStream, item: TokenStream) -> TokenStream {
+    item
 }
 
 #[proc_macro_attribute]

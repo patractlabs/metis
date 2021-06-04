@@ -6,15 +6,7 @@ use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
 use syn::{Ident, Token};
 
-/// Parses a list of variable names separated by commas.
-///
-///     a, b, c
-///
-/// This is how the compiler passes in arguments to our attribute -- it is
-/// everything inside the delimiters after the attribute name.
-///
-///     #[trace_var(a, b, c)]
-///                 ^^^^^^^
+/// Parses a list of variable names separated by commas like a, b, c
 pub struct Args {
     pub vars: Set<Ident>,
 }
@@ -51,6 +43,22 @@ where
 {
     for attr in attrs.into_iter() {
         if attr.path.is_ident("metis") {
+            let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).unwrap();
+            let tags = syn::parse2::<Args>(vars.stream()).unwrap();
+
+            return tags.vars;
+        }
+    }
+
+    Set::default()
+}
+
+pub fn get_item_attr<'a, I>(attrs: I, name: &str) -> Set<Ident>
+where
+    I: IntoIterator<Item = &'a syn::Attribute>,
+{
+    for attr in attrs.into_iter() {
+        if attr.path.is_ident(name) {
             let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).unwrap();
             let tags = syn::parse2::<Args>(vars.stream()).unwrap();
 

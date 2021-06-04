@@ -1,37 +1,37 @@
+use super::utils::{get_item_attr, gen_cross_calling_conflict_cfg};
+use ink_lang_ir::{Contract};
 use proc_macro2::Ident;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use syn::Result;
 
-use super::utils::Args;
+pub fn generate_code(contract: &Contract) -> Result<TokenStream2> {
+    let storage = contract.module().storage();
+    let storage_ident = storage.ident();
+    let attrs = storage.attrs();
 
-pub fn generate_code_for_import(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
-    let mods = syn::parse2::<Args>(attr)?;
-    let storage_struct = syn::parse2::<syn::ItemStruct>(input.clone())?;
+    let import_mods = get_item_attr(attrs, "import");
 
-    let code_for_mods = mods
-        .vars
-        .iter()
-        .map(|ext_mod| generate_import_mod(&storage_struct.ident, ext_mod));
+    let import_mods_codes = import_mods.iter()
+        .map(|ext_mod| generate_import_mod(contract, storage_ident, ext_mod));
 
-    let gen = quote! {
-        #input
-
-        #(#code_for_mods)*
+    let code = quote! {
+        #(#import_mods_codes)*
     };
 
-    Ok(gen)
+    Ok(code)
 }
 
 fn ext_mod_data_ident(ext_mod: &Ident) -> Ident {
     format_ident!("{}", ext_mod)
 }
 
-fn generate_import_mod(storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2 {
+fn generate_import_mod(contract: &Contract, storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2 {
     let data_ident = ext_mod_data_ident(ext_mod);
+    let no_cross_calling_cfg = gen_cross_calling_conflict_cfg(contract);
 
     quote! {
-        #[cfg(not(feature = "ink-as-dependency"))]
+        #no_cross_calling_cfg
         const _: () = {
             use #ext_mod;
 

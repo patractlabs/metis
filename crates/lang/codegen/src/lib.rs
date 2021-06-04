@@ -8,8 +8,6 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::Result;
 
-pub use import::generate_code_for_import;
-
 pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
     let item_mod = syn::parse2::<syn::ItemMod>(input.clone()).unwrap();
 
@@ -29,6 +27,7 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
     };
 
     let envs = env::generate_code(&contract_ink, &storage_ident)?;
+    let imports = import::generate_code(&contract_ink)?;
     let events = event::generate_code(&contract_ink, &storage_ident)?;
 
     let module_extend = quote! {
@@ -37,6 +36,7 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
             #( #items )*
 
             #envs
+            #imports
             #events
         }
     };
