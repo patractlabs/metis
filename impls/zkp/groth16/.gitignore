@@ -5,4 +5,4 @@
 **/*.rs.bk
 
 # impls crate means the contract could be rebuild, thus should commit the Cargo.lock to git.
-# Cargo.lock
+ Cargo.lock
