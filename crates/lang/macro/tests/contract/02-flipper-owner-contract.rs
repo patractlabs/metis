@@ -58,7 +58,7 @@ mod flipper {
 
         #[ink(message)]
         pub fn get_ownership(&self) -> Option<AccountId> {
-            *metis_ownable::Storage::get(self).get_ownership()
+            *metis_ownable::Impl::owner(self)
         }
 
         #[ink(message)]

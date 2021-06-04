@@ -3,12 +3,14 @@ pub use metis_lang::Env;
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{lazy::Lazy, traits::SpreadLayout};
 
+/// The Data of ownership component
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]
 #[derive(Debug, SpreadLayout)]
 pub struct Data<E>
 where
     E: Env,
 {
+    /// The owner of contract
     owner: Lazy<Option<E::AccountId>>,
 }
 

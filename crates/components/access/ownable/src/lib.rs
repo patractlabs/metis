@@ -13,7 +13,8 @@
 
 mod module;
 
-pub use metis_lang::{Env, EnvAccess, Storage};
+use metis_lang::{Env, EnvAccess, Storage};
+
 pub use module::Data;
 
 /// The `EventEmit` impl the event emit api for ownable component.
@@ -33,7 +34,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get_mut().set_ownership(&Some(Self::caller()));
     }
 
-    /// renounce_ownership Leaves the contract without owner. It will not be possible to call
+    /// Leaves the contract without owner. It will not be possible to call
     /// `ensure_xxx` functions anymore. Can only be called by the current owner.
     /// NOTE: Renouncing ownership will leave the contract without an owner,
     /// thereby removing any functionality that is only available to the owner.
@@ -45,7 +46,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get_mut().set_ownership(&None);
     }
 
-    /// transfer_ownership Transfers ownership of the contract to a new account (`new_owner`).
+    /// Transfers ownership of the contract to a new account (`new_owner`).
     /// Can only be called by the current owner.
     fn transfer_ownership(&mut self, new_owner: &E::AccountId) {
         self.ensure_caller_is_owner();
