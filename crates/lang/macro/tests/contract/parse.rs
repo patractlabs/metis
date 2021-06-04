@@ -17,7 +17,6 @@ pub mod erc20ownable {
     // TODO: Make by macro
     #[cfg(not(feature = "ink-as-dependency"))]
     impl metis_contract::Env for Erc20Ownable {
-        type BaseEvent = <Erc20Ownable as ::ink_lang::BaseEvent>::Type;
         type AccountId = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::AccountId;
         type Balance = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Balance;
         type Hash = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Hash;

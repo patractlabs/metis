@@ -55,8 +55,6 @@ fn generate_code_for_mod_evts(
     mod_ident: &Ident,
     evts: &Vec<&Event>,
 ) -> TokenStream2 {
-    println!("mod_ident {}", mod_ident);
-
     let evt_impl_funcs = evts
         .iter()
         .flat_map(|evt| generate_event_emit_impl(evt))

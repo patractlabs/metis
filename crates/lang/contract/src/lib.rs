@@ -6,8 +6,6 @@ mod traits;
 pub use traits::{AccountId, Balance, BlockNumber, ChainExtension, Hash, Timestamp};
 
 pub trait Env: 'static {
-    type BaseEvent;
-
     type AccountId: AccountId;
     type Balance: Balance;
     type BlockNumber: BlockNumber;

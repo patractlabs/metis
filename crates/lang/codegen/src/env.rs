@@ -10,7 +10,6 @@ pub fn generate_code(_contract: &Contract, storage_ident: &syn::Ident) -> Result
 
         #[cfg(not(feature = "ink-as-dependency"))]
         impl metis_lang::Env for #storage_ident {
-            type BaseEvent = <#storage_ident as ::ink_lang::BaseEvent>::Type;
             type AccountId = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::AccountId;
             type Balance = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Balance;
             type Hash = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Hash;

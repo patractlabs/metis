@@ -1,4 +1,4 @@
-use metis_util_macro::{
+use metis_lang::{
     metis,
     contract,
     import,

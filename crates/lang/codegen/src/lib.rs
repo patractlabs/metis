@@ -24,9 +24,9 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
         Some((_brace, items)) => items,
         None => {
             return Err(ink_lang_ir::format_err_spanned!(
-            item_mod,
-            "out-of-line ink! modules are not supported, use `#[ink::contract] mod name {{ ... }}`",
-        ))
+                item_mod,
+                "out-of-line ink! modules are not supported, use `#[ink::contract] mod name {{ ... }}`",
+            ))
         }
     };
 

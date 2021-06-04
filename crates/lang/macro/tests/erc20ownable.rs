@@ -216,19 +216,19 @@ pub mod erc20ownable {
             }
             let expected_topics = vec![
                 encoded_into_hash(&PrefixedValue {
-                    value: b"Erc20::Transfer",
+                    value: b"Erc20Ownable::Transfer",
                     prefix: b"",
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20::Transfer::from",
+                    prefix: b"Erc20Ownable::Transfer::from",
                     value: &expected_from,
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20::Transfer::to",
+                    prefix: b"Erc20Ownable::Transfer::to",
                     value: &expected_to,
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20::Transfer::value",
+                    prefix: b"Erc20Ownable::Transfer::value",
                     value: &expected_value,
                 }),
             ];
@@ -418,7 +418,7 @@ pub mod erc20ownable {
 
             // Check all transfer events that happened during the previous calls:
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
-            assert_eq!(emitted_events.len(), 3);
+            assert_eq!(emitted_events.len(), 4);
             assert_transfer_event(
                 &emitted_events[0],
                 None,

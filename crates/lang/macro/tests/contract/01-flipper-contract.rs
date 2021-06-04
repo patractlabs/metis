@@ -1,4 +1,4 @@
-#[metis_util_macro::contract]
+#[metis_lang::contract]
 mod flipper {
     #[ink(storage)]
     pub struct Flipper {
