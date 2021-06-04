@@ -1,3 +1,6 @@
+use ink_lang_ir::Contract;
+use proc_macro2::TokenStream as TokenStream2;
+use quote::quote;
 use std::collections::HashSet as Set;
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
@@ -32,15 +35,15 @@ where
     attrs.into_iter().any(|attr| attr.path.is_ident("metis"))
 }
 
-
 #[allow(dead_code)]
 pub fn is_metis_item_has_attr<'a, I>(attrs: I, expect_attr: &Ident) -> bool
 where
     I: IntoIterator<Item = &'a syn::Attribute>,
 {
-    get_metis_item_attr(attrs).iter().any(|attr| attr == expect_attr)
+    get_metis_item_attr(attrs)
+        .iter()
+        .any(|attr| attr == expect_attr)
 }
-
 
 pub fn get_metis_item_attr<'a, I>(attrs: I) -> Set<Ident>
 where
@@ -56,4 +59,13 @@ where
     }
 
     Set::default()
+}
+
+/// Generates `#[cfg(..)]` code to guard against compilation under `ink-as-dependency`.
+/// From ink! code
+pub fn gen_cross_calling_conflict_cfg(contract: &Contract) -> TokenStream2 {
+    if contract.config().is_compile_as_dependency_enabled() {
+        return quote! { #[cfg(feature = "__ink_DO_NOT_COMPILE")] };
+    }
+    quote! { #[cfg(not(feature = "ink-as-dependency"))] }
 }

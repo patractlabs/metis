@@ -7,7 +7,7 @@ use std::collections::HashSet as Set;
 use syn::spanned::Spanned;
 use syn::Result;
 
-use super::utils::{get_metis_item_attr, is_metis_item};
+use super::utils::{get_metis_item_attr, is_metis_item, gen_cross_calling_conflict_cfg};
 
 pub fn generate_code(contract: &Contract, storage_ident: &Ident) -> Result<TokenStream2> {
     let mods = contract
@@ -43,7 +43,7 @@ pub fn generate_code(contract: &Contract, storage_ident: &Ident) -> Result<Token
                 .map(|evt| evt.1.clone())
                 .collect::<Vec<_>>();
 
-            generate_code_for_mod_evts(storage_ident, &m, &mod_evts)
+            generate_code_for_mod_evts(contract, storage_ident, &m, &mod_evts)
         })
         .collect::<Vec<_>>()
         .iter()
@@ -51,10 +51,12 @@ pub fn generate_code(contract: &Contract, storage_ident: &Ident) -> Result<Token
 }
 
 fn generate_code_for_mod_evts(
+    contract: &Contract,
     storage_ident: &Ident,
     mod_ident: &Ident,
     evts: &Vec<&Event>,
 ) -> TokenStream2 {
+    let no_cross_calling_cfg = gen_cross_calling_conflict_cfg(contract);
     let evt_impl_funcs = evts
         .iter()
         .flat_map(|evt| generate_event_emit_impl(evt))
@@ -63,7 +65,7 @@ fn generate_code_for_mod_evts(
         .fold(quote! {}, |codes, new| quote! {#codes #new});
 
     quote! {
-        #[cfg(not(feature = "ink-as-dependency"))]
+        #no_cross_calling_cfg
         const _: () = {
             impl #mod_ident::EventEmit<#storage_ident> for #storage_ident {
                 #evt_impl_funcs
