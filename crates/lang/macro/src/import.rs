@@ -9,5 +9,5 @@ pub fn generate(attr: TokenStream2, input: TokenStream2) -> TokenStream2 {
 }
 
 pub fn generate_or_err(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
-    metis_lang_codegen::generate_code_for_extend(attr, input)
+    metis_lang_codegen::generate_code_for_import(attr, input)
 }

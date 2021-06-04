@@ -5,14 +5,14 @@ use syn::Result;
 
 use super::utils::Args;
 
-pub fn generate_code_for_extend(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
+pub fn generate_code_for_import(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
     let mods = syn::parse2::<Args>(attr)?;
     let storage_struct = syn::parse2::<syn::ItemStruct>(input.clone())?;
 
     let code_for_mods = mods
         .vars
         .iter()
-        .map(|ext_mod| generate_extand_mod(&storage_struct.ident, ext_mod));
+        .map(|ext_mod| generate_import_mod(&storage_struct.ident, ext_mod));
 
     let gen = quote! {
         #input
@@ -27,7 +27,7 @@ fn ext_mod_data_ident(ext_mod: &Ident) -> Ident {
     format_ident!("{}", ext_mod)
 }
 
-fn generate_extand_mod(storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2 {
+fn generate_import_mod(storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2 {
     let data_ident = ext_mod_data_ident(ext_mod);
 
     quote! {
