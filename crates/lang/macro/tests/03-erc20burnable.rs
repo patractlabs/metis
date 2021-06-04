@@ -227,6 +227,21 @@ pub mod erc20burnable {
             }
         }
 
+        /// Test burnable burn
+        #[ink::test]
+        fn burn_token_works() {
+            let mut erc20 = Erc20Burnable::new(100000);
+
+            let owner = AccountId::from([0x01; 32]);
+            assert_eq!(erc20.balance_of(owner), 100000);
+
+            // burn ok
+            assert_eq!(erc20.burn(1000), Ok(()));
+    
+            assert_eq!(erc20.balance_of(owner), 99000);
+            assert_eq!(erc20.total_supply(), 99000);
+        }
+
         /// The default constructor does its job.
         #[ink::test]
         fn new_works() {
