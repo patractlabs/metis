@@ -17,6 +17,8 @@ pub use erc20::{
     Result
 };
 
-pub use extensions::burnable::ImplBurnable;
+pub mod burnable{
+    pub use super::extensions::burnable::Impl;
+}
 
 impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> Impl<E> for T {}

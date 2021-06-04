@@ -1,15 +1,17 @@
+pub use super::super::module::Data;
+pub use super::super::EventEmit;
 use metis_lang::Env;
 
-use crate::erc20::{Impl, Result};
+use crate::erc20::Result;
 
 /// Extension of {ERC20} that allows token holders to destroy both their own
 /// tokens and those that they have an allowance for, in a way that can be
 /// recognized off-chain (via event analysis).
-pub trait ImplBurnable<E>: Impl<E>
+pub trait Impl<E>: crate::erc20::Impl<E>
 where
     E: Env,
 {
-    /// @dev Destroys `amount` tokens from `account`, reducing the
+    /// Destroys `amount` tokens from `account`, reducing the
     /// total supply.
     ///
     /// Emits a {Transfer} event with `to` set to the None address.
@@ -55,4 +57,4 @@ where
 }
 
 // No impl this for default
-// impl<E: Env, T: Storage<E> + EventEmit<E>> ImplBurnable<E> for T {}
+// impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> ImplBurnable<E> for T {}

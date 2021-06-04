@@ -42,22 +42,22 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Initialize the erc20 component
     fn init(&mut self, name: String, symbol: String, initial_supply: E::Balance) {
         let caller = &Self::caller();
+
         self.get_mut().set_total_supply(initial_supply);
         self.get_mut().set_balance(caller, initial_supply);
-
         self.get_mut().set_symbols(name, symbol);
 
         self.emit_event_transfer(None, Some(caller.clone()), initial_supply);
     }
 
     /// Returns the name of the token.
-    fn name(&self) -> &String{
-        self.get().name()
+    fn name(&self) -> String{
+        self.get().name().clone()
     }
 
     /// Returns the symbol of the token, usually a shorter version of the name.
-    fn symbol(&self) -> &String{
-        self.get().symbol()
+    fn symbol(&self) -> String{
+        self.get().symbol().clone()
     }
 
     /// Returns the number of decimals used to get its user representation.

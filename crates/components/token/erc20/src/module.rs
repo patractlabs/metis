@@ -1,7 +1,11 @@
 pub use metis_lang::Env;
 
 #[cfg(not(feature = "ink-as-dependency"))]
-use ::ink_storage::{collections::HashMap as StorageHashMap, lazy::Lazy, traits::SpreadLayout};
+use ::ink_storage::{
+    collections::HashMap as StorageHashMap,
+    lazy::Lazy,
+    traits::SpreadLayout
+};
 
 /// The Data of ERC20 component
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]
