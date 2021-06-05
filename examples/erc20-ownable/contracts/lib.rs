@@ -14,8 +14,11 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+use ink_prelude::string::String;
+
 #[metis_lang::contract]
 pub mod erc20ownable {
+    use super::String;
     use erc20::Result;
     use metis_erc20 as erc20;
     use metis_lang::{import, metis};
@@ -74,12 +77,41 @@ pub mod erc20ownable {
                 ownable: ownable::Data::new(),
             };
 
-            erc20::Impl::init(&mut instance,
+            erc20::Impl::init(
+                &mut instance,
                 String::from("MetisTestToken"),
                 String::from("MET"),
-                initial_supply);
+                initial_supply,
+            );
             ownable::Impl::init(&mut instance);
             instance
+        }
+
+        /// Returns the name of the token.
+        #[ink(message)]
+        pub fn name(&self) -> String {
+            erc20::Impl::name(self)
+        }
+
+        /// Returns the symbol of the token, usually a shorter version of the name.
+        #[ink(message)]
+        pub fn symbol(&self) -> String {
+            erc20::Impl::symbol(self)
+        }
+
+        /// Returns the number of decimals used to get its user representation.
+        /// For example, if `decimals` equals `2`, a balance of `505` tokens should
+        /// be displayed to a user as `5,05` (`505 / 10 ** 2`).
+        ///
+        /// Tokens usually opt for a value of 18, imitating the relationship between
+        /// Ether and Wei in ETH. This is the value {ERC20} uses, unless this function is
+        /// overridden;
+        ///
+        /// NOTE: This information is only used for _display_ purposes: it in
+        /// no way affects any of the arithmetic of the contract
+        #[ink(message)]
+        pub fn decimals(&self) -> u8 {
+            18_u8
         }
 
         /// Returns the total token supply.
@@ -251,7 +283,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn new_works() {
             // Constructor works.
-            let _erc20 = Erc20Ownable::new(100);
+            let erc20 = Erc20Ownable::new(100);
 
             // Transfer event triggered during initial construction.
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
@@ -263,6 +295,12 @@ pub mod erc20ownable {
                 Some(AccountId::from([0x01; 32])),
                 100,
             );
+
+            let name = erc20.name();
+            assert_eq!(String::from("MetisTestToken"), name);
+
+            let symbol = erc20.symbol();
+            assert_eq!(String::from("MET"), symbol);
         }
 
         /// The total supply was applied.

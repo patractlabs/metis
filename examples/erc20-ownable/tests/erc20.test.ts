@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 import { expect } from 'chai';
 import { patract, network, artifacts } from 'redspot';
+import type { Text } from '@polkadot/types';
 
 const { getContractFactory, getRandomSigner } = patract;
 
@@ -16,9 +17,9 @@ describe('ERC20', () => {
     const signers = await getSigners();
     const Alice = signers[0];
     const sender = await getRandomSigner(Alice, one.muln(10000));
-    const contractFactory = await getContractFactory('erc20', sender);
+    const contractFactory = await getContractFactory('erc20ownable', sender);
     const contract = await contractFactory.deploy('new', '1000');
-    const abi = artifacts.readArtifact('erc20');
+    const abi = artifacts.readArtifact('erc20ownable');
     const receiver = await getRandomSigner();
 
     return { sender, contractFactory, contract, abi, receiver, Alice, one };
@@ -37,5 +38,21 @@ describe('ERC20', () => {
       .to.emit(contract, 'Transfer')
       .withArgs(sender.address, receiver.address, 7);
   });
+
+  it('ERC20 metadatas', async () => {
+    const { contract, sender, receiver } = await setup();
+
+
+    const tokenName = await contract.query.name();
+    console.log("tokenName", tokenName)
+    await expect(tokenName.output as Text).to.equal('8MetisTestToken');
+
+    const tokenSymbol = await contract.query.symbol();
+    await expect(tokenSymbol.output).to.equal('\fMET');
+
+    const tokenDecimals = await contract.query.decimals();
+    await expect(tokenDecimals.output).to.equal(18);
+  });
+
 
 });

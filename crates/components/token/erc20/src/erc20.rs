@@ -1,5 +1,6 @@
 pub use super::module::{Data};
 pub use metis_lang::{Env, EnvAccess, Storage};
+use ink_prelude::string::String;
 
 /// The ERC-20 error types.
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

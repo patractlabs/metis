@@ -1,4 +1,5 @@
 pub use metis_lang::Env;
+use ink_prelude::string::String;
 
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{
