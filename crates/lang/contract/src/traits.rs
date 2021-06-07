@@ -1,6 +1,9 @@
-use ink_env::Clear;
-use ink_storage::traits::{PackedLayout, SpreadLayout};
 use super::arithmetic::AtLeast32BitUnsigned;
+use ink_env::Clear;
+use ink_storage::traits::{
+    PackedLayout,
+    SpreadLayout,
+};
 
 pub trait EnvAccountId: 'static + scale::Codec + Clone + PartialEq + Eq + Ord {}
 
@@ -99,7 +102,16 @@ impl<T> Balance for T where
 }
 
 pub trait Hash:
-    'static + scale::Codec + Copy + Clone + Clear + PartialEq + Eq + Ord + AsRef<[u8]> + AsMut<[u8]>
+    'static
+    + scale::Codec
+    + Copy
+    + Clone
+    + Clear
+    + PartialEq
+    + Eq
+    + Ord
+    + AsRef<[u8]>
+    + AsMut<[u8]>
 {
 }
 

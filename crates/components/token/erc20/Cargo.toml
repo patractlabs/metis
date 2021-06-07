@@ -22,6 +22,6 @@ std = [
     "ink_storage/std",
     "scale/std",
     "scale-info/std",
-    "metis_lang/std"
+    "metis_lang/std",
 ]
 ink-as-dependency = []

@@ -6,14 +6,18 @@
 //! can later be changed with {transferOwnership}.
 //!
 //! This components is used through inheritance. It will make available the func like
-//! `ensure_caller_is_owner`, which can be applied to your functions to restrict 
+//! `ensure_caller_is_owner`, which can be applied to your functions to restrict
 //! their use to the owner.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod module;
 
-use metis_lang::{Env, EnvAccess, Storage};
+use metis_lang::{
+    Env,
+    EnvAccess,
+    Storage,
+};
 
 pub use module::Data;
 

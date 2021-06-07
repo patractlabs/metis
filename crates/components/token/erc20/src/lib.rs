@@ -6,7 +6,11 @@ mod erc20;
 mod extensions;
 mod module;
 
-pub use metis_lang::{Env, EnvAccess, Storage};
+pub use metis_lang::{
+    Env,
+    EnvAccess,
+    Storage,
+};
 
 pub use module::Data;
 
@@ -14,10 +18,10 @@ pub use erc20::{
     Error,
     EventEmit,
     Impl,
-    Result
+    Result,
 };
 
-pub mod burnable{
+pub mod burnable {
     pub use super::extensions::burnable::Impl;
 }
 

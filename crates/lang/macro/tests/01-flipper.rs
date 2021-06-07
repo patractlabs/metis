@@ -1,4 +1,8 @@
-use metis_lang_macro::{contract, import, metis};
+use metis_lang_macro::{
+    contract,
+    import,
+    metis,
+};
 
 #[contract]
 mod flipper {

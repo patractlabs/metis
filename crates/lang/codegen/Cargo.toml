@@ -30,8 +30,4 @@ ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech
 
 [features]
 default = ["std"]
-std = [
-    "itertools/use_std",
-    "either/use_std",
-    "ink_lang_ir/std",
-]
+std = ["itertools/use_std", "either/use_std", "ink_lang_ir/std"]

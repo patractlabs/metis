@@ -1,5 +1,7 @@
-pub use super::super::module::Data;
-pub use super::super::EventEmit;
+pub use super::super::{
+    module::Data,
+    EventEmit,
+};
 use metis_lang::Env;
 
 use crate::erc20::Result;

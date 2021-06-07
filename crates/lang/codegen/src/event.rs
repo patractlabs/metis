@@ -1,13 +1,31 @@
-use convert_case::{Case, Casing};
-use ink_lang_ir::{Contract, Event};
-use proc_macro2::Ident;
-use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote, quote_spanned};
+use convert_case::{
+    Case,
+    Casing,
+};
+use ink_lang_ir::{
+    Contract,
+    Event,
+};
+use proc_macro2::{
+    Ident,
+    TokenStream as TokenStream2,
+};
+use quote::{
+    format_ident,
+    quote,
+    quote_spanned,
+};
 use std::collections::HashSet as Set;
-use syn::spanned::Spanned;
-use syn::Result;
+use syn::{
+    spanned::Spanned,
+    Result,
+};
 
-use super::utils::{get_metis_item_attr, is_metis_item, gen_cross_calling_conflict_cfg};
+use super::utils::{
+    gen_cross_calling_conflict_cfg,
+    get_metis_item_attr,
+    is_metis_item,
+};
 
 pub fn generate_code(contract: &Contract, storage_ident: &Ident) -> Result<TokenStream2> {
     let mods = contract

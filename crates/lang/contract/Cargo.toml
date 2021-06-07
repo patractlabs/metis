@@ -30,6 +30,6 @@ std = [
     "ink_lang/std",
     "scale/std",
     "scale-info/std",
-    "num-traits/std"
+    "num-traits/std",
 ]
 ink-as-dependency = []

@@ -3,7 +3,14 @@
 mod arithmetic;
 mod traits;
 
-pub use traits::{AccountId, Balance, BlockNumber, ChainExtension, Hash, Timestamp};
+pub use traits::{
+    AccountId,
+    Balance,
+    BlockNumber,
+    ChainExtension,
+    Hash,
+    Timestamp,
+};
 
 pub trait Env: 'static {
     type AccountId: AccountId;
@@ -20,7 +27,6 @@ where
     fn get(&self) -> &D;
     fn get_mut(&mut self) -> &mut D;
 }
-
 
 pub trait EnvAccess<E: Env> {
     fn caller() -> E::AccountId;

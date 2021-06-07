@@ -2,9 +2,16 @@ use ink_lang_ir::Contract;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use std::collections::HashSet as Set;
-use syn::parse::{Parse, ParseStream, Result};
-use syn::punctuated::Punctuated;
-use syn::{Ident, Token};
+use syn::{
+    parse::{
+        Parse,
+        ParseStream,
+        Result,
+    },
+    punctuated::Punctuated,
+    Ident,
+    Token,
+};
 
 /// Parses a list of variable names separated by commas like a, b, c
 pub struct Args {
@@ -46,7 +53,7 @@ where
             let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).unwrap();
             let tags = syn::parse2::<Args>(vars.stream()).unwrap();
 
-            return tags.vars;
+            return tags.vars
         }
     }
 
@@ -62,7 +69,7 @@ where
             let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).unwrap();
             let tags = syn::parse2::<Args>(vars.stream()).unwrap();
 
-            return tags.vars;
+            return tags.vars
         }
     }
 
@@ -73,7 +80,7 @@ where
 /// From ink! code
 pub fn gen_cross_calling_conflict_cfg(contract: &Contract) -> TokenStream2 {
     if contract.config().is_compile_as_dependency_enabled() {
-        return quote! { #[cfg(feature = "__ink_DO_NOT_COMPILE")] };
+        return quote! { #[cfg(feature = "__ink_DO_NOT_COMPILE")] }
     }
     quote! { #[cfg(not(feature = "ink-as-dependency"))] }
 }

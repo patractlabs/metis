@@ -1,7 +1,7 @@
 use metis_lang::{
-    metis,
     contract,
     import,
+    metis,
 };
 
 #[contract]

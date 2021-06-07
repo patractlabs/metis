@@ -1,6 +1,10 @@
-pub use super::module::{Data};
-pub use metis_lang::{Env, EnvAccess, Storage};
+pub use super::module::Data;
 use ink_prelude::string::String;
+pub use metis_lang::{
+    Env,
+    EnvAccess,
+    Storage,
+};
 
 /// The ERC-20 error types.
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -52,12 +56,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Returns the name of the token.
-    fn name(&self) -> String{
+    fn name(&self) -> String {
         self.get().name().clone()
     }
 
     /// Returns the symbol of the token, usually a shorter version of the name.
-    fn symbol(&self) -> String{
+    fn symbol(&self) -> String {
         self.get().symbol().clone()
     }
 
@@ -137,7 +141,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
 
         let current_allowance = self.get().allowance(from, caller);
         if current_allowance < amount {
-            return Err(Error::InsufficientAllowance);
+            return Err(Error::InsufficientAllowance)
         }
 
         self._transfer_from_to(from, to, amount)?;
@@ -148,7 +152,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// The implementation of approve, for extensions call
-    fn _approve(&mut self, owner: &E::AccountId, spender: &E::AccountId, amount: E::Balance) {
+    fn _approve(
+        &mut self,
+        owner: &E::AccountId,
+        spender: &E::AccountId,
+        amount: E::Balance,
+    ) {
         self.get_mut().set_allowance(owner, spender, amount);
         self.emit_event_approval(owner.clone(), spender.clone(), amount);
     }
@@ -173,7 +182,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     ) -> Result<()> {
         let sender_balance = self.get().balance_of(sender);
         if sender_balance < amount {
-            return Err(Error::InsufficientBalance);
+            return Err(Error::InsufficientBalance)
         }
 
         self.get_mut().set_balance(sender, sender_balance - amount);

@@ -11,11 +11,8 @@ include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE"]
 
 [dependencies]
 metis_contract = { path = "contract", default-features = false }
-metis_lang_macro = { path = "macro", default-features = false  }
+metis_lang_macro = { path = "macro", default-features = false }
 
 [features]
 default = ["std"]
-std = [
-    "metis_contract/std",
-    "metis_lang_macro/std",
-]
+std = ["metis_contract/std", "metis_lang_macro/std"]

@@ -28,11 +28,11 @@ metis-erc20 = { path = "../../components/token/erc20" }
 metis-ownable = { path = "../../components/access/ownable" }
 
 ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink"}
+ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink"}
+ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 
 scale = { package = "parity-scale-codec", version = "2.1", features = ["derive"] }
@@ -57,6 +57,6 @@ std = [
     "scale/std",
     "scale-info/std",
     "num-traits/std",
-    "metis_lang_codegen/std"
+    "metis_lang_codegen/std",
 ]
 ink-as-dependency = []

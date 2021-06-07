@@ -1,8 +1,16 @@
-use super::utils::{get_item_attr, gen_cross_calling_conflict_cfg};
-use ink_lang_ir::{Contract};
-use proc_macro2::Ident;
-use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote};
+use super::utils::{
+    gen_cross_calling_conflict_cfg,
+    get_item_attr,
+};
+use ink_lang_ir::Contract;
+use proc_macro2::{
+    Ident,
+    TokenStream as TokenStream2,
+};
+use quote::{
+    format_ident,
+    quote,
+};
 use syn::Result;
 
 pub fn generate_code(contract: &Contract) -> Result<TokenStream2> {
@@ -12,7 +20,8 @@ pub fn generate_code(contract: &Contract) -> Result<TokenStream2> {
 
     let import_mods = get_item_attr(attrs, "import");
 
-    let import_mods_codes = import_mods.iter()
+    let import_mods_codes = import_mods
+        .iter()
         .map(|ext_mod| generate_import_mod(contract, storage_ident, ext_mod));
 
     let code = quote! {
@@ -26,7 +35,11 @@ fn ext_mod_data_ident(ext_mod: &Ident) -> Ident {
     format_ident!("{}", ext_mod)
 }
 
-fn generate_import_mod(contract: &Contract, storage_ident: &Ident, ext_mod: &Ident) -> TokenStream2 {
+fn generate_import_mod(
+    contract: &Contract,
+    storage_ident: &Ident,
+    ext_mod: &Ident,
+) -> TokenStream2 {
     let data_ident = ext_mod_data_ident(ext_mod);
     let no_cross_calling_cfg = gen_cross_calling_conflict_cfg(contract);
 
