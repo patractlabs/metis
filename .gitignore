@@ -6,3 +6,5 @@ target
 Cargo.lock
 **/.history/**
 
+**/*.pyc
+**/__pycache__/**
