@@ -42,13 +42,11 @@ describe('ERC20', () => {
   it('ERC20 metadatas', async () => {
     const { contract, sender, receiver } = await setup();
 
-
     const tokenName = await contract.query.name();
-    console.log("tokenName", tokenName)
-    await expect(tokenName.output as Text).to.equal('8MetisTestToken');
+    await expect(tokenName.output as Text).to.equal('MetisTestToken');
 
     const tokenSymbol = await contract.query.symbol();
-    await expect(tokenSymbol.output).to.equal('\fMET');
+    await expect(tokenSymbol.output).to.equal('MET');
 
     const tokenDecimals = await contract.query.decimals();
     await expect(tokenDecimals.output).to.equal(18);
