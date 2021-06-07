@@ -1,5 +1,10 @@
-target
 .DS_Store
 .idea
 
+target
+**/*.rs.bk
 Cargo.lock
+**/.history/**
+
+**/*.pyc
+**/__pycache__/**

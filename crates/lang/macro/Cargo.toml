@@ -1,0 +1,62 @@
+[package]
+name = "metis_lang_macro"
+version = "0.1.0"
+authors = ["patract labs <https://github.com/patractlabs>"]
+edition = "2018"
+description = "some macros for patterns support for ink! contract."
+keywords = ["wasm", "parity", "webassembly", "blockchain", "edsl"]
+categories = ["no-std", "embedded"]
+include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE"]
+
+[dependencies]
+syn = "1"
+proc-macro2 = "1"
+
+ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+
+scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
+scale-info = { version = "0.6", default-features = false, features = ["derive"] }
+num-traits = { version = "0.2", default-features = false, features = ["i128"] }
+
+metis_lang_codegen = { path = "../codegen/", default-features = false }
+
+[dev-dependencies]
+trybuild = { version = "1.0", features = ["diff"] }
+metis_contract = { path = "../contract" }
+metis-erc20 = { path = "../../components/token/erc20" }
+metis-ownable = { path = "../../components/access/ownable" }
+
+ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+
+scale = { package = "parity-scale-codec", version = "2.1", features = ["derive"] }
+scale-info = { version = "0.6", features = ["derive"] }
+num-traits = { version = "0.2", features = ["i128"] }
+
+metis_lang = { path = "../../../crates/lang" }
+
+[lib]
+name = "metis_lang_macro"
+proc-macro = true
+
+[[test]]
+name = "tests"
+path = "tests/contract.rs"
+
+[features]
+default = ["std"]
+std = [
+    "ink_lang_ir/std",
+    "ink_lang_codegen/std",
+    "scale/std",
+    "scale-info/std",
+    "num-traits/std",
+    "metis_lang_codegen/std",
+]
+ink-as-dependency = []
