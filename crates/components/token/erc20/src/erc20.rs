@@ -7,9 +7,9 @@ use metis_lang::Env;
 
 /// The `Impl` define erc20 component impl funcs
 /// To Use this, should impl it:
-/// ```
-///     impl metis_erc20::default::Impl<Contract> for Contract {}
-/// ```
+///
+/// impl metis_erc20::default::Impl<Contract> for Contract {}
+///
 pub trait Impl<E>: super::hookable::Impl<E> where E: Env {}
 
 impl<E: Env, I: Impl<E>> super::hookable::Impl<E> for I
