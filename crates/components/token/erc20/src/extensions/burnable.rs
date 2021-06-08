@@ -9,7 +9,7 @@ use crate::erc20::Result;
 /// Extension of {ERC20} that allows token holders to destroy both their own
 /// tokens and those that they have an allowance for, in a way that can be
 /// recognized off-chain (via event analysis).
-pub trait Impl<E>: crate::erc20::Impl<E>
+pub trait Impl<E>: crate::erc20_hookable::Impl<E>
 where
     E: Env,
 {
@@ -22,6 +22,11 @@ where
     ///
     /// - `account` must have at least `amount` tokens.
     fn _burn(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
+        let null_account = &E::AccountId::default();
+        assert!(account != null_account);
+
+        self._before_token_transfer(account, null_account, amount)?;
+        
         let account_balance = self.get().balance_of(account);
         let total_supply = self.get().total_supply();
 

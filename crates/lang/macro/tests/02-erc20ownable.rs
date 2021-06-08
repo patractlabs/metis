@@ -32,6 +32,8 @@ pub mod erc20ownable {
         erc20: erc20::Data<Erc20Ownable>,
     }
 
+    impl erc20::default::Impl<Erc20Ownable> for Erc20Ownable {}
+
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
     #[metis(erc20)]
