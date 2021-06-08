@@ -42,7 +42,31 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
     );
 }
 
-/// The `Impl` define erc20 component impl funcs
+/// The `Impl` define erc20 component impl funcs, with `_before_token_transfer` as hook
+/// To use erc20 Impl need impl the trait as:
+/// ```
+/// impl erc20::hookable::Impl<Contract> for Contract {
+///     /// Hook that is called before any transfer of tokens. This includes
+///     /// minting and burning.
+///     ///
+///     /// Calling conditions:
+///     ///
+///     /// - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+///     /// will be to transferred to `to`.
+///     /// - when `from` is zero, `amount` tokens will be minted for `to`.
+///     /// - when `to` is zero, `amount` of ``from``'s tokens will be burned.
+///     /// - `from` and `to` are never both zero.
+///     fn _before_token_transfer(
+///         &mut self,
+///         _from: &AccountId,
+///         _to: &AccountId,
+///         _amount: Balance,
+///     ) -> Result<()> {
+///         // TDDO: some hook impl
+///         Ok(())
+///     }
+/// }
+/// ```
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Initialize the erc20 component
     fn init(&mut self, name: String, symbol: String, initial_supply: E::Balance) {

@@ -17,7 +17,7 @@ pub mod erc20burnable {
         erc20: erc20::Data<Erc20Burnable>,
     }
 
-    /// burnable
+    // hookable
     impl erc20::hookable::Impl<Erc20Burnable> for Erc20Burnable {
         /// Hook that is called before any transfer of tokens. This includes
         /// minting and burning.
@@ -38,6 +38,7 @@ pub mod erc20burnable {
             Ok(())
         }
     }
+    // burnable
     impl erc20::burnable::Impl<Erc20Burnable> for Erc20Burnable {}
     
     /// Event emitted when a token transfer occurs.

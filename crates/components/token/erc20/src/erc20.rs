@@ -5,9 +5,11 @@ pub use super::{
 };
 use metis_lang::Env;
 
-/// Extension of {ERC20} that allows token holders to destroy both their own
-/// tokens and those that they have an allowance for, in a way that can be
-/// recognized off-chain (via event analysis).
+/// The `Impl` define erc20 component impl funcs
+/// To Use this, should impl it:
+/// ```
+///     impl metis_erc20::default::Impl<Contract> for Contract {}
+/// ```
 pub trait Impl<E>: super::hookable::Impl<E> where E: Env {}
 
 impl<E: Env, I: Impl<E>> super::hookable::Impl<E> for I
