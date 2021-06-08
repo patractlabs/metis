@@ -9,9 +9,10 @@ use quote::quote;
 use syn::Result;
 
 pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
-    let item_mod = syn::parse2::<syn::ItemMod>(input.clone()).unwrap();
+    let item_mod = syn::parse2::<syn::ItemMod>(input.clone())
+        .expect("`#[contract]` marco should use for mod");
 
-    let contract_ink = Contract::new(attr.clone(), input).unwrap();
+    let contract_ink = Contract::new(attr.clone(), input)?;
     let module = contract_ink.module();
     let ident = module.ident();
     let attrs = module.attrs();
@@ -44,7 +45,6 @@ pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStr
     };
 
     // For codegen in ink
-    let ink_contract =
-        ink_lang_codegen::generate_code(&Contract::new(attr, module_extend).unwrap());
-    Ok(ink_contract)
+    let contract = ink_lang_codegen::generate_code(&Contract::new(attr, module_extend)?);
+    Ok(contract)
 }

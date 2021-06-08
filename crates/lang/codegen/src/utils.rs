@@ -50,8 +50,8 @@ where
 {
     for attr in attrs.into_iter() {
         if attr.path.is_ident("metis") {
-            let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).unwrap();
-            let tags = syn::parse2::<Args>(vars.stream()).unwrap();
+            let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).expect("metis item attr parse err");
+            let tags = syn::parse2::<Args>(vars.stream()).expect("metis attr item should be a,b,c");
 
             return tags.vars
         }
@@ -66,8 +66,8 @@ where
 {
     for attr in attrs.into_iter() {
         if attr.path.is_ident(name) {
-            let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).unwrap();
-            let tags = syn::parse2::<Args>(vars.stream()).unwrap();
+            let vars = syn::parse2::<proc_macro2::Group>(attr.tokens.clone()).expect("get key item attr parse err");
+            let tags = syn::parse2::<Args>(vars.stream()).expect("get key attr item should be a,b,c");
 
             return tags.vars
         }

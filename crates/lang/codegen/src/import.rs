@@ -20,9 +20,10 @@ pub fn generate_code(contract: &Contract) -> Result<TokenStream2> {
 
     let import_mods = get_item_attr(attrs, "import");
 
-    let import_mods_codes = import_mods
-        .iter()
-        .map(|ext_mod| generate_import_mod(contract, storage_ident, ext_mod).unwrap());
+    let import_mods_codes = import_mods.iter().map(|ext_mod| {
+        generate_import_mod(contract, storage_ident, ext_mod)
+            .expect("no found storage mod item which imported")
+    });
 
     let code = quote! {
         #(#import_mods_codes)*
