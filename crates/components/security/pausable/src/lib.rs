@@ -21,10 +21,10 @@ pub use module::Data;
 /// The `EventEmit` impl the event emit api for ownable component.
 pub trait EventEmit<E: Env>: EnvAccess<E> {
     /// Emit Paused event
-    fn emit_event_paused(&mut self, account: &E::AccountId);
+    fn emit_event_paused(&mut self, account: E::AccountId);
 
     /// Emit Unpaused event
-    fn emit_event_unpaused(&mut self, account: &E::AccountId);
+    fn emit_event_unpaused(&mut self, account: E::AccountId);
 }
 
 /// The `Impl` define ownable component impl funcs
@@ -40,7 +40,7 @@ pub trait Impl<E: Env>: Storage<E, Data> + EventEmit<E> {
     fn _pause(&mut self) {
         self.ensure_not_paused();
         self.get_mut().pause();
-        self.emit_event_paused(&Self::caller());
+        self.emit_event_paused(Self::caller());
     }
 
     /// Transfers ownership of the contract to a new account (`new_owner`).
@@ -48,7 +48,7 @@ pub trait Impl<E: Env>: Storage<E, Data> + EventEmit<E> {
     fn _unpause(&mut self) {
         self.ensure_paused();
         self.get_mut().unpause();
-        self.emit_event_unpaused(&Self::caller());
+        self.emit_event_unpaused(Self::caller());
     }
 
     /// Returns true if the contract is paused, and false otherwise
