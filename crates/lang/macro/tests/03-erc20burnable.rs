@@ -29,7 +29,7 @@ pub mod erc20burnable {
         /// - when `from` is zero, `amount` tokens will be minted for `to`.
         /// - when `to` is zero, `amount` of ``from``'s tokens will be burned.
         /// - `from` and `to` are never both zero.
-        fn _before_token_transfer(
+        fn before_token_transfer(
             &mut self,
             _from: &AccountId,
             _to: &AccountId,

@@ -1,19 +1,17 @@
-pub use super::{
+pub use super::super::{
     module::Data,
     EventEmit,
-    Result,
 };
 use metis_lang::Env;
 
-/// The `Impl` define erc20 component impl funcs
-/// To Use this, should impl it:
-///
-/// impl metis_erc20::default::Impl<Contract> for Contract {}
-///
-pub trait Impl<E>: super::Impl<E> where E: Env {}
+use crate::erc20::Result;
 
-/* TODO: default impl
-impl<E: Env, I: Impl<E>> super::Impl<E> for I
+pub trait Impl<E>: crate::hookable::Impl<E> + metis_pausable::Impl<E>
+where
+    E: Env,
+{}
+
+impl<E: Env, I: Impl<E>> crate::hookable::Impl<E> for I
 {
     /// Hook that is called before any transfer of tokens. This includes
     /// minting and burning.
@@ -25,16 +23,14 @@ impl<E: Env, I: Impl<E>> super::Impl<E> for I
     /// - when `from` is zero, `amount` tokens will be minted for `to`.
     /// - when `to` is zero, `amount` of ``from``'s tokens will be burned.
     /// - `from` and `to` are never both zero.
-    fn _before_token_transfer(
+    fn before_token_transfer(
         &mut self,
         _from: &E::AccountId,
         _to: &E::AccountId,
         _amount: E::Balance,
     ) -> Result<()> {
+        metis_pausable::Impl::<E>::ensure_not_paused(self);
+
         Ok(())
     }
 }
-*/
-
-// No impl this for default
-// impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> ImplBurnable<E> for T {}

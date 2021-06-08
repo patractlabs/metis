@@ -14,29 +14,25 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use ink_prelude::string::String;
-
 #[metis_lang::contract]
-pub mod erc20ownable {
-    use super::String;
-    use erc20::Result;
-    use metis_erc20 as erc20;
+pub mod erc20_contract {
     use metis_lang::{
         import,
         metis,
     };
-    use metis_ownable as ownable;
+    use metis_erc20 as erc20;
+    use erc20::Result;
+
 
     /// A simple ERC-20 contract.
     #[ink(storage)]
-    #[import(ownable, erc20)]
-    pub struct Erc20Ownable {
-        ownable: ownable::Data<Erc20Ownable>,
-        erc20: erc20::Data<Erc20Ownable>,
+    #[import(erc20)]
+    pub struct Erc20 {
+        erc20: erc20::Data<Erc20>,
     }
 
     // TODO: gen by marco with erc20 component
-    impl erc20::Impl<Erc20Ownable> for Erc20Ownable {
+    impl erc20::Impl<Erc20> for Erc20 {
         fn _before_token_transfer(
             &mut self,
             _from: &AccountId,
@@ -70,26 +66,13 @@ pub mod erc20ownable {
         value: Balance,
     }
 
-    /// Event emitted when Owner AccountId Transferred
-    #[ink(event)]
-    #[metis(ownable)]
-    pub struct OwnershipTransferred {
-        /// previous owner account id
-        #[ink(topic)]
-        previous_owner: Option<AccountId>,
-        /// new owner account id
-        #[ink(topic)]
-        new_owner: Option<AccountId>,
-    }
-
     // impl
-    impl Erc20Ownable {
+    impl Erc20 {
         /// Creates a new ERC-20 contract with the specified initial supply.
         #[ink(constructor)]
         pub fn new(initial_supply: Balance) -> Self {
             let mut instance = Self {
                 erc20: erc20::Data::new(),
-                ownable: ownable::Data::new(),
             };
 
             erc20::Impl::init(
@@ -98,35 +81,7 @@ pub mod erc20ownable {
                 String::from("MET"),
                 initial_supply,
             );
-            ownable::Impl::init(&mut instance);
             instance
-        }
-
-        /// Returns the name of the token.
-        #[ink(message)]
-        pub fn name(&self) -> String {
-            erc20::Impl::name(self)
-        }
-
-        /// Returns the symbol of the token, usually a shorter version of the name.
-        #[ink(message)]
-        pub fn symbol(&self) -> String {
-            erc20::Impl::symbol(self)
-        }
-
-        /// Returns the number of decimals used to get its user representation.
-        /// For example, if `decimals` equals `2`, a balance of `505` tokens should
-        /// be displayed to a user as `5,05` (`505 / 10 ** 2`).
-        ///
-        /// Tokens usually opt for a value of 18, imitating the relationship between
-        /// Ether and Wei in ETH. This is the value {ERC20} uses, unless this function is
-        /// overridden;
-        ///
-        /// NOTE: This information is only used for _display_ purposes: it in
-        /// no way affects any of the arithmetic of the contract
-        #[ink(message)]
-        pub fn decimals(&self) -> u8 {
-            18_u8
         }
 
         /// Returns the total token supply.
@@ -198,21 +153,6 @@ pub mod erc20ownable {
         ) -> Result<()> {
             erc20::Impl::transfer_from(self, &from, &to, value)
         }
-
-        #[ink(message)]
-        pub fn get_ownership(&self) -> Option<AccountId> {
-            *ownable::Impl::owner(self)
-        }
-
-        #[ink(message)]
-        pub fn renounce_ownership(&mut self) {
-            ownable::Impl::renounce_ownership(self)
-        }
-
-        #[ink(message)]
-        pub fn transfer_ownership(&mut self, new_owner: AccountId) {
-            ownable::Impl::transfer_ownership(self, &new_owner)
-        }
     }
 
     /// Unit tests.
@@ -231,7 +171,7 @@ pub mod erc20ownable {
 
         use erc20::Error;
 
-        type Event = <Erc20Ownable as ::ink_lang::BaseEvent>::Type;
+        type Event = <Erc20 as ::ink_lang::BaseEvent>::Type;
 
         use ink_lang as ink;
 
@@ -250,7 +190,6 @@ pub mod erc20ownable {
             } else {
                 panic!("encountered unexpected event kind: expected a Transfer event")
             }
-
             fn encoded_into_hash<T>(entity: &T) -> Hash
             where
                 T: scale::Encode,
@@ -270,22 +209,21 @@ pub mod erc20ownable {
                 result.as_mut()[0..copy_len].copy_from_slice(&hash_output[0..copy_len]);
                 result
             }
-
             let expected_topics = vec![
                 encoded_into_hash(&PrefixedValue {
-                    value: b"Erc20Ownable::Transfer",
+                    value: b"Erc20::Transfer",
                     prefix: b"",
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20Ownable::Transfer::from",
+                    prefix: b"Erc20::Transfer::from",
                     value: &expected_from,
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20Ownable::Transfer::to",
+                    prefix: b"Erc20::Transfer::to",
                     value: &expected_to,
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20Ownable::Transfer::value",
+                    prefix: b"Erc20::Transfer::value",
                     value: &expected_value,
                 }),
             ];
@@ -303,7 +241,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn new_works() {
             // Constructor works.
-            let erc20 = Erc20Ownable::new(100);
+            let _erc20 = Erc20::new(100);
 
             // Transfer event triggered during initial construction.
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
@@ -315,19 +253,13 @@ pub mod erc20ownable {
                 Some(AccountId::from([0x01; 32])),
                 100,
             );
-
-            let name = erc20.name();
-            assert_eq!(String::from("MetisTestToken"), name);
-
-            let symbol = erc20.symbol();
-            assert_eq!(String::from("MET"), symbol);
         }
 
         /// The total supply was applied.
         #[ink::test]
         fn total_supply_works() {
             // Constructor works.
-            let erc20 = Erc20Ownable::new(100);
+            let erc20 = Erc20::new(100);
             // Transfer event triggered during initial construction.
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
             assert_transfer_event(
@@ -344,7 +276,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn balance_of_works() {
             // Constructor works
-            let erc20 = Erc20Ownable::new(100);
+            let erc20 = Erc20::new(100);
             // Transfer event triggered during initial construction
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
             assert_transfer_event(
@@ -365,7 +297,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn transfer_works() {
             // Constructor works.
-            let mut erc20 = Erc20Ownable::new(100);
+            let mut erc20 = Erc20::new(100);
             // Transfer event triggered during initial construction.
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
@@ -398,7 +330,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn invalid_transfer_should_fail() {
             // Constructor works.
-            let mut erc20 = Erc20Ownable::new(100);
+            let mut erc20 = Erc20::new(100);
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
                     .expect("Cannot get accounts");
@@ -444,7 +376,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn transfer_from_works() {
             // Constructor works.
-            let mut erc20 = Erc20Ownable::new(100);
+            let mut erc20 = Erc20::new(100);
             // Transfer event triggered during initial construction.
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
@@ -505,7 +437,7 @@ pub mod erc20ownable {
 
         #[ink::test]
         fn allowance_must_not_change_on_failed_transfer() {
-            let mut erc20 = Erc20Ownable::new(100);
+            let mut erc20 = Erc20::new(100);
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
                     .expect("Cannot get accounts");

@@ -17,35 +17,29 @@
 use ink_prelude::string::String;
 
 #[metis_lang::contract]
-pub mod erc20ownable {
+pub mod erc20pausable {
     use super::String;
     use erc20::Result;
-    use metis_erc20 as erc20;
     use metis_lang::{
         import,
         metis,
     };
+
+    use metis_erc20 as erc20;
     use metis_ownable as ownable;
+    use metis_pausable as pausable;
 
     /// A simple ERC-20 contract.
     #[ink(storage)]
-    #[import(ownable, erc20)]
-    pub struct Erc20Ownable {
-        ownable: ownable::Data<Erc20Ownable>,
-        erc20: erc20::Data<Erc20Ownable>,
+    #[import(ownable, pausable, erc20)]
+    pub struct Erc20Pausable {
+        ownable: ownable::Data<Erc20Pausable>,
+        erc20: erc20::Data<Erc20Pausable>,
+        pausable: pausable::Data,
     }
 
-    // TODO: gen by marco with erc20 component
-    impl erc20::Impl<Erc20Ownable> for Erc20Ownable {
-        fn _before_token_transfer(
-            &mut self,
-            _from: &AccountId,
-            _to: &AccountId,
-            _amount: Balance,
-        ) -> Result<()> {
-            Ok(())
-        }
-    }
+    // impl transfer hook
+    impl erc20::pausable::Impl<Erc20Pausable> for Erc20Pausable {}
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
@@ -82,14 +76,33 @@ pub mod erc20ownable {
         new_owner: Option<AccountId>,
     }
 
+    /// Event emitted when Pause
+    #[ink(event)]
+    #[metis(pausable)]
+    pub struct Paused {
+        /// paused caller
+        #[ink(topic)]
+        account: AccountId,
+    }
+
+    /// Event emitted when unPause
+    #[ink(event)]
+    #[metis(pausable)]
+    pub struct Unpaused {
+        /// unpaused caller
+        #[ink(topic)]
+        account: AccountId,
+    }
+
     // impl
-    impl Erc20Ownable {
+    impl Erc20Pausable {
         /// Creates a new ERC-20 contract with the specified initial supply.
         #[ink(constructor)]
         pub fn new(initial_supply: Balance) -> Self {
             let mut instance = Self {
                 erc20: erc20::Data::new(),
                 ownable: ownable::Data::new(),
+                pausable: pausable::Data::new(),
             };
 
             erc20::Impl::init(
@@ -99,96 +112,52 @@ pub mod erc20ownable {
                 initial_supply,
             );
             ownable::Impl::init(&mut instance);
+            pausable::Impl::init(&mut instance);
+
             instance
         }
 
-        /// Returns the name of the token.
+        // ERC20 messages
         #[ink(message)]
         pub fn name(&self) -> String {
             erc20::Impl::name(self)
         }
 
-        /// Returns the symbol of the token, usually a shorter version of the name.
         #[ink(message)]
         pub fn symbol(&self) -> String {
             erc20::Impl::symbol(self)
         }
 
-        /// Returns the number of decimals used to get its user representation.
-        /// For example, if `decimals` equals `2`, a balance of `505` tokens should
-        /// be displayed to a user as `5,05` (`505 / 10 ** 2`).
-        ///
-        /// Tokens usually opt for a value of 18, imitating the relationship between
-        /// Ether and Wei in ETH. This is the value {ERC20} uses, unless this function is
-        /// overridden;
-        ///
-        /// NOTE: This information is only used for _display_ purposes: it in
-        /// no way affects any of the arithmetic of the contract
         #[ink(message)]
         pub fn decimals(&self) -> u8 {
             18_u8
         }
 
-        /// Returns the total token supply.
         #[ink(message)]
         pub fn total_supply(&self) -> Balance {
             erc20::Impl::total_supply(self)
         }
 
-        /// Returns the account balance for the specified `owner`.
-        ///
-        /// Returns `0` if the account is non-existent.
         #[ink(message)]
         pub fn balance_of(&self, owner: AccountId) -> Balance {
             erc20::Impl::balance_of(self, &owner)
         }
 
-        /// Returns the amount which `spender` is still allowed to withdraw from `owner`.
-        ///
-        /// Returns `0` if no allowance has been set `0`.
         #[ink(message)]
         pub fn allowance(&self, owner: AccountId, spender: AccountId) -> Balance {
             erc20::Impl::allowance(self, &owner, &spender)
         }
 
-        /// Transfers `value` amount of tokens from the caller's account to account `to`.
-        ///
-        /// On success a `Transfer` event is emitted.
-        ///
-        /// # Errors
-        ///
-        /// Returns `InsufficientBalance` error if there are not enough tokens on
-        /// the caller's account balance.
         #[ink(message)]
         pub fn transfer(&mut self, to: AccountId, value: Balance) -> Result<()> {
             erc20::Impl::transfer(self, &to, value)
         }
 
-        /// Allows `spender` to withdraw from the caller's account multiple times, up to
-        /// the `value` amount.
-        ///
-        /// If this function is called again it overwrites the current allowance with `value`.
-        ///
-        /// An `Approval` event is emitted.
         #[ink(message)]
         pub fn approve(&mut self, spender: AccountId, value: Balance) -> Result<()> {
             erc20::Impl::approve(self, &spender, value)
         }
 
-        /// Transfers `value` tokens on the behalf of `from` to the account `to`.
-        ///
-        /// This can be used to allow a contract to transfer tokens on ones behalf and/or
-        /// to charge fees in sub-currencies, for example.
-        ///
-        /// On success a `Transfer` event is emitted.
-        ///
-        /// # Errors
-        ///
-        /// Returns `InsufficientAllowance` error if there are not enough tokens allowed
-        /// for the caller to withdraw from `from`.
-        ///
-        /// Returns `InsufficientBalance` error if there are not enough tokens on
-        /// the the account balance of `from`.
         #[ink(message)]
         pub fn transfer_from(
             &mut self,
@@ -199,6 +168,7 @@ pub mod erc20ownable {
             erc20::Impl::transfer_from(self, &from, &to, value)
         }
 
+        // Owner messages
         #[ink(message)]
         pub fn get_ownership(&self) -> Option<AccountId> {
             *ownable::Impl::owner(self)
@@ -212,6 +182,24 @@ pub mod erc20ownable {
         #[ink(message)]
         pub fn transfer_ownership(&mut self, new_owner: AccountId) {
             ownable::Impl::transfer_ownership(self, &new_owner)
+        }
+
+        // Pausable messages
+        #[ink(message)]
+        pub fn paused(&self) -> bool {
+            pausable::Impl::paused(self)
+        }
+
+        #[ink(message)]
+        pub fn pause(&mut self) {
+            ownable::Impl::ensure_caller_is_owner(self);
+            pausable::Impl::_pause(self)
+        }
+
+        #[ink(message)]
+        pub fn unpause(&mut self) {
+            ownable::Impl::ensure_caller_is_owner(self);
+            pausable::Impl::_unpause(self)
         }
     }
 
@@ -231,9 +219,60 @@ pub mod erc20ownable {
 
         use erc20::Error;
 
-        type Event = <Erc20Ownable as ::ink_lang::BaseEvent>::Type;
+        type Event = <Erc20Pausable as ::ink_lang::BaseEvent>::Type;
 
         use ink_lang as ink;
+
+        // Test For Erc20Pausable
+        #[ink::test]
+        #[should_panic]
+        fn cannot_transfer_when_paused() {
+            // Constructor works.
+            let mut erc20 = Erc20Pausable::new(100);
+
+            erc20.pause();
+            assert_eq!(erc20.paused(), true);
+
+            transfer_works_by(&mut erc20, 2);
+        }
+
+        #[ink::test]
+        #[should_panic]
+        fn cannot_transfer_from_when_paused() {
+            // Constructor works.
+            let mut erc20 = Erc20Pausable::new(100);
+
+            erc20.pause();
+            assert_eq!(erc20.paused(), true);
+
+            transfer_from_works_by(&mut erc20, 2);
+        }
+
+        #[ink::test]
+        fn can_transfer_when_unpaused() {
+            // Constructor works.
+            let mut erc20 = Erc20Pausable::new(100);
+
+            erc20.pause();
+            erc20.unpause();
+
+            assert_eq!(erc20.paused(), false);
+
+            transfer_works_by(&mut erc20, 3);
+        }
+
+        #[ink::test]
+        fn can_transfer_from_when_unpaused() {
+            // Constructor works.
+            let mut erc20 = Erc20Pausable::new(100);
+
+            erc20.pause();
+            erc20.unpause();
+
+            assert_eq!(erc20.paused(), false);
+
+            transfer_from_works_by(&mut erc20, 3);
+        }
 
         fn assert_transfer_event(
             event: &ink_env::test::EmittedEvent,
@@ -273,19 +312,19 @@ pub mod erc20ownable {
 
             let expected_topics = vec![
                 encoded_into_hash(&PrefixedValue {
-                    value: b"Erc20Ownable::Transfer",
+                    value: b"Erc20Pausable::Transfer",
                     prefix: b"",
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20Ownable::Transfer::from",
+                    prefix: b"Erc20Pausable::Transfer::from",
                     value: &expected_from,
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20Ownable::Transfer::to",
+                    prefix: b"Erc20Pausable::Transfer::to",
                     value: &expected_to,
                 }),
                 encoded_into_hash(&PrefixedValue {
-                    prefix: b"Erc20Ownable::Transfer::value",
+                    prefix: b"Erc20Pausable::Transfer::value",
                     value: &expected_value,
                 }),
             ];
@@ -303,7 +342,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn new_works() {
             // Constructor works.
-            let erc20 = Erc20Ownable::new(100);
+            let erc20 = Erc20Pausable::new(100);
 
             // Transfer event triggered during initial construction.
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
@@ -327,7 +366,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn total_supply_works() {
             // Constructor works.
-            let erc20 = Erc20Ownable::new(100);
+            let erc20 = Erc20Pausable::new(100);
             // Transfer event triggered during initial construction.
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
             assert_transfer_event(
@@ -344,7 +383,7 @@ pub mod erc20ownable {
         #[ink::test]
         fn balance_of_works() {
             // Constructor works
-            let erc20 = Erc20Ownable::new(100);
+            let erc20 = Erc20Pausable::new(100);
             // Transfer event triggered during initial construction
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
             assert_transfer_event(
@@ -362,10 +401,7 @@ pub mod erc20ownable {
             assert_eq!(erc20.balance_of(accounts.bob), 0);
         }
 
-        #[ink::test]
-        fn transfer_works() {
-            // Constructor works.
-            let mut erc20 = Erc20Ownable::new(100);
+        fn transfer_works_by(erc20: &mut Erc20Pausable, emitted_events_len: usize) {
             // Transfer event triggered during initial construction.
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
@@ -378,7 +414,7 @@ pub mod erc20ownable {
             assert_eq!(erc20.balance_of(accounts.bob), 10);
 
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
-            assert_eq!(emitted_events.len(), 2);
+            assert_eq!(emitted_events.len(), 1 + emitted_events_len);
             // Check first transfer event related to ERC-20 instantiation.
             assert_transfer_event(
                 &emitted_events[0],
@@ -388,7 +424,7 @@ pub mod erc20ownable {
             );
             // Check the second transfer event relating to the actual trasfer.
             assert_transfer_event(
-                &emitted_events[1],
+                &emitted_events[emitted_events_len],
                 Some(AccountId::from([0x01; 32])),
                 Some(AccountId::from([0x02; 32])),
                 10,
@@ -396,9 +432,16 @@ pub mod erc20ownable {
         }
 
         #[ink::test]
+        fn transfer_works() {
+            // Constructor works.
+            let mut erc20 = Erc20Pausable::new(100);
+            transfer_works_by(&mut erc20, 1);
+        }
+
+        #[ink::test]
         fn invalid_transfer_should_fail() {
             // Constructor works.
-            let mut erc20 = Erc20Ownable::new(100);
+            let mut erc20 = Erc20Pausable::new(100);
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
                     .expect("Cannot get accounts");
@@ -441,10 +484,7 @@ pub mod erc20ownable {
             );
         }
 
-        #[ink::test]
-        fn transfer_from_works() {
-            // Constructor works.
-            let mut erc20 = Erc20Ownable::new(100);
+        fn transfer_from_works_by(erc20: &mut Erc20Pausable, emitted_events_len: usize ) {
             // Transfer event triggered during initial construction.
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
@@ -459,7 +499,7 @@ pub mod erc20ownable {
             assert_eq!(erc20.approve(accounts.bob, 10), Ok(()));
 
             // The approve event takes place.
-            assert_eq!(ink_env::test::recorded_events().count(), 2);
+            assert_eq!(ink_env::test::recorded_events().count(), 1 + emitted_events_len);
 
             // Get contract address.
             let callee = ink_env::account_id::<ink_env::DefaultEnvironment>()
@@ -487,7 +527,7 @@ pub mod erc20ownable {
 
             // Check all transfer events that happened during the previous calls:
             let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
-            assert_eq!(emitted_events.len(), 4);
+            assert_eq!(emitted_events.len(), 3 + emitted_events_len);
             assert_transfer_event(
                 &emitted_events[0],
                 None,
@@ -496,7 +536,7 @@ pub mod erc20ownable {
             );
             // The second event `emitted_events[1]` is an Approve event that we skip checking.
             assert_transfer_event(
-                &emitted_events[2],
+                &emitted_events[1 + emitted_events_len],
                 Some(AccountId::from([0x01; 32])),
                 Some(AccountId::from([0x05; 32])),
                 10,
@@ -504,8 +544,15 @@ pub mod erc20ownable {
         }
 
         #[ink::test]
+        fn transfer_from_works() {
+            // Constructor works.
+            let mut erc20 = Erc20Pausable::new(100);
+            transfer_from_works_by(&mut erc20, 1);
+        }
+
+        #[ink::test]
         fn allowance_must_not_change_on_failed_transfer() {
-            let mut erc20 = Erc20Ownable::new(100);
+            let mut erc20 = Erc20Pausable::new(100);
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
                     .expect("Cannot get accounts");

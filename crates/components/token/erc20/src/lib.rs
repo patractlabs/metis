@@ -3,7 +3,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod erc20;
-mod erc20_hookable;
+mod erc20_basic;
 mod extensions;
 mod module;
 
@@ -15,7 +15,7 @@ pub use metis_lang::{
 
 pub use module::Data;
 
-pub use erc20_hookable::{
+pub use erc20_basic::{
     Error,
     EventEmit,
     Result,
@@ -27,7 +27,11 @@ pub mod default {
 }
 
 pub mod hookable {
-    pub use super::erc20_hookable::Impl;
+    pub use super::extensions::hookable::Impl;
+}
+
+pub mod pausable {
+    pub use super::extensions::pausable::Impl;
 }
 
 pub mod burnable {

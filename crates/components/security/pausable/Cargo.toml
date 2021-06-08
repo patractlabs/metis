@@ -1,5 +1,5 @@
 [package]
-name = "metis-erc20"
+name = "metis_pausable"
 version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
@@ -7,7 +7,6 @@ edition = "2018"
 [dependencies]
 ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
 ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_prelude = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
 scale-info = { version = "0.6", default-features = false, features = ["derive"] }
@@ -15,14 +14,10 @@ num-traits = { version = "0.2", default-features = false, features = ["i128"] }
 
 metis_lang = { path = "../../../lang/", default-features = false }
 
-metis-ownable = { path = "../../access/ownable", default-features = false }
-metis_pausable = { path = "../../security/pausable", default-features = false }
-
 [dev-dependencies]
 trybuild = { version = "1.0", features = ["diff"] }
-metis_pausable = { path = "../../security/pausable" }
-metis-ownable = { path = "../../access/ownable" }
-metis-erc20 = { path = "../../token/erc20" }
+metis_pausable = { path = "../../../components/security/pausable" }
+metis-ownable = { path = "../../../components/access/ownable" }
 
 ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
@@ -39,12 +34,8 @@ num-traits = { version = "0.2", features = ["i128"] }
 metis_lang = { path = "../../../lang/" }
 
 [[test]]
-name = "test_erc20_pausable_work"
-path = "tests/test_erc20_pausable.rs"
-
-[[test]]
-name = "test_erc20_work"
-path = "tests/test_erc20.rs"
+name = "test_mock"
+path = "tests/mock.rs"
 
 [features]
 default = ["std"]
