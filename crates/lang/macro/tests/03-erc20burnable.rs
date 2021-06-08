@@ -18,8 +18,28 @@ pub mod erc20burnable {
     }
 
     /// burnable
+    impl erc20::hookable::Impl<Erc20Burnable> for Erc20Burnable {
+        /// Hook that is called before any transfer of tokens. This includes
+        /// minting and burning.
+        ///
+        /// Calling conditions:
+        ///
+        /// - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+        /// will be to transferred to `to`.
+        /// - when `from` is zero, `amount` tokens will be minted for `to`.
+        /// - when `to` is zero, `amount` of ``from``'s tokens will be burned.
+        /// - `from` and `to` are never both zero.
+        fn _before_token_transfer(
+            &mut self,
+            _from: &AccountId,
+            _to: &AccountId,
+            _amount: Balance,
+        ) -> Result<()> {
+            Ok(())
+        }
+    }
     impl erc20::burnable::Impl<Erc20Burnable> for Erc20Burnable {}
-
+    
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
     #[metis(erc20)]
