@@ -9,10 +9,10 @@ use crate::erc20::Result;
 pub trait Impl<E>: crate::hookable::Impl<E> + metis_pausable::Impl<E>
 where
     E: Env,
-{}
-
-impl<E: Env, I: Impl<E>> crate::hookable::Impl<E> for I
 {
+}
+
+impl<E: Env, I: Impl<E>> crate::hookable::Impl<E> for I {
     /// Hook that is called before any transfer of tokens. This includes
     /// minting and burning.
     ///

@@ -11,11 +11,15 @@ where
     E: Env,
 {
     /// Hook that is called before any transfer of tokens. This will call in hook
-    fn before_token_transfer(&mut self, from: &E::AccountId, to: &E::AccountId, amount: E::Balance) -> Result<()>;
+    fn before_token_transfer(
+        &mut self,
+        from: &E::AccountId,
+        to: &E::AccountId,
+        amount: E::Balance,
+    ) -> Result<()>;
 }
 
-impl<E: Env, I: Impl<E>> crate::Impl<E> for I
-{
+impl<E: Env, I: Impl<E>> crate::Impl<E> for I {
     /// Hook that is called before any transfer of tokens. This includes
     /// minting and burning.
     ///

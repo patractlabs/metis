@@ -44,7 +44,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 
 /// The `Impl` define erc20 component impl funcs, with `_before_token_transfer` as hook
 /// To use erc20 Impl need impl the trait as:
-/// 
+///
 /// impl erc20::hookable::Impl<Contract> for Contract {
 ///     fn _before_token_transfer(
 ///         &mut self,
@@ -55,7 +55,6 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 ///         Ok(())
 ///     }
 /// }
-/// 
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Initialize the erc20 component
     fn init(&mut self, name: String, symbol: String, initial_supply: E::Balance) {
@@ -78,7 +77,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - when `from` is zero, `amount` tokens will be minted for `to`.
     /// - when `to` is zero, `amount` of ``from``'s tokens will be burned.
     /// - `from` and `to` are never both zero.
-    fn _before_token_transfer(&mut self, from: &E::AccountId, to: &E::AccountId, amount: E::Balance) -> Result<()>;
+    fn _before_token_transfer(
+        &mut self,
+        from: &E::AccountId,
+        to: &E::AccountId,
+        amount: E::Balance,
+    ) -> Result<()>;
 
     /// Returns the name of the token.
     fn name(&self) -> String {
@@ -245,7 +249,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         assert!(account != null_account);
 
         self._before_token_transfer(account, null_account, amount)?;
-        
+
         let account_balance = self.get().balance_of(account);
         let total_supply = self.get().total_supply();
 
@@ -255,6 +259,32 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get_mut().set_total_supply(total_supply - amount);
 
         self.emit_event_transfer(Some(account.clone()), None, amount);
+
+        Ok(())
+    }
+
+    /// Creates `amount` tokens and assigns them to `account`, increasing
+    /// the total supply.
+    ///
+    /// Emits a {Transfer} event with `from` set to the zero address.
+    ///
+    /// Requirements:
+    ///
+    /// - `account` cannot be the zero address.
+    fn _mint(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
+        let null_account = &E::AccountId::default();
+        assert!(account != null_account, "ERC20: mint to the zero address");
+
+        self._before_token_transfer(null_account, account, amount)?;
+
+        let total_supply = self.get().total_supply();
+        let account_balance = self.get().balance_of(account);
+
+        self.get_mut().set_total_supply(total_supply + amount);
+        self.get_mut()
+            .set_balance(account, account_balance + amount);
+
+        self.emit_event_transfer(None, Some(account.clone()), amount);
 
         Ok(())
     }
