@@ -44,7 +44,7 @@ path = "tests/test_erc20_pausable.rs"
 
 [[test]]
 name = "test_erc20_work"
-path = "tests/test_erc20.rs"
+path = "tests/test_erc20_basic.rs"
 
 [features]
 default = ["std"]
