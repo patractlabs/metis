@@ -1,21 +1,14 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use crate::mocks::erc20_mock::*;
-
 use ink_env::{
     hash::{
         Blake2x256,
         CryptoHash,
         HashOutput,
     },
+    Hash,
     Clear,
 };
-
-use ink_lang::ContractEnv;
-use erc20_contract::*;
-
-#[allow(dead_code)]
-type Hash = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Hash;
 
 /// assert_emitted_event_len check event emitted current len is expected
 #[allow(dead_code)]
