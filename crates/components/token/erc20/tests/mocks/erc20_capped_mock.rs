@@ -1,25 +1,27 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub mod erc20_basic {
+pub mod erc20_capped {
     #[metis_lang::contract]
-    pub mod erc20_contract {
+    pub mod erc20_capped {
         use erc20::Result;
         use metis_erc20 as erc20;
         use metis_lang::{
             import,
             metis,
         };
+        use erc20::capped;
 
         /// A simple ERC-20 contract.
         #[ink(storage)]
-        #[import(erc20)]
-        pub struct Erc20 {
-            erc20: erc20::Data<Erc20>,
+        #[import(erc20, capped)]
+        pub struct Erc20Capped {
+            erc20: erc20::Data<Erc20Capped>,
+            capped: capped::Data<Erc20Capped>,
         }
 
         // TODO: gen by marco with erc20 component
-        impl erc20::Impl<Erc20> for Erc20 {
-            fn _before_token_transfer(
+        impl erc20::hookable::Impl<Erc20Capped> for Erc20Capped {
+            fn before_token_transfer(
                 &mut self,
                 _from: &AccountId,
                 _to: &AccountId,
@@ -28,6 +30,8 @@ pub mod erc20_basic {
                 Ok(())
             }
         }
+        // burnable
+        impl capped::Impl<Erc20Capped> for Erc20Capped {}
 
         /// Event emitted when a token transfer occurs.
         #[ink(event)]
@@ -53,11 +57,12 @@ pub mod erc20_basic {
         }
 
         // impl
-        impl Erc20 {
+        impl Erc20Capped {
             #[ink(constructor)]
-            pub fn new(name: String, symbol: String, initial_supply: Balance) -> Self {
+            pub fn new(name: String, symbol: String, initial_supply: Balance, cap_supply: Balance) -> Self {
                 let mut instance = Self {
                     erc20: erc20::Data::new(),
+                    capped: capped::Data::new(cap_supply),
                 };
 
                 erc20::Impl::init(&mut instance, name, symbol, initial_supply);
@@ -116,8 +121,14 @@ pub mod erc20_basic {
             }
 
             #[ink(message)]
+            pub fn cap(& self) -> Balance {
+                capped::Impl::cap(self)
+            }
+
+            #[ink(message)]
             pub fn mint(&mut self, to: AccountId, value: Balance) -> Result<()> {
-                erc20::Impl::_mint(self, &to, value)
+                // TODO: its maybe forget by developers: not erc20::Impl::_mint(self, &to, value)
+                capped::Impl::_mint(self, &to, value)
             }
 
             #[ink(message)]
