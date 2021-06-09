@@ -15,11 +15,7 @@ mod erc20_basic_tests {
     use super::*;
     use ink_lang as ink;
     use ink_prelude::string::String;
-    use utils::event::{
-        PrefixedValue,
-        assert_emitted_event_len,
-        encoded_into_hash,
-    };
+    use utils::event::*;
 
     use ink::ContractEnv;
     use mocks::erc20_mock::erc20_contract::*;
@@ -116,6 +112,104 @@ mod erc20_basic_tests {
         assert_eq!(
             init_amount,
             erc20.balance_of(default_account),
+            "default account balance_of should be default"
+        );
+    }
+
+    #[ink::test]
+    fn mint_work() {
+        let init_amount = 100000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+
+        // Constructor works.
+        let mut erc20 = Erc20::new(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            init_amount,
+        );
+
+        // Check Current Balance
+        let current_total = erc20.total_supply();
+        let current_balance = erc20.balance_of(default_account);
+
+        assert_eq!(init_amount, current_total, "total amount should be default");
+        assert_eq!(
+            init_amount, current_balance,
+            "default account balance_of should be default"
+        );
+
+        // Mint, current mint is a mock
+        let mint_amount = 100000;
+        assert_eq!(
+            erc20.mint(default_account, mint_amount),
+            Ok(()),
+            "mint should be ok"
+        );
+
+        let emitted_events = get_last_emitted_event();
+        assert_transfer_event(&emitted_events, None, Some(default_account), mint_amount);
+
+        assert_eq!(
+            init_amount + mint_amount,
+            erc20.total_supply(),
+            "total amount should be default"
+        );
+        assert_eq!(
+            init_amount + mint_amount,
+            erc20.balance_of(default_account),
+            "default account balance_of should be default"
+        );
+    }
+
+    #[ink::test]
+    fn mint_to_other_work() {
+        let init_amount = 100000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+
+        // Constructor works.
+        let mut erc20 = Erc20::new(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            init_amount,
+        );
+
+        // Check Current Balance
+        let current_total = erc20.total_supply();
+        let current_balance = erc20.balance_of(default_account);
+
+        assert_eq!(init_amount, current_total, "total amount should be default");
+        assert_eq!(
+            init_amount, current_balance,
+            "default account balance_of should be default"
+        );
+
+        let accounts = ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
+            .expect("Cannot get accounts");
+
+        // Mint, current mint is a mock
+        let mint_amount = 100000;
+        assert_eq!(
+            erc20.mint(accounts.bob, mint_amount),
+            Ok(()),
+            "mint should be ok"
+        );
+
+        let emitted_events = get_last_emitted_event();
+        assert_transfer_event(&emitted_events, None, Some(accounts.bob), mint_amount);
+
+        assert_eq!(
+            init_amount + mint_amount,
+            erc20.total_supply(),
+            "total amount should be default"
+        );
+        assert_eq!(
+            init_amount,
+            erc20.balance_of(default_account),
+            "default account balance_of should be default"
+        );
+        assert_eq!(
+            mint_amount,
+            erc20.balance_of(accounts.bob),
             "default account balance_of should be default"
         );
     }

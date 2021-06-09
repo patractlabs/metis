@@ -26,6 +26,14 @@ pub fn assert_emitted_event_len(expected: usize) -> Vec<ink_env::test::EmittedEv
     emitted_events
 }
 
+/// get_last_emitted_event
+#[allow(dead_code)]
+pub fn get_last_emitted_event() -> ink_env::test::EmittedEvent {
+    // Transfer event triggered during initial construction.
+    let emitted_events = ink_env::test::recorded_events().collect::<Vec<_>>();
+    emitted_events[emitted_events.len() - 1].clone()
+}
+
 /// For calculating the event topic hash.
 pub struct PrefixedValue<'a, 'b, T> {
     pub prefix: &'a [u8],
