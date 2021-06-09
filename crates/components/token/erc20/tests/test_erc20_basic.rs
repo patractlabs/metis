@@ -213,4 +213,36 @@ mod erc20_basic_tests {
             "default account balance_of should be default"
         );
     }
+
+    #[ink::test]
+    #[should_panic(expected = "ERC20: mint to the zero address")]
+    fn mint_to_nil_account_should_error() {
+        let init_amount = 100000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+
+        // Constructor works.
+        let mut erc20 = Erc20::new(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            init_amount,
+        );
+
+        // Check Current Balance
+        let current_total = erc20.total_supply();
+        let current_balance = erc20.balance_of(default_account);
+
+        assert_eq!(init_amount, current_total, "total amount should be default");
+        assert_eq!(
+            init_amount, current_balance,
+            "default account balance_of should be default"
+        );
+
+        // Mint, current mint is a mock
+        let mint_amount = 100000;
+        assert_eq!(
+            erc20.mint(AccountId::from([0x00; 32]), mint_amount),
+            Ok(()),
+            "mint should be ok"
+        );
+    }
 }
