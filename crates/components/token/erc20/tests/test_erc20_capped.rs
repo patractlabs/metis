@@ -16,7 +16,7 @@ mod erc20_capped_tests {
     use utils::event::*;
 
     use ink::ContractEnv;
-    use mocks::erc20_capped_mock::erc20_capped::erc20_capped::*;
+    use mocks::erc20_capped_mock::erc20_capped::*;
 
     type AccountId = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::AccountId;
     type Balance = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::Balance;

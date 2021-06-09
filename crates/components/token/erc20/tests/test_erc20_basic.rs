@@ -16,7 +16,7 @@ mod erc20_basic_tests {
     use utils::event::*;
 
     use ink::ContractEnv;
-    use mocks::erc20_mock::erc20_basic::erc20_contract;
+    use mocks::erc20_mock::erc20_contract;
     use erc20_contract::{
         Erc20,
         Transfer,
