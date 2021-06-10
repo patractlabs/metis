@@ -2,14 +2,15 @@
 
 #[metis_lang::contract]
 pub mod erc20_contract {
-    use erc20::Result;
+    pub use erc20::{
+        Error,
+        Result,
+    };
     use metis_erc20 as erc20;
     use metis_lang::{
         import,
         metis,
     };
-
-    pub use erc20::Error;
 
     /// A simple ERC-20 contract.
     #[ink(storage)]

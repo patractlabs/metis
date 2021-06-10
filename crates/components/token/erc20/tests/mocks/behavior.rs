@@ -12,6 +12,7 @@ use ink_env::{
 use ink_lang as ink;
 use ink_prelude::string::String;
 use metis_erc20::{
+    Error,
     Impl,
     Result,
 };
@@ -173,7 +174,7 @@ pub struct Erc20BehaviorChecker<
     'a,
     Contract: Env + IERC20<Contract> + IERC20Event<Contract>,
 > {
-    erc20: &'a mut Contract,
+    pub erc20: &'a mut Contract,
 
     init_amount: Contract::Balance,
     default_account: Contract::AccountId,
@@ -278,7 +279,82 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    pub fn should_behave_like_erc20_transfer(& mut self){
+    pub fn should_behave_like_erc20_transfer<T>(
+        &mut self,
+        from: Contract::AccountId,
+        to: Contract::AccountId,
+        balance: Contract::Balance,
+        transfer: T,
+    ) where
+        T: Fn(
+            &mut Self,
+            &Contract::AccountId,
+            &Contract::AccountId,
+            Contract::Balance,
+        ) -> Result<()>,
+    {
+        // when the recipient is not the zero address
+        // when the sender does not have enough balance
+        let large_amt = balance + Contract::Balance::from(1_u8);
 
+        assert_eq!(
+            transfer(self, &from, &to, large_amt),
+            Err(Error::InsufficientBalance),
+            "when the sender does not have enough balance"
+        );
+
+        // when the sender transfers all balance
+        assert_eq!(
+            transfer(self, &from, &to, balance),
+            Ok(()),
+            "when the sender transfers all balance"
+        );
+
+        assert_eq!(
+            self.erc20.balance_of(from.clone()),
+            Contract::Balance::from(0_u8),
+            "from amount should be 0",
+        );
+
+        assert_eq!(
+            self.erc20.balance_of(to.clone()),
+            balance,
+            "to amount should be balance"
+        );
+
+        // emits a transfer event
+        self.assert_transfer_event(
+            &get_last_emitted_event(),
+            Some(from.clone()),
+            Some(to.clone()),
+            balance,
+        );
+
+        // when the sender transfers zero tokens
+        assert_eq!(
+            transfer(self, &to, &from, Contract::Balance::from(0_u8)),
+            Ok(()),
+            "when the sender transfers all balance"
+        );
+
+        assert_eq!(
+            self.erc20.balance_of(from.clone()),
+            Contract::Balance::from(0_u8),
+            "from amount should be 0 as no changed",
+        );
+
+        assert_eq!(
+            self.erc20.balance_of(to.clone()),
+            balance,
+            "to amount should be balance as no changed"
+        );
+
+        // emits a transfer event
+        self.assert_transfer_event(
+            &get_last_emitted_event(),
+            Some(to.clone()),
+            Some(from.clone()),
+            Contract::Balance::from(0_u8),
+        );
     }
 }

@@ -18,12 +18,15 @@ mod erc20_basic_tests {
 
     use erc20_contract::{
         Erc20,
-        Transfer,
         Error,
+        Result,
+        Transfer,
     };
     use ink::ContractEnv;
-    use mocks::erc20_mock::erc20_contract;
-    use mocks::behavior::Erc20BehaviorChecker;
+    use mocks::{
+        behavior::Erc20BehaviorChecker,
+        erc20_mock::erc20_contract,
+    };
 
     type AccountId = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
     type Balance = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Balance;
@@ -84,7 +87,7 @@ mod erc20_basic_tests {
         );
         let accounts = ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
             .expect("Cannot get accounts");
-        let checker = Erc20BehaviorChecker::new(
+        let mut checker = Erc20BehaviorChecker::new(
             &mut erc20,
             init_amount,
             default_account,
@@ -94,6 +97,31 @@ mod erc20_basic_tests {
 
         // init state
         checker.init_state_should_work();
+        checker.should_behave_like_erc20_transfer(
+            default_account, accounts.bob, init_amount, 
+            |checker, from, to, amount|-> Result<()>{
+                // TODO: use a utils to test
+
+                // Get contract address.
+                let callee = ink_env::account_id::<ink_env::DefaultEnvironment>()
+                    .unwrap_or([0x0; 32].into());
+                // Create call.
+                let mut data =
+                    ink_env::test::CallData::new(ink_env::call::Selector::new([0x00; 4]));
+
+                data.push_arg(from);
+
+                // Push the new execution context to set from as caller.
+                ink_env::test::push_execution_context::<ink_env::DefaultEnvironment>(
+                    from.clone(),
+                    callee,
+                    1000000,
+                    1000000,
+                    data,
+                );
+
+                checker.erc20.transfer(to.clone(), amount)
+            });
     }
 
     /// The default constructor does its job.
@@ -271,7 +299,5 @@ mod erc20_basic_tests {
             Err(Error::AccountIsZero),
             "mint should be failed by zero account"
         );
-
-
     }
 }
