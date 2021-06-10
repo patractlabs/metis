@@ -11,6 +11,7 @@ pub mod erc20_contract {
         import,
         metis,
     };
+    use super::super::behavior;
 
     /// A simple ERC-20 contract.
     #[ink(storage)]
@@ -56,7 +57,13 @@ pub mod erc20_contract {
         pub value: Balance,
     }
 
-    impl super::super::behavior::IERC20Event<Erc20> for Erc20 {
+    impl behavior::IERC20New<Erc20> for Erc20{
+        fn new_erc20(name: String, symbol: String, initial_supply: Balance) -> Self{
+            Self::new(name, symbol, initial_supply)
+        }
+    }
+
+    impl behavior::IERC20Event<Erc20> for Erc20 {
         fn decode_transfer_event(
             event: &ink_env::test::EmittedEvent,
         ) -> (Option<AccountId>, Option<AccountId>, Balance) {

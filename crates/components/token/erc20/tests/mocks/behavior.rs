@@ -91,8 +91,15 @@ where
     ) -> Result<()>;
 }
 
+pub trait IERC20New<E>
+where
+    E: Env,
+{
+    fn new_erc20(name: String, symbol: String, initial_supply: E::Balance) -> Self;
+}
+
 // For Events
-pub trait IERC20Event<E>
+pub trait IERC20Event<E> : IERC20New<E>
 where
     E: Env,
 {
@@ -356,5 +363,15 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
             Some(from.clone()),
             Contract::Balance::from(0_u8),
         );
+    }
+
+    pub fn should_behave_like_erc20_transfer_from(
+        &mut self,
+    ) {
+        // when the token owner is not the zero address
+
+
+
+        // when the token owner is the zero address
     }
 }
