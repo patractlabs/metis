@@ -5,9 +5,9 @@ use ink_storage::traits::{
     SpreadLayout,
 };
 
-pub trait EnvAccountId: 'static + scale::Codec + Clone + PartialEq + Eq + Ord {}
+pub trait EnvAccountId: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug {}
 
-impl<T> EnvAccountId for T where T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord {}
+impl<T> EnvAccountId for T where T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug {}
 
 #[cfg(not(feature = "std"))]
 pub trait AccountId: EnvAccountId + Default + SpreadLayout + PackedLayout {}
@@ -71,6 +71,7 @@ impl<T> Balance for T where
 pub trait Balance:
     'static
     + scale::Codec
+    + std::fmt::Debug
     + Copy
     + Clone
     + PartialEq
@@ -88,6 +89,7 @@ pub trait Balance:
 impl<T> Balance for T where
     T: 'static
         + scale::Codec
+        + std::fmt::Debug
         + Copy
         + Clone
         + PartialEq
@@ -101,6 +103,39 @@ impl<T> Balance for T where
 {
 }
 
+#[cfg(feature = "std")]
+pub trait Hash:
+    'static
+    + scale::Codec
+    + std::fmt::Debug
+    + Copy
+    + Clone
+    + Clear
+    + PartialEq
+    + Eq
+    + Ord
+    + AsRef<[u8]>
+    + AsMut<[u8]>
+{
+}
+
+#[cfg(feature = "std")]
+impl<T> Hash for T where
+    T: 'static
+        + scale::Codec
+        + std::fmt::Debug
+        + Copy
+        + Clone
+        + Clear
+        + PartialEq
+        + Eq
+        + Ord
+        + AsRef<[u8]>
+        + AsMut<[u8]>
+{
+}
+
+#[cfg(not(feature = "std"))]
 pub trait Hash:
     'static
     + scale::Codec
@@ -115,6 +150,7 @@ pub trait Hash:
 {
 }
 
+#[cfg(not(feature = "std"))]
 impl<T> Hash for T where
     T: 'static
         + scale::Codec
