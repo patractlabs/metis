@@ -226,7 +226,6 @@ mod erc20_capped_tests {
     }
 
     #[ink::test]
-    #[should_panic(expected = "ERC20: mint to the zero address")]
     fn mint_to_nil_account_should_error() {
         let init_amount = 100000000000000000;
         let cap_amount = 200000000000000000;
@@ -254,8 +253,8 @@ mod erc20_capped_tests {
         let mint_amount = 100000;
         assert_eq!(
             erc20.mint(AccountId::from([0x00; 32]), mint_amount),
-            Ok(()),
-            "mint should be ok"
+            Err(Error::AccountIsZero),
+            "mint should be error by zero account"
         );
     }
 

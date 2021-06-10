@@ -19,6 +19,7 @@ mod erc20_basic_tests {
     use erc20_contract::{
         Erc20,
         Transfer,
+        Error,
     };
     use ink::ContractEnv;
     use mocks::erc20_mock::erc20_contract;
@@ -242,7 +243,6 @@ mod erc20_basic_tests {
     }
 
     #[ink::test]
-    #[should_panic(expected = "ERC20: mint to the zero address")]
     fn mint_to_nil_account_should_error() {
         let init_amount = 100000000000000000;
         let default_account = AccountId::from([0x01; 32]);
@@ -268,8 +268,10 @@ mod erc20_basic_tests {
         let mint_amount = 100000;
         assert_eq!(
             erc20.mint(AccountId::from([0x00; 32]), mint_amount),
-            Ok(()),
-            "mint should be ok"
+            Err(Error::AccountIsZero),
+            "mint should be failed by zero account"
         );
+
+
     }
 }

@@ -2,6 +2,7 @@ pub use super::{
     module::Data,
     EventEmit,
     Result,
+    Error,
 };
 use metis_lang::Env;
 

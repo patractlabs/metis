@@ -9,6 +9,8 @@ pub mod erc20_contract {
         metis,
     };
 
+    pub use erc20::Error;
+
     /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(erc20)]
@@ -168,7 +170,7 @@ pub mod erc20_contract {
             owner: AccountId,
             spender: AccountId,
             value: Balance,
-        ) {
+        ) -> Result<()> {
             erc20::Impl::_approve(self, &owner, &spender, value)
         }
     }

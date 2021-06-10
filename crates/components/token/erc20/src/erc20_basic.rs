@@ -14,6 +14,8 @@ pub enum Error {
     InsufficientBalance,
     /// Returned if not enough allowance to fulfill a request is available.
     InsufficientAllowance,
+    /// Returned if account is zero
+    AccountIsZero,
 }
 
 /// The ERC-20 result type.
@@ -149,8 +151,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     ///
     /// Emits an {Approval} event.
     fn approve(&mut self, spender: &E::AccountId, amount: E::Balance) -> Result<()> {
-        self._approve(&Self::caller(), spender, amount);
-        Ok(())
+        self._approve(&Self::caller(), spender, amount)
     }
 
     /// Moves `amount` tokens from `sender` to `recipient` using the
@@ -175,7 +176,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
 
         self._transfer_from_to(from, to, amount)?;
 
-        self._approve(from, caller, current_allowance - amount);
+        self._approve(from, caller, current_allowance - amount)?;
 
         Ok(())
     }
@@ -186,14 +187,17 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         owner: &E::AccountId,
         spender: &E::AccountId,
         amount: E::Balance,
-    ) {
+    ) -> Result<()> {
         let null_account = &E::AccountId::default();
 
-        assert!(owner != null_account);
-        assert!(spender != null_account);
+        if owner == null_account || spender == null_account {
+            return Err(Error::AccountIsZero)
+        }
 
         self.get_mut().set_allowance(owner, spender, amount);
         self.emit_event_approval(owner.clone(), spender.clone(), amount);
+
+        Ok(())
     }
 
     /// Moves tokens `amount` from `sender` to `recipient`.
@@ -216,8 +220,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     ) -> Result<()> {
         let null_account = &E::AccountId::default();
 
-        assert!(sender != null_account);
-        assert!(recipient != null_account);
+        if sender == null_account || recipient == null_account {
+            return Err(Error::AccountIsZero)
+        }
 
         self._before_token_transfer(sender, recipient, amount)?;
 
@@ -246,14 +251,20 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `account` must have at least `amount` tokens.
     fn _burn(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
         let null_account = &E::AccountId::default();
-        assert!(account != null_account);
+
+        if account == &E::AccountId::default() {
+            return Err(Error::AccountIsZero)
+        }
 
         self._before_token_transfer(account, null_account, amount)?;
 
         let account_balance = self.get().balance_of(account);
         let total_supply = self.get().total_supply();
 
-        assert!(account_balance >= amount);
+        if account_balance < amount {
+            return Err(Error::InsufficientBalance)
+        }
+
         self.get_mut()
             .set_balance(account, account_balance - amount);
         self.get_mut().set_total_supply(total_supply - amount);
@@ -273,7 +284,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `account` cannot be the zero address.
     fn _mint(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
         let null_account = &E::AccountId::default();
-        assert!(account != null_account, "ERC20: mint to the zero address");
+        if account == null_account {
+            return Err(Error::AccountIsZero)
+        }
 
         self._before_token_transfer(null_account, account, amount)?;
 

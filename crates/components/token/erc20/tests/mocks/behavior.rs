@@ -250,6 +250,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
             self.erc20.name(),
             "name should be default"
         );
+
         assert_eq!(
             String::from("MET"),
             self.erc20.symbol(),
@@ -263,10 +264,21 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
             self.erc20.total_supply(),
             "total amount should be default"
         );
+
         assert_eq!(
             self.init_amount,
             self.erc20.balance_of(self.default_account.clone()),
             "default account balance_of should be default"
         );
+
+        assert_eq!(
+            Contract::Balance::from(0_u8),
+            self.erc20.balance_of(self.bob.clone()),
+            "others accounts balance should be 0"
+        );
+    }
+
+    pub fn should_behave_like_erc20_transfer(& mut self){
+
     }
 }
