@@ -28,6 +28,8 @@ pub mod erc20_contract {
         }
     }
 
+    type Event = <Erc20 as ink_lang::BaseEvent>::Type;
+
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
     #[metis(erc20)]
@@ -51,6 +53,32 @@ pub mod erc20_contract {
         pub value: Balance,
     }
 
+    impl super::super::behavior::IERC20Event<Erc20> for Erc20 {
+        fn decode_transfer_event(
+            event: &ink_env::test::EmittedEvent,
+        ) -> (Option<AccountId>, Option<AccountId>, Balance) {
+            let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
+                .expect("encountered invalid contract event data buffer");
+            if let Event::Transfer(Transfer { from, to, value }) = decoded_event {
+                return (from, to, value)
+            }
+            panic!("encountered unexpected event kind: expected a Transfer event")
+        }
+
+        fn assert_topics(
+            event: &ink_env::test::EmittedEvent,
+            expected_topics: &Vec<Hash>,
+        ) {
+            for (n, (actual_topic, expected_topic)) in
+                event.topics.iter().zip(expected_topics).enumerate()
+            {
+                let topic = actual_topic
+                    .decode::<Hash>()
+                    .expect("encountered invalid topic encoding");
+                assert_eq!(topic, *expected_topic, "encountered invalid topic at {}", n);
+            }
+        }
+    }
     // impl
     impl Erc20 {
         #[ink(constructor)]

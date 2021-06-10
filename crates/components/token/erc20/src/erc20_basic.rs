@@ -114,8 +114,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Returns the amount of tokens owned by `account`.
-    fn balance_of(&self, owner: &E::AccountId) -> E::Balance {
-        self.get().balance_of(owner)
+    fn balance_of(&self, account: &E::AccountId) -> E::Balance {
+        self.get().balance_of(account)
     }
 
     /// Returns the remaining number of tokens that `spender` will be

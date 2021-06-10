@@ -1,6 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod mocks {
+    pub mod behavior;
     pub mod erc20_mock;
 }
 
@@ -15,12 +16,13 @@ mod erc20_basic_tests {
     use ink_prelude::string::String;
     use utils::event::*;
 
-    use ink::ContractEnv;
-    use mocks::erc20_mock::erc20_contract;
     use erc20_contract::{
         Erc20,
         Transfer,
     };
+    use ink::ContractEnv;
+    use mocks::erc20_mock::erc20_contract;
+    use mocks::behavior::Erc20BehaviorChecker;
 
     type AccountId = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
     type Balance = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Balance;
@@ -68,6 +70,29 @@ mod erc20_basic_tests {
                 .expect("encountered invalid topic encoding");
             assert_eq!(topic, expected_topic, "encountered invalid topic at {}", n);
         }
+    }
+
+    #[ink::test]
+    fn should_erc20_behavior_work() {
+        let init_amount = 100000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+        let mut erc20 = Erc20::new(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            init_amount,
+        );
+        let accounts = ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
+            .expect("Cannot get accounts");
+        let checker = Erc20BehaviorChecker::new(
+            &mut erc20,
+            init_amount,
+            default_account,
+            accounts.alice,
+            accounts.bob,
+        );
+
+        // init state
+        checker.init_state_should_work();
     }
 
     /// The default constructor does its job.
