@@ -46,6 +46,10 @@ path = "tests/test_erc20_pausable.rs"
 name = "test_erc20_work"
 path = "tests/test_erc20_basic.rs"
 
+[[test]]
+name = "test_erc20_capped_work"
+path = "tests/test_erc20_capped.rs"
+
 [features]
 default = ["std"]
 std = [

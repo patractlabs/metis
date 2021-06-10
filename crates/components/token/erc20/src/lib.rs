@@ -18,8 +18,8 @@ pub use module::Data;
 pub use erc20_basic::{
     Error,
     EventEmit,
-    Result,
     Impl,
+    Result,
 };
 
 pub mod default {
@@ -36,6 +36,13 @@ pub mod pausable {
 
 pub mod burnable {
     pub use super::extensions::burnable::Impl;
+}
+
+pub mod capped {
+    pub use super::extensions::capped::{
+        Data,
+        Impl,
+    };
 }
 
 // impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> Impl<E> for T {}

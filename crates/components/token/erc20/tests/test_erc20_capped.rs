@@ -1,14 +1,14 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod mocks {
-    pub mod erc20_mock;
+    pub mod erc20_capped_mock;
 }
 
 mod utils {
     pub mod event;
 }
 
-mod erc20_basic_tests {
+mod erc20_capped_tests {
     /// Imports all the definitions from the outer scope so we can use them here.
     use super::*;
     use ink_lang as ink;
@@ -16,16 +16,12 @@ mod erc20_basic_tests {
     use utils::event::*;
 
     use ink::ContractEnv;
-    use mocks::erc20_mock::erc20_contract;
-    use erc20_contract::{
-        Erc20,
-        Transfer,
-    };
+    use mocks::erc20_capped_mock::erc20_capped::*;
 
-    type AccountId = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
-    type Balance = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Balance;
-    type Hash = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Hash;
-    type Event = <Erc20 as ink::BaseEvent>::Type;
+    type AccountId = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::AccountId;
+    type Balance = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::Balance;
+    type Hash = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::Hash;
+    type Event = <Erc20Capped as ink::BaseEvent>::Type;
 
     fn assert_transfer_event(
         event: &ink_env::test::EmittedEvent,
@@ -44,19 +40,19 @@ mod erc20_basic_tests {
         }
         let expected_topics = vec![
             encoded_into_hash(&PrefixedValue {
-                value: b"Erc20::Transfer",
+                value: b"Erc20Capped::Transfer",
                 prefix: b"",
             }),
             encoded_into_hash(&PrefixedValue {
-                prefix: b"Erc20::Transfer::from",
+                prefix: b"Erc20Capped::Transfer::from",
                 value: &expected_from,
             }),
             encoded_into_hash(&PrefixedValue {
-                prefix: b"Erc20::Transfer::to",
+                prefix: b"Erc20Capped::Transfer::to",
                 value: &expected_to,
             }),
             encoded_into_hash(&PrefixedValue {
-                prefix: b"Erc20::Transfer::value",
+                prefix: b"Erc20Capped::Transfer::value",
                 value: &expected_value,
             }),
         ];
@@ -74,13 +70,15 @@ mod erc20_basic_tests {
     #[ink::test]
     fn new_works() {
         let init_amount = 100000000000000000;
+        let cap_amount = 200000000000000000;
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let erc20 = Erc20::new(
+        let erc20 = Erc20Capped::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
+            cap_amount,
         );
 
         // for emit the init transfer
@@ -116,18 +114,27 @@ mod erc20_basic_tests {
             erc20.balance_of(default_account),
             "default account balance_of should be default"
         );
+
+        // cap
+        assert_eq!(
+            cap_amount,
+            erc20.cap(),
+            "default cap should be default"
+        );
     }
 
     #[ink::test]
     fn mint_work() {
         let init_amount = 100000000000000000;
+        let cap_amount = 200000000000000000;
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20::new(
+        let mut erc20 = Erc20Capped::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
+            cap_amount,
         );
 
         // Check Current Balance
@@ -166,13 +173,15 @@ mod erc20_basic_tests {
     #[ink::test]
     fn mint_to_other_work() {
         let init_amount = 100000000000000000;
+        let cap_amount = 200000000000000000;
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20::new(
+        let mut erc20 = Erc20Capped::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
+            cap_amount,
         );
 
         // Check Current Balance
@@ -220,13 +229,15 @@ mod erc20_basic_tests {
     #[should_panic(expected = "ERC20: mint to the zero address")]
     fn mint_to_nil_account_should_error() {
         let init_amount = 100000000000000000;
+        let cap_amount = 200000000000000000;
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20::new(
+        let mut erc20 = Erc20Capped::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
+            cap_amount,
         );
 
         // Check Current Balance
@@ -245,6 +256,118 @@ mod erc20_basic_tests {
             erc20.mint(AccountId::from([0x00; 32]), mint_amount),
             Ok(()),
             "mint should be ok"
+        );
+    }
+
+    #[ink::test]
+    fn mint_no_large_then_cap_should_work() {
+        let init_amount = 100000000000000000;
+        let cap_amount = 200000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+
+        // Constructor works.
+        let mut erc20 = Erc20Capped::new(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            init_amount,
+            cap_amount,
+        );
+
+        // Check Current Balance
+        let current_total = erc20.total_supply();
+        let current_balance = erc20.balance_of(default_account);
+
+        assert_eq!(init_amount, current_total, "total amount should be default");
+        assert_eq!(
+            init_amount, current_balance,
+            "default account balance_of should be default"
+        );
+
+        // Mint, current mint is a mock
+        let mint_amount = cap_amount - init_amount;
+        assert_eq!(
+            erc20.mint(default_account, mint_amount),
+            Ok(()),
+            "mint should be panic"
+        );
+    }
+
+    #[ink::test]
+    #[should_panic(expected = "ERC20Capped: cap exceeded")]
+    fn mint_large_then_cap_should_error() {
+        let init_amount = 100000000000000000;
+        let cap_amount = 200000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+
+        // Constructor works.
+        let mut erc20 = Erc20Capped::new(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            init_amount,
+            cap_amount,
+        );
+
+        // Check Current Balance
+        let current_total = erc20.total_supply();
+        let current_balance = erc20.balance_of(default_account);
+
+        assert_eq!(init_amount, current_total, "total amount should be default");
+        assert_eq!(
+            init_amount, current_balance,
+            "default account balance_of should be default"
+        );
+
+        // Mint, current mint is a mock
+        let mint_amount = cap_amount - init_amount + 1;
+        assert_eq!(
+            erc20.mint(default_account, mint_amount),
+            Ok(()),
+            "mint should be panic"
+        );
+    }
+
+    #[ink::test]
+    fn mint_no_large_then_cap_by_burn_should_work() {
+        let init_amount = 100000000000000000;
+        let cap_amount = 200000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+
+        // Constructor works.
+        let mut erc20 = Erc20Capped::new(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            init_amount,
+            cap_amount,
+        );
+
+        // Check Current Balance
+        let current_total = erc20.total_supply();
+        let current_balance = erc20.balance_of(default_account);
+
+        assert_eq!(init_amount, current_total, "total amount should be default");
+        assert_eq!(
+            init_amount, current_balance,
+            "default account balance_of should be default"
+        );
+
+        assert_eq!(
+            erc20.mint(default_account, 1),
+            Ok(()),
+            "mint just 1 should be ok"
+        );
+
+        assert_eq!(
+            erc20.burn(default_account, 1),
+            Ok(()),
+            "burn just 1 should be ok"
+        );
+
+        // Mint, current mint is a mock
+        let mint_amount = cap_amount - init_amount;
+        assert_eq!(
+            erc20.mint(default_account, mint_amount),
+            Ok(()),
+            "mint should be ok by burned"
         );
     }
 }
