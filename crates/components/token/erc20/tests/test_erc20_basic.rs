@@ -6,16 +6,13 @@ mod mocks {
 }
 
 mod utils {
+    pub mod env;
     pub mod event;
 }
 
 mod erc20_basic_tests {
     /// Imports all the definitions from the outer scope so we can use them here.
     use super::*;
-    use ink_lang as ink;
-    use ink_prelude::string::String;
-    use utils::event::*;
-
     use erc20_contract::{
         Erc20,
         Error,
@@ -23,9 +20,15 @@ mod erc20_basic_tests {
         Transfer,
     };
     use ink::ContractEnv;
+    use ink_lang as ink;
+    use ink_prelude::string::String;
     use mocks::{
         behavior::Erc20BehaviorChecker,
         erc20_mock::erc20_contract,
+    };
+    use utils::{
+        env::*,
+        event::*,
     };
 
     type AccountId = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
@@ -98,30 +101,14 @@ mod erc20_basic_tests {
         // init state
         checker.init_state_should_work();
         checker.should_behave_like_erc20_transfer(
-            default_account, accounts.bob, init_amount, 
-            |checker, from, to, amount|-> Result<()>{
-                // TODO: use a utils to test
-
-                // Get contract address.
-                let callee = ink_env::account_id::<ink_env::DefaultEnvironment>()
-                    .unwrap_or([0x0; 32].into());
-                // Create call.
-                let mut data =
-                    ink_env::test::CallData::new(ink_env::call::Selector::new([0x00; 4]));
-
-                data.push_arg(from);
-
-                // Push the new execution context to set from as caller.
-                ink_env::test::push_execution_context::<ink_env::DefaultEnvironment>(
-                    from.clone(),
-                    callee,
-                    1000000,
-                    1000000,
-                    data,
-                );
-
+            default_account,
+            accounts.bob,
+            init_amount,
+            |checker, from, to, amount| -> Result<()> {
+                next_call_by(from);
                 checker.erc20.transfer(to.clone(), amount)
-            });
+            },
+        );
     }
 
     /// The default constructor does its job.
