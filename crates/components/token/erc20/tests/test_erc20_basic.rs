@@ -110,7 +110,8 @@ mod erc20_basic_tests {
                 checker.erc20.transfer(to.clone(), amount)
             },
         );
-        checker.should_behave_like_erc20_transfer_from()
+        checker.should_behave_like_erc20_transfer_from();
+        checker.should_behave_like_erc20_approve_should_ok();
     }
 
     /// The default constructor does its job.
