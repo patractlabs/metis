@@ -83,35 +83,19 @@ mod erc20_basic_tests {
     fn should_erc20_behavior_work() {
         let init_amount = 100000000000000000;
         let default_account = AccountId::from([0x01; 32]);
-        let mut erc20 = Erc20::new(
-            String::from("MockErc20Token"),
-            String::from("MET"),
-            init_amount,
-        );
         let accounts = ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
             .expect("Cannot get accounts");
-        let mut checker = Erc20BehaviorChecker::new(
-            &mut erc20,
+
+        Erc20BehaviorChecker::should_erc20_behavior_work(
             init_amount,
             default_account,
             AccountId::from([0x00; 32]),
-            accounts.alice,
             accounts.bob,
-        );
-
-        // init state
-        checker.init_state_should_work();
-        checker.should_behave_like_erc20_transfer(
-            default_account,
-            accounts.bob,
-            init_amount,
-            |checker, from, to, amount| -> Result<()> {
+            |erc20 : &mut Erc20, from, to, amount| -> Result<()> {
                 next_call_by(from);
-                checker.erc20.transfer(to.clone(), amount)
+                erc20.transfer(to.clone(), amount)
             },
         );
-        checker.should_behave_like_erc20_transfer_from();
-        checker.should_behave_like_erc20_approve_should_ok();
     }
 
     /// The default constructor does its job.

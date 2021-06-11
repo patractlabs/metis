@@ -182,36 +182,27 @@ where
     }
 }
 
-pub struct Erc20BehaviorChecker<
-    'a,
-    Contract: Env + IERC20<Contract> + IERC20Event<Contract>,
-> {
-    pub erc20: &'a mut Contract,
-
+pub struct Erc20BehaviorChecker<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
+{
     init_amount: Contract::Balance,
     default_account: Contract::AccountId,
     zero_account: Contract::AccountId,
-    alice: Contract::AccountId,
     bob: Contract::AccountId,
 }
 
-impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
-    Erc20BehaviorChecker<'a, Contract>
+impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
+    Erc20BehaviorChecker<Contract>
 {
     pub fn new(
-        erc20: &'a mut Contract,
         init_amount: Contract::Balance,
         default_account: Contract::AccountId,
         zero_account: Contract::AccountId,
-        alice: Contract::AccountId,
         bob: Contract::AccountId,
     ) -> Self {
         Self {
-            erc20,
             init_amount,
             default_account,
             zero_account,
-            alice,
             bob,
         }
     }
@@ -287,11 +278,51 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         Contract::assert_topics(event, &expected_topics);
     }
 
-    pub fn init_state_should_work(&self) {
+    pub fn should_erc20_behavior_work<T>(
+        init_amount: Contract::Balance,
+        default_account: Contract::AccountId,
+        zero_account: Contract::AccountId,
+        bob: Contract::AccountId,
+        transfer_fn: T,
+    ) where
+        T: Fn(
+            &mut Contract,
+            &Contract::AccountId,
+            &Contract::AccountId,
+            Contract::Balance,
+        ) -> Result<()>,
+    {
+        let mut checker = Erc20BehaviorChecker::new(
+            init_amount.clone(),
+            default_account.clone(),
+            zero_account.clone(),
+            bob.clone(),
+        );
+
+        checker.init_state_should_work();
+        checker.should_behave_like_erc20_transfer(
+            default_account,
+            bob,
+            init_amount,
+            transfer_fn,
+        );
+        checker.should_behave_like_erc20_transfer_from();
+        checker.should_behave_like_erc20_approve_should_ok();
+    }
+
+    fn init_state_should_work(&self) {
+        Contract::next_call_by(self.default_account.clone());
+        let erc20 = Contract::new_erc20(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            self.init_amount,
+        );
+
+        let events = get_emitted_events();
+
         // for emit the init transfer
-        let emitted_events = assert_emitted_event_len(1);
         self.assert_transfer_event(
-            &emitted_events[0],
+            &events[0],
             None,
             Some(self.default_account.clone()),
             self.init_amount,
@@ -300,38 +331,38 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         // for metadatas
         assert_eq!(
             String::from("MockErc20Token"),
-            self.erc20.name(),
+            erc20.name(),
             "name should be default"
         );
 
         assert_eq!(
             String::from("MET"),
-            self.erc20.symbol(),
+            erc20.symbol(),
             "symbol should be default"
         );
-        assert_eq!(18, self.erc20.decimals(), "default decimals should be 18");
+        assert_eq!(18, erc20.decimals(), "default decimals should be 18");
 
         // for init amount
         assert_eq!(
             self.init_amount,
-            self.erc20.total_supply(),
+            erc20.total_supply(),
             "total amount should be default"
         );
 
         assert_eq!(
             self.init_amount,
-            self.erc20.balance_of(self.default_account.clone()),
+            erc20.balance_of(self.default_account.clone()),
             "default account balance_of should be default"
         );
 
         assert_eq!(
             Contract::Balance::from(0_u8),
-            self.erc20.balance_of(self.bob.clone()),
+            erc20.balance_of(self.bob.clone()),
             "others accounts balance should be 0"
         );
     }
 
-    pub fn should_behave_like_erc20_transfer<T>(
+    fn should_behave_like_erc20_transfer<T>(
         &mut self,
         from: Contract::AccountId,
         to: Contract::AccountId,
@@ -339,7 +370,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         transfer: T,
     ) where
         T: Fn(
-            &mut Self,
+            &mut Contract,
             &Contract::AccountId,
             &Contract::AccountId,
             Contract::Balance,
@@ -349,27 +380,34 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         // when the sender does not have enough balance
         let large_amt = balance + Contract::Balance::from(1_u8);
 
+        Contract::next_call_by(from.clone());
+        let mut erc20 = Contract::new_erc20(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            balance,
+        );
+
         assert_eq!(
-            transfer(self, &from, &to, large_amt),
+            transfer(&mut erc20, &from, &to, large_amt),
             Err(Error::InsufficientBalance),
             "when the sender does not have enough balance"
         );
 
         // when the sender transfers all balance
         assert_eq!(
-            transfer(self, &from, &to, balance),
+            transfer(&mut erc20, &from, &to, balance),
             Ok(()),
             "when the sender transfers all balance"
         );
 
         assert_eq!(
-            self.erc20.balance_of(from.clone()),
+            erc20.balance_of(from.clone()),
             Contract::Balance::from(0_u8),
             "from amount should be 0",
         );
 
         assert_eq!(
-            self.erc20.balance_of(to.clone()),
+            erc20.balance_of(to.clone()),
             balance,
             "to amount should be balance"
         );
@@ -384,19 +422,19 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
 
         // when the sender transfers zero tokens
         assert_eq!(
-            transfer(self, &to, &from, Contract::Balance::from(0_u8)),
+            transfer(&mut erc20, &to, &from, Contract::Balance::from(0_u8)),
             Ok(()),
             "when the sender transfers all balance"
         );
 
         assert_eq!(
-            self.erc20.balance_of(from.clone()),
+            erc20.balance_of(from.clone()),
             Contract::Balance::from(0_u8),
             "from amount should be 0 as no changed",
         );
 
         assert_eq!(
-            self.erc20.balance_of(to.clone()),
+            erc20.balance_of(to.clone()),
             balance,
             "to amount should be balance as no changed"
         );
@@ -410,7 +448,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    pub fn should_behave_like_erc20_transfer_from(&mut self) {
+    fn should_behave_like_erc20_transfer_from(&mut self) {
         self._transfer_from_request_amount_should_ok();
         self._transfer_from_approved_no_enough_should_ok();
         self._transfer_from_to_zero_account_should_err();
@@ -642,7 +680,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    pub fn should_behave_like_erc20_approve_should_ok(&self) {
+    fn should_behave_like_erc20_approve_should_ok(&self) {
         self._approve_have_enough_balance_should_ok();
         self._approve_when_no_approved_before();
         self._approve_when_had_approved_should_replace();
@@ -677,7 +715,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         self.assert_approval_event(&get_last_emitted_event(), &from, &to, &amount);
     }
 
-    fn _approve_when_no_approved_before(&self){
+    fn _approve_when_no_approved_before(&self) {
         let from = self.default_account.clone();
         let to = self.bob.clone();
         let amount = self.init_amount.clone();
@@ -706,7 +744,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    fn _approve_when_had_approved_should_replace(&self){
+    fn _approve_when_had_approved_should_replace(&self) {
         let from = self.default_account.clone();
         let to = self.bob.clone();
         let amount = self.init_amount.clone();
@@ -751,7 +789,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    fn _approve_sender_no_enough(&self){
+    fn _approve_sender_no_enough(&self) {
         let from = self.default_account.clone();
         let to = self.bob.clone();
         let amount = self.init_amount.clone();
@@ -775,7 +813,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         self.assert_approval_event(&get_last_emitted_event(), &from, &to, &amount_add_1);
     }
 
-    fn _approve_sender_no_enough_when_no_approved_before(&self){
+    fn _approve_sender_no_enough_when_no_approved_before(&self) {
         let from = self.default_account.clone();
         let to = self.bob.clone();
         let amount = self.init_amount.clone();
@@ -805,7 +843,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    fn _approve_sender_no_enough_when_had_approved_should_replace(&self){
+    fn _approve_sender_no_enough_when_had_approved_should_replace(&self) {
         let from = self.default_account.clone();
         let to = self.bob.clone();
         let amount = self.init_amount.clone();
@@ -851,7 +889,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    fn _approve_to_zero_account_should_error(&self){
+    fn _approve_to_zero_account_should_error(&self) {
         let from = self.default_account.clone();
         let to = self.zero_account.clone();
         let amount = self.init_amount.clone();
