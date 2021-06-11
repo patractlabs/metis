@@ -1,10 +1,12 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod mocks {
+    pub mod behavior;
     pub mod erc20_capped_mock;
 }
 
 mod utils {
+    pub mod env;
     pub mod event;
 }
 
@@ -13,15 +15,21 @@ mod erc20_capped_tests {
     use super::*;
     use ink_lang as ink;
     use ink_prelude::string::String;
-    use utils::event::*;
-
+    use utils::{
+        env::*,
+        event::*,
+    };
     use ink::ContractEnv;
-    use mocks::erc20_capped_mock::erc20_capped::*;
+    use mocks::{
+        behavior::Erc20BehaviorChecker,
+        erc20_capped_mock::erc20_capped::*,
+    };
 
-    type AccountId = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::AccountId;
-    type Balance = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::Balance;
-    type Hash = <<Erc20Capped as ContractEnv>::Env as ink_env::Environment>::Hash;
-    type Event = <Erc20Capped as ink::BaseEvent>::Type;
+    type AccountId =
+        <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
+    type Balance = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Balance;
+    type Hash = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Hash;
+    type Event = <Erc20 as ink::BaseEvent>::Type;
 
     fn assert_transfer_event(
         event: &ink_env::test::EmittedEvent,
@@ -40,19 +48,19 @@ mod erc20_capped_tests {
         }
         let expected_topics = vec![
             encoded_into_hash(&PrefixedValue {
-                value: b"Erc20Capped::Transfer",
+                value: b"Erc20::Transfer",
                 prefix: b"",
             }),
             encoded_into_hash(&PrefixedValue {
-                prefix: b"Erc20Capped::Transfer::from",
+                prefix: b"Erc20::Transfer::from",
                 value: &expected_from,
             }),
             encoded_into_hash(&PrefixedValue {
-                prefix: b"Erc20Capped::Transfer::to",
+                prefix: b"Erc20::Transfer::to",
                 value: &expected_to,
             }),
             encoded_into_hash(&PrefixedValue {
-                prefix: b"Erc20Capped::Transfer::value",
+                prefix: b"Erc20::Transfer::value",
                 value: &expected_value,
             }),
         ];
@@ -66,6 +74,25 @@ mod erc20_capped_tests {
         }
     }
 
+    #[ink::test]
+    fn should_erc20_behavior_work() {
+        let init_amount = 100000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+        let accounts = ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
+            .expect("Cannot get accounts");
+
+        Erc20BehaviorChecker::should_erc20_behavior_work(
+            init_amount,
+            default_account,
+            AccountId::from([0x00; 32]),
+            accounts.bob,
+            |erc20: &mut Erc20, from, to, amount| -> Result<()> {
+                next_call_by(from);
+                erc20.transfer(to.clone(), amount)
+            },
+        );
+    }
+
     /// The default constructor does its job.
     #[ink::test]
     fn new_works() {
@@ -74,7 +101,7 @@ mod erc20_capped_tests {
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let erc20 = Erc20Capped::new(
+        let erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
@@ -116,11 +143,7 @@ mod erc20_capped_tests {
         );
 
         // cap
-        assert_eq!(
-            cap_amount,
-            erc20.cap(),
-            "default cap should be default"
-        );
+        assert_eq!(cap_amount, erc20.cap(), "default cap should be default");
     }
 
     #[ink::test]
@@ -130,7 +153,7 @@ mod erc20_capped_tests {
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20Capped::new(
+        let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
@@ -177,7 +200,7 @@ mod erc20_capped_tests {
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20Capped::new(
+        let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
@@ -226,14 +249,13 @@ mod erc20_capped_tests {
     }
 
     #[ink::test]
-    #[should_panic(expected = "ERC20: mint to the zero address")]
     fn mint_to_nil_account_should_error() {
         let init_amount = 100000000000000000;
         let cap_amount = 200000000000000000;
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20Capped::new(
+        let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
@@ -254,8 +276,8 @@ mod erc20_capped_tests {
         let mint_amount = 100000;
         assert_eq!(
             erc20.mint(AccountId::from([0x00; 32]), mint_amount),
-            Ok(()),
-            "mint should be ok"
+            Err(Error::AccountIsZero),
+            "mint should be error by zero account"
         );
     }
 
@@ -266,7 +288,7 @@ mod erc20_capped_tests {
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20Capped::new(
+        let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
@@ -300,7 +322,7 @@ mod erc20_capped_tests {
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20Capped::new(
+        let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,
@@ -333,7 +355,7 @@ mod erc20_capped_tests {
         let default_account = AccountId::from([0x01; 32]);
 
         // Constructor works.
-        let mut erc20 = Erc20Capped::new(
+        let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
             init_amount,

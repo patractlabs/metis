@@ -20,6 +20,14 @@ pub trait Env: 'static {
     type Timestamp: Timestamp;
 }
 
+impl Env for ink_env::DefaultEnvironment{
+    type AccountId = <ink_env::DefaultEnvironment as ink_env::Environment>::AccountId;
+    type Balance = <ink_env::DefaultEnvironment as ink_env::Environment>::Balance;
+    type BlockNumber = <ink_env::DefaultEnvironment as ink_env::Environment>::BlockNumber;
+    type Hash = <ink_env::DefaultEnvironment as ink_env::Environment>::Hash;
+    type Timestamp = <ink_env::DefaultEnvironment as ink_env::Environment>::Timestamp;
+}
+
 pub trait Storage<E, D>
 where
     E: Env,

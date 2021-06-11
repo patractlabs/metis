@@ -2,7 +2,11 @@
 
 #[metis_lang::contract]
 pub mod erc20_contract {
-    use erc20::Result;
+    use super::super::behavior;
+    pub use erc20::{
+        Error,
+        Result,
+    };
     use metis_erc20 as erc20;
     use metis_lang::{
         import,
@@ -28,6 +32,8 @@ pub mod erc20_contract {
         }
     }
 
+    type Event = <Erc20 as ink_lang::BaseEvent>::Type;
+
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
     #[metis(erc20)]
@@ -51,6 +57,69 @@ pub mod erc20_contract {
         pub value: Balance,
     }
 
+    impl behavior::IERC20New<Erc20> for Erc20 {
+        fn new_erc20(name: String, symbol: String, initial_supply: Balance) -> Self {
+            Self::new(name, symbol, initial_supply)
+        }
+
+        fn next_call_by(account: AccountId) {
+            // Get contract address.
+            let callee = ink_env::account_id::<ink_env::DefaultEnvironment>()
+                .unwrap_or([0x0; 32].into());
+            // Create call.
+            let mut data =
+                ink_env::test::CallData::new(ink_env::call::Selector::new([0x00; 4]));
+
+            data.push_arg(&account.clone());
+
+            // Push the new execution context to set from as caller.
+            ink_env::test::push_execution_context::<ink_env::DefaultEnvironment>(
+                account.clone(),
+                callee,
+                1000000,
+                1000000,
+                data,
+            );
+        }
+    }
+
+    impl behavior::IERC20Event<Erc20> for Erc20 {
+        fn decode_transfer_event(
+            event: &ink_env::test::EmittedEvent,
+        ) -> (Option<AccountId>, Option<AccountId>, Balance) {
+            let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
+                .expect("encountered invalid contract event data buffer");
+            if let Event::Transfer(Transfer { from, to, value }) = decoded_event {
+                return (from, to, value)
+            }
+            panic!("encountered unexpected event kind: expected a Transfer event")
+        }
+
+        fn decode_approval_event(
+            event: &ink_env::test::EmittedEvent,
+        ) -> (AccountId, AccountId, Balance) {
+            let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
+                .expect("encountered invalid contract event data buffer");
+            if let Event::Approval(Approval { owner, spender, value }) = decoded_event {
+                return (owner, spender, value)
+            }
+            panic!("encountered unexpected event kind: expected a Transfer event")
+        }
+
+        fn assert_topics(
+            event: &ink_env::test::EmittedEvent,
+            expected_topics: &Vec<Hash>,
+        ) {
+            for (n, (actual_topic, expected_topic)) in
+                event.topics.iter().zip(expected_topics).enumerate()
+            {
+                let topic = actual_topic
+                    .decode::<Hash>()
+                    .expect("encountered invalid topic encoding");
+                assert_eq!(topic, *expected_topic, "encountered invalid topic at {}", n);
+            }
+        }
+    }
     // impl
     impl Erc20 {
         #[ink(constructor)]
@@ -140,7 +209,7 @@ pub mod erc20_contract {
             owner: AccountId,
             spender: AccountId,
             value: Balance,
-        ) {
+        ) -> Result<()> {
             erc20::Impl::_approve(self, &owner, &spender, value)
         }
     }

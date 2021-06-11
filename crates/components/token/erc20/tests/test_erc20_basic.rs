@@ -1,25 +1,34 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod mocks {
+    pub mod behavior;
     pub mod erc20_mock;
 }
 
 mod utils {
+    pub mod env;
     pub mod event;
 }
 
 mod erc20_basic_tests {
     /// Imports all the definitions from the outer scope so we can use them here.
     use super::*;
-    use ink_lang as ink;
-    use ink_prelude::string::String;
-    use utils::event::*;
-
-    use ink::ContractEnv;
-    use mocks::erc20_mock::erc20_contract;
     use erc20_contract::{
         Erc20,
+        Error,
+        Result,
         Transfer,
+    };
+    use ink::ContractEnv;
+    use ink_lang as ink;
+    use ink_prelude::string::String;
+    use mocks::{
+        behavior::Erc20BehaviorChecker,
+        erc20_mock::erc20_contract,
+    };
+    use utils::{
+        env::*,
+        event::*,
     };
 
     type AccountId = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
@@ -68,6 +77,25 @@ mod erc20_basic_tests {
                 .expect("encountered invalid topic encoding");
             assert_eq!(topic, expected_topic, "encountered invalid topic at {}", n);
         }
+    }
+
+    #[ink::test]
+    fn should_erc20_behavior_work() {
+        let init_amount = 100000000000000000;
+        let default_account = AccountId::from([0x01; 32]);
+        let accounts = ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
+            .expect("Cannot get accounts");
+
+        Erc20BehaviorChecker::should_erc20_behavior_work(
+            init_amount,
+            default_account,
+            AccountId::from([0x00; 32]),
+            accounts.bob,
+            |erc20 : &mut Erc20, from, to, amount| -> Result<()> {
+                next_call_by(from);
+                erc20.transfer(to.clone(), amount)
+            },
+        );
     }
 
     /// The default constructor does its job.
@@ -217,7 +245,6 @@ mod erc20_basic_tests {
     }
 
     #[ink::test]
-    #[should_panic(expected = "ERC20: mint to the zero address")]
     fn mint_to_nil_account_should_error() {
         let init_amount = 100000000000000000;
         let default_account = AccountId::from([0x01; 32]);
@@ -243,8 +270,8 @@ mod erc20_basic_tests {
         let mint_amount = 100000;
         assert_eq!(
             erc20.mint(AccountId::from([0x00; 32]), mint_amount),
-            Ok(()),
-            "mint should be ok"
+            Err(Error::AccountIsZero),
+            "mint should be failed by zero account"
         );
     }
 }

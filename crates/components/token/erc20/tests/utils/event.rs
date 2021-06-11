@@ -27,6 +27,12 @@ pub fn get_last_emitted_event() -> ink_env::test::EmittedEvent {
     emitted_events[emitted_events.len() - 1].clone()
 }
 
+/// get_last_emitted_event
+#[allow(dead_code)]
+pub fn get_emitted_events() -> Vec<ink_env::test::EmittedEvent> {
+    ink_env::test::recorded_events().collect::<Vec<_>>()
+}
+
 /// For calculating the event topic hash.
 pub struct PrefixedValue<'a, 'b, T> {
     pub prefix: &'a [u8],

@@ -2,8 +2,10 @@
 
 #[metis_lang::contract]
 pub mod erc20_capped {
-    use erc20::{
+    use super::super::behavior;
+    pub use erc20::{
         capped,
+        Error,
         Result,
     };
     use metis_erc20 as erc20;
@@ -15,13 +17,13 @@ pub mod erc20_capped {
     /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(erc20, capped)]
-    pub struct Erc20Capped {
-        erc20: erc20::Data<Erc20Capped>,
-        capped: capped::Data<Erc20Capped>,
+    pub struct Erc20 {
+        erc20: erc20::Data<Erc20>,
+        capped: capped::Data<Erc20>,
     }
 
     // TODO: gen by marco with erc20 component
-    impl erc20::hookable::Impl<Erc20Capped> for Erc20Capped {
+    impl erc20::hookable::Impl<Erc20> for Erc20 {
         fn before_token_transfer(
             &mut self,
             _from: &AccountId,
@@ -31,8 +33,10 @@ pub mod erc20_capped {
             Ok(())
         }
     }
-    // burnable
-    impl capped::Impl<Erc20Capped> for Erc20Capped {}
+
+    type Event = <Erc20 as ink_lang::BaseEvent>::Type;
+
+    impl capped::Impl<Erc20> for Erc20 {}
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
@@ -57,8 +61,77 @@ pub mod erc20_capped {
         pub value: Balance,
     }
 
+    impl behavior::IERC20New<Erc20> for Erc20 {
+        fn new_erc20(name: String, symbol: String, initial_supply: Balance) -> Self {
+            Self::new(name, symbol, initial_supply, initial_supply)
+        }
+
+        fn next_call_by(account: AccountId) {
+            // Get contract address.
+            let callee = ink_env::account_id::<ink_env::DefaultEnvironment>()
+                .unwrap_or([0x0; 32].into());
+            // Create call.
+            let mut data =
+                ink_env::test::CallData::new(ink_env::call::Selector::new([0x00; 4]));
+
+            data.push_arg(&account.clone());
+
+            // Push the new execution context to set from as caller.
+            ink_env::test::push_execution_context::<ink_env::DefaultEnvironment>(
+                account.clone(),
+                callee,
+                1000000,
+                1000000,
+                data,
+            );
+        }
+    }
+
+    impl behavior::IERC20Event<Erc20> for Erc20 {
+        fn decode_transfer_event(
+            event: &ink_env::test::EmittedEvent,
+        ) -> (Option<AccountId>, Option<AccountId>, Balance) {
+            let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
+                .expect("encountered invalid contract event data buffer");
+            if let Event::Transfer(Transfer { from, to, value }) = decoded_event {
+                return (from, to, value)
+            }
+            panic!("encountered unexpected event kind: expected a Transfer event")
+        }
+
+        fn decode_approval_event(
+            event: &ink_env::test::EmittedEvent,
+        ) -> (AccountId, AccountId, Balance) {
+            let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
+                .expect("encountered invalid contract event data buffer");
+            if let Event::Approval(Approval {
+                owner,
+                spender,
+                value,
+            }) = decoded_event
+            {
+                return (owner, spender, value)
+            }
+            panic!("encountered unexpected event kind: expected a Transfer event")
+        }
+
+        fn assert_topics(
+            event: &ink_env::test::EmittedEvent,
+            expected_topics: &Vec<Hash>,
+        ) {
+            for (n, (actual_topic, expected_topic)) in
+                event.topics.iter().zip(expected_topics).enumerate()
+            {
+                let topic = actual_topic
+                    .decode::<Hash>()
+                    .expect("encountered invalid topic encoding");
+                assert_eq!(topic, *expected_topic, "encountered invalid topic at {}", n);
+            }
+        }
+    }
+
     // impl
-    impl Erc20Capped {
+    impl Erc20 {
         #[ink(constructor)]
         pub fn new(
             name: String,
@@ -158,7 +231,7 @@ pub mod erc20_capped {
             owner: AccountId,
             spender: AccountId,
             value: Balance,
-        ) {
+        ) -> Result<()> {
             erc20::Impl::_approve(self, &owner, &spender, value)
         }
     }
