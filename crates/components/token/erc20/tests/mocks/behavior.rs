@@ -96,16 +96,21 @@ where
     E: Env,
 {
     fn new_erc20(name: String, symbol: String, initial_supply: E::Balance) -> Self;
+    fn next_call_by(account: E::AccountId);
 }
 
 // For Events
-pub trait IERC20Event<E> : IERC20New<E>
+pub trait IERC20Event<E>: IERC20New<E>
 where
     E: Env,
 {
     fn decode_transfer_event(
         event: &ink_env::test::EmittedEvent,
     ) -> (Option<E::AccountId>, Option<E::AccountId>, E::Balance);
+
+    fn decode_approval_event(
+        event: &ink_env::test::EmittedEvent,
+    ) -> (E::AccountId, E::AccountId, E::Balance);
 
     fn assert_topics(event: &ink_env::test::EmittedEvent, expected_topics: &Vec<E::Hash>);
 
@@ -185,6 +190,7 @@ pub struct Erc20BehaviorChecker<
 
     init_amount: Contract::Balance,
     default_account: Contract::AccountId,
+    zero_account: Contract::AccountId,
     alice: Contract::AccountId,
     bob: Contract::AccountId,
 }
@@ -196,6 +202,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         erc20: &'a mut Contract,
         init_amount: Contract::Balance,
         default_account: Contract::AccountId,
+        zero_account: Contract::AccountId,
         alice: Contract::AccountId,
         bob: Contract::AccountId,
     ) -> Self {
@@ -203,6 +210,7 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
             erc20,
             init_amount,
             default_account,
+            zero_account,
             alice,
             bob,
         }
@@ -236,6 +244,43 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
             Contract::encoded_into_hash(&PrefixedValue {
                 prefix: b"Erc20::Transfer::value",
                 value: &expected_value,
+            }),
+        ];
+
+        Contract::assert_topics(event, &expected_topics);
+    }
+
+    fn assert_approval_event(
+        &self,
+        event: &ink_env::test::EmittedEvent,
+        expected_owner: &Contract::AccountId,
+        expected_spender: &Contract::AccountId,
+        expected_value: &Contract::Balance,
+    ) {
+        let (owner, spender, value) = Contract::decode_approval_event(event);
+        assert_eq!(&owner, expected_owner, "encountered invalid Approval.owner");
+        assert_eq!(
+            &spender, expected_spender,
+            "encountered invalid Approval.spender"
+        );
+        assert_eq!(&value, expected_value, "encountered invalid Approval.value");
+
+        let expected_topics = vec![
+            Contract::encoded_into_hash(&PrefixedValue {
+                value: b"Erc20::Approval",
+                prefix: b"",
+            }),
+            Contract::encoded_into_hash(&PrefixedValue {
+                prefix: b"Erc20::Approval::owner",
+                value: expected_owner,
+            }),
+            Contract::encoded_into_hash(&PrefixedValue {
+                prefix: b"Erc20::Approval::spender",
+                value: expected_spender,
+            }),
+            Contract::encoded_into_hash(&PrefixedValue {
+                prefix: b"Erc20::Approval::value",
+                value: expected_value,
             }),
         ];
 
@@ -365,13 +410,235 @@ impl<'a, Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         );
     }
 
-    pub fn should_behave_like_erc20_transfer_from(
-        &mut self,
-    ) {
-        // when the token owner is not the zero address
+    pub fn should_behave_like_erc20_transfer_from(&mut self) {
+        self._transfer_from_request_amount_should_ok();
+        self._transfer_from_approved_no_enough_should_ok();
+        self._transfer_from_to_zero_account_should_err();
+        self._transfer_from_from_is_zero_account_should_err();
+    }
 
+    fn _transfer_from_request_amount_should_ok(&mut self) {
+        let from = self.default_account.clone();
+        let to = self.bob.clone();
+        let amount = self.init_amount.clone();
 
+        Contract::next_call_by(from.clone());
+        let mut erc20 = Contract::new_erc20(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            amount.clone(),
+        );
 
-        // when the token owner is the zero address
+        // when the spender has enough approved balance
+        Contract::next_call_by(from.clone());
+        assert_eq!(
+            erc20.approve(to.clone(), amount.clone()),
+            Ok(()),
+            "approve from spender to to should ok"
+        );
+
+        self.assert_approval_event(&get_last_emitted_event(), &from, &to, &amount);
+
+        // now allowance from to is amount
+        assert_eq!(
+            erc20.allowance(from.clone(), to.clone()),
+            amount,
+            "the spender allowance"
+        );
+
+        // call transfer_from by to
+        Contract::next_call_by(to.clone());
+        assert_eq!(
+            erc20.transfer_from(from.clone(), to.clone(), amount),
+            Ok(()),
+            "transfers the requested amount should ok"
+        );
+
+        let emitted_events = get_emitted_events();
+
+        self.assert_transfer_event(
+            &emitted_events[emitted_events.len() - 2],
+            Some(from.clone()),
+            Some(to.clone()),
+            amount,
+        );
+
+        self.assert_approval_event(
+            &emitted_events[emitted_events.len() - 1],
+            &from,
+            &to,
+            &Contract::Balance::from(0_u8),
+        );
+
+        // check ok
+        assert_eq!(
+            erc20.balance_of(from.clone()),
+            Contract::Balance::from(0_u8),
+            "from amount should be 0 as no changed",
+        );
+
+        assert_eq!(
+            erc20.balance_of(to.clone()),
+            self.init_amount,
+            "to amount should be balance as no changed"
+        );
+
+        // decreases the spender allowance
+        assert_eq!(
+            erc20.allowance(from.clone(), to.clone()),
+            Contract::Balance::from(0_u8),
+            "decreases the spender allowance should ok"
+        );
+    }
+
+    fn _transfer_from_approved_no_enough_should_ok(&mut self) {
+        let from = self.default_account.clone();
+        let to = self.bob.clone();
+        let amount = self.init_amount.clone();
+
+        Contract::next_call_by(from.clone());
+        let mut erc20 = Contract::new_erc20(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            amount.clone(),
+        );
+
+        let amount_less = amount.clone() - Contract::Balance::from(1_u8);
+
+        // when the spender has enough approved balance
+        Contract::next_call_by(from.clone());
+        assert_eq!(
+            erc20.approve(to.clone(), amount_less.clone()),
+            Ok(()),
+            "approve from spender to to should ok"
+        );
+
+        self.assert_approval_event(&get_last_emitted_event(), &from, &to, &amount_less);
+
+        // call transfer_from by to should error
+        Contract::next_call_by(to.clone());
+        assert_eq!(
+            erc20.transfer_from(from.clone(), to.clone(), amount),
+            Err(Error::InsufficientAllowance),
+            "the token owner has enough balance should error"
+        );
+
+        Contract::next_call_by(from.clone());
+        assert_eq!(
+            erc20.transfer_from(
+                from.clone(),
+                to.clone(),
+                amount.clone() + Contract::Balance::from(1_u8)
+            ),
+            Err(Error::InsufficientAllowance),
+            "the token owner does not have enough balance should error"
+        );
+    }
+
+    fn _transfer_from_to_zero_account_should_err(&mut self) {
+        let from = self.default_account.clone();
+        let to = self.bob.clone();
+        let amount = self.init_amount.clone();
+
+        Contract::next_call_by(from.clone());
+        let mut erc20 = Contract::new_erc20(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            amount.clone(),
+        );
+
+        // when the spender has enough approved balance
+        Contract::next_call_by(from.clone());
+        assert_eq!(
+            erc20.approve(to.clone(), amount.clone()),
+            Ok(()),
+            "approve from spender to to should ok"
+        );
+
+        self.assert_approval_event(&get_last_emitted_event(), &from, &to, &amount);
+
+        // now allowance from to is amount
+        assert_eq!(
+            erc20.allowance(from.clone(), to.clone()),
+            amount,
+            "the spender allowance"
+        );
+
+        // call transfer_from by to
+        Contract::next_call_by(to.clone());
+        assert_eq!(
+            erc20.transfer_from(from.clone(), self.zero_account.clone(), amount),
+            Err(Error::AccountIsZero),
+            "transfer to the zero address should error"
+        );
+
+        // check ok
+        assert_eq!(
+            erc20.balance_of(from.clone()),
+            amount,
+            "from amount should be 0 as no changed",
+        );
+
+        assert_eq!(
+            erc20.balance_of(to.clone()),
+            Contract::Balance::from(0_u8),
+            "to amount should be balance as no changed"
+        );
+
+        // decreases the spender allowance
+        assert_eq!(
+            erc20.allowance(from.clone(), to.clone()),
+            amount,
+            "decreases the spender allowance should ok"
+        );
+    }
+
+    fn _transfer_from_from_is_zero_account_should_err(&mut self) {
+        let from = self.default_account.clone();
+        let to = self.bob.clone();
+        let amount = self.init_amount.clone();
+
+        Contract::next_call_by(from.clone());
+        let mut erc20 = Contract::new_erc20(
+            String::from("MockErc20Token"),
+            String::from("MET"),
+            amount.clone(),
+        );
+
+        // when the spender has enough approved balance
+        Contract::next_call_by(from.clone());
+        assert_eq!(
+            erc20.approve(to.clone(), amount.clone()),
+            Ok(()),
+            "approve from spender to to should ok"
+        );
+
+        // call transfer_from by to
+        Contract::next_call_by(to.clone());
+        assert_eq!(
+            erc20.transfer_from(self.zero_account.clone(), to.clone(), amount),
+            Err(Error::InsufficientAllowance),
+            "transfer to the zero address should error"
+        );
+
+        // check ok
+        assert_eq!(
+            erc20.balance_of(from.clone()),
+            amount,
+            "from amount should be 0 as no changed",
+        );
+
+        assert_eq!(
+            erc20.balance_of(to.clone()),
+            Contract::Balance::from(0_u8),
+            "to amount should be balance as no changed"
+        );
+
+        // decreases the spender allowance
+        assert_eq!(
+            erc20.allowance(from.clone(), to.clone()),
+            amount,
+            "decreases the spender allowance should ok"
+        );
     }
 }

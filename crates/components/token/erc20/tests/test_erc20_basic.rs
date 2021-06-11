@@ -94,6 +94,7 @@ mod erc20_basic_tests {
             &mut erc20,
             init_amount,
             default_account,
+            AccountId::from([0x00; 32]),
             accounts.alice,
             accounts.bob,
         );
@@ -109,6 +110,7 @@ mod erc20_basic_tests {
                 checker.erc20.transfer(to.clone(), amount)
             },
         );
+        checker.should_behave_like_erc20_transfer_from()
     }
 
     /// The default constructor does its job.
