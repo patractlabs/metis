@@ -1,6 +1,7 @@
 extern crate proc_macro;
 
 mod contract;
+mod erc165;
 
 use proc_macro::TokenStream;
 
@@ -17,4 +18,9 @@ pub fn import(_: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn metis(_: TokenStream, item: TokenStream) -> TokenStream {
     item
+}
+
+#[proc_macro_attribute]
+pub fn supports(attr: TokenStream, item: TokenStream) -> TokenStream {
+    erc165::generate(attr.into(), item.into()).into()
 }

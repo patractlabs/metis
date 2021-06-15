@@ -4,6 +4,8 @@ use ink_lang as ink;
 
 #[ink::contract]
 pub mod flipper {
+    use metis_lang as metis;
+
     #[ink(storage)]
     pub struct Flipper {
         value: bool,
@@ -17,6 +19,7 @@ pub mod flipper {
         value: bool,
     }
 
+    #[metis::supports(interface(new, default), interface(flip, get))]
     impl Flipper {
         /// Creates a new flipper smart contract initialized with the given value.
         #[ink(constructor)]
@@ -28,19 +31,6 @@ pub mod flipper {
         #[ink(constructor)]
         pub fn default() -> Self {
             Self::new(Default::default())
-        }
-
-        #[ink(message)]
-        pub fn supports_interface(&self, interface_id: u32) -> bool {
-            const INIT_INTERFACE_ID: u32 = 0x9bae9d5e_u32 ^ 0xed4b9d1b_u32;
-            const FLIP_INTERFACE_ID: u32 = 0x633aa551_u32 ^ 0x2f865bd9_u32;
-
-            match interface_id {
-                INIT_INTERFACE_ID => true, // new and default
-                FLIP_INTERFACE_ID => true, // flip get
-                0xe6113a8a_u32 => true, // supports_interface
-                _ => false,
-            }
         }
 
         /// Flips the current value of the Flipper's bool.
@@ -87,6 +77,14 @@ pub mod flipper {
 
         #[ink::test]
         fn it_works() {
+            let mut flipper = Flipper::new(false);
+            assert_eq!(flipper.get(), false);
+            flipper.flip();
+            assert_eq!(flipper.get(), true);
+        }
+
+        #[ink::test]
+        fn support_works() {
             let mut flipper = Flipper::new(false);
             assert_eq!(flipper.get(), false);
             flipper.flip();

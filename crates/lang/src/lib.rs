@@ -16,4 +16,5 @@ pub use metis_lang_macro::{
     contract,
     import,
     metis,
+    supports,
 };
