@@ -1,10 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use ink_lang as ink;
+use metis_lang as metis;
 
-#[ink::contract]
+#[metis::contract]
 pub mod flipper {
-    use metis_lang as metis;
+    use super::*;
 
     #[ink(storage)]
     pub struct Flipper {
