@@ -2,11 +2,16 @@ mod env;
 mod event;
 mod import;
 mod utils;
+mod components;
 
 use ink_lang_ir::Contract;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::Result;
+
+pub mod component{
+    pub use super::components::erc165;
+}
 
 pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
     let item_mod = syn::parse2::<syn::ItemMod>(input.clone())
