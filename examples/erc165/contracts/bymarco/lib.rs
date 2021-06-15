@@ -33,6 +33,12 @@ pub mod flipper {
             Self::new(Default::default())
         }
 
+        /// Return the contract is support the interface_id
+        #[ink(message)]
+        pub fn supports_interface(&self, interface_id: u32) -> bool {
+            self._supports_interface(interface_id)
+        }
+
         /// Flips the current value of the Flipper's bool.
         #[ink(message)]
         pub fn flip(&mut self) {
