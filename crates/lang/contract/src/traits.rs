@@ -5,9 +5,18 @@ use ink_storage::traits::{
     SpreadLayout,
 };
 
+#[cfg(feature = "std")]
+pub trait EnvAccountId: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug {}
+
+#[cfg(feature = "std")]
+impl<T> EnvAccountId for T where T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug {}
+
+#[cfg(not(feature = "std"))]
 pub trait EnvAccountId: 'static + scale::Codec + Clone + PartialEq + Eq + Ord {}
 
+#[cfg(not(feature = "std"))]
 impl<T> EnvAccountId for T where T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord {}
+
 
 #[cfg(not(feature = "std"))]
 pub trait AccountId: EnvAccountId + Default + SpreadLayout + PackedLayout {}
