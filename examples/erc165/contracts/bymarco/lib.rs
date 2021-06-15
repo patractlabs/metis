@@ -36,6 +36,8 @@ pub mod flipper {
         /// Return the contract is support the interface_id
         #[ink(message)]
         pub fn supports_interface(&self, interface_id: u32) -> bool {
+            // _supports_interface gen by marco
+            // TODO: use a common marco in metis to gen this message fn
             self._supports_interface(interface_id)
         }
 
