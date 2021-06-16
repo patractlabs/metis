@@ -2,11 +2,18 @@ pub use metis_lang::Env;
 
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{
-    collections::HashMap as StorageHashMap,
+    collections::{
+        hashmap::Entry,
+        HashMap as StorageHashMap,
+    },
     traits::SpreadLayout,
 };
 
-use crate::types::RoleId;
+use crate::types::{
+    Error,
+    Result,
+    RoleId,
+};
 
 /// The Data of ownership component
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]
@@ -16,7 +23,7 @@ where
     E: Env,
 {
     /// the account - role relationship map
-    pub roles: StorageHashMap<(E::AccountId, RoleId), ()>,
+    pub roles: StorageHashMap<(RoleId, E::AccountId), ()>,
 
     /// the admin role of a role
     pub admin_roles: StorageHashMap<RoleId, RoleId>,
@@ -45,4 +52,42 @@ where
     }
 }
 
-impl<E> Data<E> where E: Env {}
+impl<E> Data<E>
+where
+    E: Env,
+{
+    fn has_role(&self, role: RoleId, account: E::AccountId) -> bool {
+        self.roles.contains_key(&(role, account))
+    }
+
+    fn grant_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+        let key = (role, account);
+
+        if self.roles.contains_key(&key) {
+            return Err(Error::AccountRoleExists)
+        }
+
+        self.roles.insert(key, ());
+
+        Ok(())
+    }
+
+    fn revoke_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+        let occupied = match self.roles.entry((role, account)) {
+            Entry::Vacant(_) => return Err(Error::NotHasRole),
+            Entry::Occupied(occupied) => occupied,
+        };
+
+        occupied.remove_entry();
+
+        Ok(())
+    }
+
+    fn get_role_admin(&self, role: &RoleId) -> Option<RoleId> {
+        self.admin_roles.get(role).copied()
+    }
+
+    fn set_role_admin(&mut self, role: RoleId, admin_role: RoleId) {
+        self.admin_roles.insert(role, admin_role);
+    }
+}
