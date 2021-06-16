@@ -7,9 +7,15 @@ members = [
     "crates/lang/macro",
     "crates/lang/contract",
     "crates/lang/codegen",
+
+    "contracts/patra-env",
+    "contracts/traits/access/ownership",
+    "contracts/traits/token/erc20",
 ]
 exclude = [
     "examples/",
+    "contracts/impls",
+    "contracts/stub",
 ]
 
 [profile.release]
