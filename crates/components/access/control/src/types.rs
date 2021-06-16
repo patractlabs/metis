@@ -23,6 +23,8 @@ pub enum Error {
     NotHasRole,
     AccountRoleExists,
     RoleNotFound,
+    AdminRoleNotFound,
+    AcccountIsNotCaller,
     NotAllowed,
 }
 

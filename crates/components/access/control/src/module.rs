@@ -56,11 +56,11 @@ impl<E> Data<E>
 where
     E: Env,
 {
-    fn has_role(&self, role: RoleId, account: E::AccountId) -> bool {
+    pub fn has_role(&self, role: RoleId, account: E::AccountId) -> bool {
         self.roles.contains_key(&(role, account))
     }
 
-    fn grant_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+    pub fn grant_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
         let key = (role, account);
 
         if self.roles.contains_key(&key) {
@@ -72,7 +72,7 @@ where
         Ok(())
     }
 
-    fn revoke_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+    pub fn revoke_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
         let occupied = match self.roles.entry((role, account)) {
             Entry::Vacant(_) => return Err(Error::NotHasRole),
             Entry::Occupied(occupied) => occupied,
@@ -83,11 +83,11 @@ where
         Ok(())
     }
 
-    fn get_role_admin(&self, role: &RoleId) -> Option<RoleId> {
+    pub fn get_role_admin(&self, role: &RoleId) -> Option<RoleId> {
         self.admin_roles.get(role).copied()
     }
 
-    fn set_role_admin(&mut self, role: RoleId, admin_role: RoleId) {
+    pub fn set_role_admin(&mut self, role: RoleId, admin_role: RoleId) {
         self.admin_roles.insert(role, admin_role);
     }
 }

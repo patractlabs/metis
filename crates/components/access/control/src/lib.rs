@@ -44,7 +44,11 @@ use metis_lang::{
 
 pub use module::Data;
 
-pub use types::RoleId;
+pub use types::{
+    Error,
+    Result,
+    RoleId,
+};
 
 /// The `EventEmit` impl the event emit api for component.
 pub trait EventEmit<E: Env>: EnvAccess<E> {
@@ -87,28 +91,38 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 
 /// The `Impl` define component impl funcs
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
-    /// init Initializes the contract setting the deployer as the initial owner.
-    fn init(&mut self) {}
-
     /// Returns `true` if `account` has been granted `role`.
-    fn has_role(&self, _role: RoleId, _account: E::AccountId) -> bool {
-        false
+    fn has_role(&self, role: RoleId, account: E::AccountId) -> bool {
+        self.get().has_role(role, account)
     }
 
     /// @dev Returns the admin role that controls `role`. See {grantRole} and
     /// {revokeRole}.
     ///
     /// To change a role's admin, use {_setRoleAdmin}.
-    fn get_role_admin(&self, _role: RoleId) -> RoleId {
-        RoleId::default()
+    fn get_role_admin(&self, role: &RoleId) -> Option<RoleId> {
+        self.get().get_role_admin(role)
     }
 
     /// Panic if `owner` is not an owner
-    fn ensure_role(&self, _role: RoleId, _owner: &E::AccountId) {}
+    fn ensure_role(&self, role: RoleId, account: E::AccountId) {
+        assert!(
+            self.has_role(role, account),
+            "AccessControl: account is missing role"
+        );
+    }
 
     /// Panic if caller is not granted role
     fn ensure_caller_role(&self, role: RoleId) {
-        self.ensure_role(role, &Self::caller());
+        self.ensure_role(role, Self::caller());
+    }
+
+    /// Return error if `account` is missing the admin role of the `role`.
+    fn check_admin_role(&self, role: &RoleId, account: E::AccountId) -> Result<()> {
+        match self.get_role_admin(role) {
+            Some(admin_role) => self.check_role(admin_role, account),
+            None => Err(Error::AdminRoleNotFound),
+        }
     }
 
     /// @dev Grants `role` to `account`.
@@ -119,7 +133,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Requirements:
     ///
     /// - the caller must have ``role``'s admin role.
-    fn grant_role(&mut self, _role: RoleId, _account: E::AccountId) {}
+    fn grant_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+        // check the admin role
+        self.check_admin_role(&role, Self::caller())?;
+
+        self._setup_role(role, account)
+    }
 
     /// @dev Revokes `role` from `account`.
     ///
@@ -128,7 +147,20 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Requirements:
     ///
     /// - the caller must have ``role``'s admin role.
-    fn revoke_role(&mut self, _role: RoleId, _account: E::AccountId) {}
+    fn revoke_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+        let caller = Self::caller();
+
+        // check the admin role
+        self.check_admin_role(&role, caller.clone())?;
+
+        // if has not role, so return err
+        self.get_mut().revoke_role(role, account.clone())?;
+
+        // emit if revoke role success
+        self.emit_event_role_revoked(role, account, caller);
+
+        Ok(())
+    }
 
     /// @dev Revokes `role` from the calling account.
     ///
@@ -142,7 +174,22 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Requirements:
     ///
     /// - the caller must be `account`.
-    fn renounce_role(&mut self, _role: RoleId, _account: E::AccountId) {}
+    fn renounce_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+        let caller = Self::caller();
+
+        // check the caller is account
+        if caller != account {
+            return Err(Error::AcccountIsNotCaller)
+        }
+
+        // if has not role, so return err
+        self.get_mut().revoke_role(role, account.clone())?;
+
+        // emit if revoke role success
+        self.emit_event_role_revoked(role, account, caller);
+
+        Ok(())
+    }
 
     /// @dev Grants `role` to `account`.
     ///
@@ -158,7 +205,26 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Using this function in any other way is effectively circumventing the admin
     /// system imposed by {AccessControl}.
     /// ====
-    fn _setup_role(&mut self, _role: RoleId, _account: E::AccountId) {}
+    fn _setup_role(&mut self, role: RoleId, account: E::AccountId) -> Result<()> {
+        let caller = Self::caller();
+
+        // if has role, so return error
+        self.get_mut().grant_role(role, account.clone())?;
+
+        // emit if grant role success
+        self.emit_event_role_granted(role, account, caller);
+
+        Ok(())
+    }
+
+    /// Return error if `account` is missing `role`.
+    fn check_role(&self, role: RoleId, account: E::AccountId) -> Result<()> {
+        if self.has_role(role, account) {
+            Ok(())
+        } else {
+            Err(Error::RoleNotFound)
+        }
+    }
 }
 
 impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> Impl<E> for T {}
