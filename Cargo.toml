@@ -15,6 +15,7 @@ members = [
 exclude = [
     "examples/",
     "contracts/impls",
+    "contracts/stub",
 ]
 
 [profile.release]
