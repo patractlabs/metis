@@ -51,10 +51,10 @@ describe("access-control-flip", () => {
     expect((await contract.query.hasRole(ROLE_SETTER, Cite)).output).to.equal(false);
     expect((await contract.query.hasRole(ROLE_ADMIN, Cite)).output).to.equal(true);
 
-    // expect((await contract.query.getRoleAdmin(ROLE_FILTER)).output).to.equal(ROLE_ADMIN);
-    // expect((await contract.query.getRoleAdmin(ROLE_SETTER)).output).to.equal(ROLE_ADMIN);
-    // expect((await contract.query.getRoleAdmin(ROLE_EMPTY)).output).to.equal(null);
-    // expect((await contract.query.getRoleAdmin(ROLE_ADMIN)).output).to.equal(null);
+    expect((await contract.query.getRoleAdmin(ROLE_FILTER)).output).to.equal(ROLE_ADMIN);
+    expect((await contract.query.getRoleAdmin(ROLE_SETTER)).output).to.equal(ROLE_ADMIN);
+    expect((await contract.query.getRoleAdmin(ROLE_EMPTY)).output).to.equal(null);
+    expect((await contract.query.getRoleAdmin(ROLE_ADMIN)).output).to.equal(null);
   });
 });
 
