@@ -96,11 +96,6 @@ pub mod access_control_mock {
                 ROLE_ID_FLIPER,
                 ROLE_ID_ADMIN,
             );
-            access_control::Impl::_set_role_admin(
-                &mut instance,
-                ROLE_ID_SETTER,
-                ROLE_ID_ADMIN,
-            );
 
             // create the default role
             instance
