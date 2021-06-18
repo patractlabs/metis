@@ -87,12 +87,9 @@ pub mod access_control_mock {
                 value: init_value,
             };
 
-            access_control::Impl::_setup_role(&mut instance, ROLE_ID_FLIPER, fliper)
-                .expect("fliper");
-            access_control::Impl::_setup_role(&mut instance, ROLE_ID_SETTER, setter)
-                .expect("setter");
-            access_control::Impl::_setup_role(&mut instance, ROLE_ID_ADMIN, admin)
-                .expect("admin");
+            access_control::Impl::_setup_role(&mut instance, ROLE_ID_FLIPER, fliper);
+            access_control::Impl::_setup_role(&mut instance, ROLE_ID_SETTER, setter);
+            access_control::Impl::_setup_role(&mut instance, ROLE_ID_ADMIN, admin);
 
             access_control::Impl::_set_role_admin(
                 &mut instance,
@@ -112,7 +109,7 @@ pub mod access_control_mock {
         // flip the state of contract, need flipper role
         #[ink(message)]
         pub fn flip(&mut self) -> Result<()> {
-            access_control::Impl::check_role(self, ROLE_ID_FLIPER, Self::env().caller())?;
+            access_control::Impl::ensure_caller_role(self, ROLE_ID_FLIPER);
 
             self.value = !self.value;
 
@@ -144,17 +141,17 @@ pub mod access_control_mock {
         }
 
         #[ink(message)]
-        pub fn grant_role(&mut self, role: RoleId, account: AccountId) -> Result<()> {
+        pub fn grant_role(&mut self, role: RoleId, account: AccountId) {
             access_control::Impl::grant_role(self, role, account)
         }
 
         #[ink(message)]
-        pub fn revoke_role(&mut self, role: RoleId, account: AccountId) -> Result<()> {
+        pub fn revoke_role(&mut self, role: RoleId, account: AccountId) {
             access_control::Impl::revoke_role(self, role, account)
         }
 
         #[ink(message)]
-        pub fn renounce_role(&mut self, role: RoleId, account: AccountId) -> Result<()> {
+        pub fn renounce_role(&mut self, role: RoleId, account: AccountId) {
             access_control::Impl::renounce_role(self, role, account)
         }
     }

@@ -27,8 +27,6 @@ pub enum Error {
     AccountRoleExists,
     RoleNotFound,
     AdminRoleNotFound,
-    AcccountIsNotCaller,
-    NotAllowed,
 }
 
 /// The Result of access control

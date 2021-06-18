@@ -82,12 +82,4 @@ where
 
         Ok(())
     }
-
-    pub fn get_role_admin(&self, role: RoleId) -> Option<RoleId> {
-        self.admin_roles.get(&role).copied()
-    }
-
-    pub fn set_role_admin(&mut self, role: RoleId, admin_role: RoleId) {
-        self.admin_roles.insert(role, admin_role);
-    }
 }
