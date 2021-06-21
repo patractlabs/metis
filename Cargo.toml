@@ -2,6 +2,7 @@
 members = [
     "crates/components/access/ownable",
     "crates/components/access/control",
+    "crates/components/access/control-enumerable/",
     "crates/components/token/erc20",
     "crates/components/security/pausable",
     "crates/lang/",
