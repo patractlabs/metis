@@ -79,6 +79,9 @@ mod access_control_tests {
         result
     }
 
+    // TODO: use marco to generate this function
+
+    /// assert the RoleAdminChanged event
     fn assert_role_admin_changed_event(
         event: &ink_env::test::EmittedEvent,
         expected_role: RoleId,
