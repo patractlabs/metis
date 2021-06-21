@@ -154,5 +154,20 @@ pub mod mock {
         pub fn renounce_role(&mut self, role: RoleId, account: AccountId) {
             access_control_enumerable::Impl::renounce_role(self, role, account)
         }
+
+        #[ink(message)]
+        pub fn get_role_member(&self, role: RoleId, index: u32) -> AccountId {
+            access_control_enumerable::Impl::get_role_member(self, &role, index as usize)
+        }
+    
+        #[ink(message)]
+        pub fn get_role_member_count(&self, role: RoleId) -> u32 {
+            access_control_enumerable::Impl::get_role_member_count(self, &role) as u32
+        }
+
+        #[ink(message)]
+        pub fn _setup_role(&mut self, role: RoleId, account: AccountId) {
+            access_control_enumerable::Impl::_setup_role(self, role, account)
+        }
     }
 }

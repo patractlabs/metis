@@ -49,12 +49,10 @@ where
 
 impl<E: Env> Data<E> {
     fn add_member(&mut self, role: &RoleId, member: &E::AccountId) {
-        let mut occupied = match self.role_members.entry(role.clone()) {
-            Entry::Vacant(_) => panic!("no found role by id"),
-            Entry::Occupied(occupied) => occupied,
-        };
-
-        occupied.get_mut().push(member.clone());
+        self.role_members
+            .entry(role.clone())
+            .or_insert(Vec::default())
+            .push(member.clone());
     }
 
     fn remove_member(&mut self, role: &RoleId, member: &E::AccountId) {
@@ -159,7 +157,10 @@ where
     ///
     /// - the caller must have ``role``'s admin role.
     fn grant_role(&mut self, role: RoleId, account: E::AccountId) {
-        // no need push in grant_role
+        // if has a role, the add will revert by panic
+        // grant_role will call the _setup_role but not add
+        Storage::<E, Data<E>>::get_mut(self).add_member(&role, &account);
+
         access_control::Impl::grant_role(self, role, account)
     }
 
