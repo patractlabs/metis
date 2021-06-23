@@ -7,6 +7,7 @@ edition = "2018"
 [dependencies]
 ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
 ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
 scale-info = { version = "0.6", default-features = false, features = ["derive"] }
@@ -41,6 +42,7 @@ default = ["std"]
 std = [
     "ink_metadata/std",
     "ink_storage/std",
+    "ink_primitives/std",
     "scale/std",
     "scale-info/std",
     "metis_lang/std",
