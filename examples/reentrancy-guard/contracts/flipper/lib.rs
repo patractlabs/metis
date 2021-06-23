@@ -82,9 +82,6 @@ pub mod flipper {
             reentrancy_guard::Impl::_check_nonreentrant(self);
             reentrancy_guard::Impl::_set_entered(self);
 
-            //let root_key = ink_primitives::Key::from([0x00; 32]);
-            //ink_storage::traits::push_spread_root::<Flipper>(self, &root_key);
-
             self.value = !self.value;
 
             reentrancy_guard::Impl::_set_not_entered(self);
@@ -100,10 +97,8 @@ pub mod flipper {
             reentrancy_guard::Impl::_check_nonreentrant(self);
             reentrancy_guard::Impl::_set_entered(self);
 
-            //let root_key = ink_primitives::Key::from([0x00; 32]);
-            //ink_storage::traits::push_spread_root::<Flipper>(self, &root_key);
-
             self.value = !self.value;
+
             let mut flipper = <FlipperStub>::from_account_id(caller);
             <FlipperStub>::flip(&mut flipper);
 

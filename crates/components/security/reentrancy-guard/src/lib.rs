@@ -21,8 +21,6 @@ pub trait Impl<E: Env>: Storage<E, Data> {
     /// set current status to entered
     fn _set_entered(&mut self) {
         self.get_mut().set_entered();
-        // need flush all
-        
     }
 
     /// set current status to not entered

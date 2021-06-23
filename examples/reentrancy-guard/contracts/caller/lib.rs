@@ -55,15 +55,16 @@ pub mod flipper_caller {
         }
 
         #[ink(message)]
-        pub fn do_sth_panic(&mut self) {}
-
-        #[ink(message)]
         pub fn flip(&mut self) {
             if !self.called {
                 self.called = true;
 
                 let mut flipper = <Flipper>::from_account_id(self.flipper_account);
-                <Flipper>::flip(&mut flipper);
+                match self.call_type {
+                    CALL_SAME => <Flipper>::call_flip(&mut flipper, self.env().account_id()),
+                    CALL_OTHER => <Flipper>::flip(&mut flipper),
+                    _ => return
+                }
             }
         }
 

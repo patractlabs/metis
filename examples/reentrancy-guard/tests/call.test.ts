@@ -101,6 +101,32 @@ describe("reentrancy-guard test", () => {
       }
 
       expect((await contract.query.get()).output).to.equal(true);
+
+      await contract.tx.flip();
+
+      expect((await contract.query.get()).output).to.equal(false);
+    });
+
+    it("reentrant diff should failed", async () => {
+      const { contract, caller, Alice, Bob, Carol, Dan } = await setup();
+
+      await caller.connect(Bob).tx.setCallType(2);
+
+      // caller will call flipper and to emit a callback
+      expect((await contract.query.get()).output).to.equal(true);
+
+      try {
+        await caller.connect(Bob).tx.doSth();
+      } catch (exp) {
+        console.error(exp);
+        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+      }
+
+      expect((await contract.query.get()).output).to.equal(true);
+
+      await contract.tx.flip();
+
+      expect((await contract.query.get()).output).to.equal(false);
     });
   });
 });
