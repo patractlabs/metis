@@ -11,6 +11,7 @@ use syn::Result;
 
 pub mod component{
     pub use super::components::erc165;
+    pub use super::components::reentrancy_guard;
 }
 
 pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {

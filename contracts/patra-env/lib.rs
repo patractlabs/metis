@@ -14,4 +14,5 @@ impl Environment for PatraEnvironment {
     type BlockNumber = u32;
 
     type ChainExtension = ();
+    type RentFraction = <ink_env::DefaultEnvironment as Environment>::RentFraction;
 }

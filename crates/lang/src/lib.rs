@@ -17,4 +17,5 @@ pub use metis_lang_macro::{
     import,
     metis,
     supports,
+    reentrancy_guard,
 };
