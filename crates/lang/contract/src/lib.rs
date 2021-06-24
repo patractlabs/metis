@@ -39,4 +39,6 @@ where
 pub trait EnvAccess<E: Env> {
     fn caller() -> E::AccountId;
     fn transferred_balance() -> E::Balance;
+    fn account_id() -> E::AccountId;
+    fn balance() -> E::Balance;
 }

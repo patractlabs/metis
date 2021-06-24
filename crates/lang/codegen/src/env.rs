@@ -24,11 +24,17 @@ pub fn generate_code(
 
         #no_cross_calling_cfg
         impl metis_lang::EnvAccess<#storage_ident > for #storage_ident  {
-            fn caller() -> <#storage_ident  as metis_lang::Env>::AccountId {
+            fn caller() -> <#storage_ident as metis_lang::Env>::AccountId {
                 Self::env().caller()
             }
-            fn transferred_balance() -> <#storage_ident  as metis_lang::Env>::Balance {
+            fn transferred_balance() -> <#storage_ident as metis_lang::Env>::Balance {
                 Self::env().transferred_balance()
+            }
+            fn account_id() -> <#storage_ident as metis_lang::Env>::AccountId {
+                Self::env().account_id()
+            }
+            fn balance() -> <#storage_ident as metis_lang::Env>::Balance  {
+                Self::env().balance()
             }
         }
     };
