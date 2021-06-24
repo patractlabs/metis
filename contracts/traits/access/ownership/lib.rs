@@ -4,23 +4,26 @@ use ink_env::AccountId;
 use ink_lang as ink;
 
 /// # Example: Implementation
+/// 
 /// ```
+/// #![cfg_attr(not(feature = "std"), no_std)]
+/// 
 /// use ink_lang as ink;
 ///
 /// #[ink::contract]
-/// mod ownership {
-/// 	use super::Ownable;
+/// mod ownership_contract {
+/// 	use super::*;
 ///
 ///     #[ink(storage)]
 ///     pub struct Ownership {
 ///         owner: Option<AccountId>,
 ///     }
 ///
-///     impl Ownable for Ownership {
+///     impl ownership::Ownable for Ownership {
 ///         #[ink(constructor)]
 ///         fn new() -> Self {
 ///             Self {
-///                 owner: Self::env().caller(),
+///                 owner: Some(Self::env().caller()),
 ///             }
 ///         }
 ///
