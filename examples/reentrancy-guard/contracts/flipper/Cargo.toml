@@ -14,7 +14,7 @@ ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", d
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
 scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
 
-metis-ownable = { path = "../../../../crates/components/access/ownable", default-features = false }
+metis_ownable = { path = "../../../../crates/components/access/ownable", default-features = false }
 metis_reentrancy_guard = { path = "../../../../crates/components/security/reentrancy-guard", default-features = false }
 metis_lang = { path = "../../../../crates/lang", default-features = false }
 
@@ -44,7 +44,7 @@ std = [
     "scale-info",
     "scale-info/std",
 
-    "metis-ownable/std",
+    "metis_ownable/std",
     "metis_reentrancy_guard/std",
     "metis_lang/std",
 

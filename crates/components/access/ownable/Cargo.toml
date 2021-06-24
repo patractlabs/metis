@@ -1,5 +1,5 @@
 [package]
-name = "metis-ownable"
+name = "metis_ownable"
 version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
