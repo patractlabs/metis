@@ -12,6 +12,7 @@ pub use traits::{
     Timestamp,
 };
 
+
 pub trait Env: 'static {
     type AccountId: AccountId;
     type Balance: Balance;
@@ -41,4 +42,5 @@ pub trait EnvAccess<E: Env> {
     fn transferred_balance() -> E::Balance;
     fn account_id() -> E::AccountId;
     fn balance() -> E::Balance;
+    fn transfer(destination: E::AccountId, value: E::Balance) -> ink_env::Result<()>;
 }

@@ -36,6 +36,9 @@ pub fn generate_code(
             fn balance() -> <#storage_ident as metis_lang::Env>::Balance  {
                 Self::env().balance()
             }
+            fn transfer(destination: <#storage_ident as metis_lang::Env>::AccountId, value: <#storage_ident as metis_lang::Env>::Balance) -> ink_env::Result<()>{
+                Self::env().transfer(destination, value)
+            }
         }
     };
 
