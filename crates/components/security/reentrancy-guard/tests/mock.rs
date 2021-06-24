@@ -51,24 +51,16 @@ mod flipper {
         }
 
         #[ink(message)]
+        #[metis_lang::reentrancy_guard]
         pub fn flip(&mut self) {
-            reentrancy_guard::Impl::_check_nonreentrant(self);
-            reentrancy_guard::Impl::_set_entered(self);
-
             self.value = !self.value;
-
-            reentrancy_guard::Impl::_set_not_entered(self);
         }
 
         #[ink(message)]
+        #[metis_lang::reentrancy_guard]
         pub fn flip_panic(&mut self) {
-            reentrancy_guard::Impl::_check_nonreentrant(self);
-            reentrancy_guard::Impl::_set_entered(self);
-
             self.value = !self.value;
             self.flip();
-
-            reentrancy_guard::Impl::_set_not_entered(self);
         }
 
         #[ink(message)]

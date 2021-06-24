@@ -78,13 +78,9 @@ pub mod flipper {
         }
     
         #[ink(message)]
+        #[metis_lang::reentrancy_guard]
         pub fn flip(&mut self) {
-            reentrancy_guard::Impl::_check_nonreentrant(self);
-            reentrancy_guard::Impl::_set_entered(self);
-
             self.value = !self.value;
-
-            reentrancy_guard::Impl::_set_not_entered(self);
         }
 
         #[ink(message)]
@@ -93,16 +89,12 @@ pub mod flipper {
         }
 
         #[ink(message)]
+        #[metis_lang::reentrancy_guard]
         pub fn call_flip(&mut self, caller: AccountId) {
-            reentrancy_guard::Impl::_check_nonreentrant(self);
-            reentrancy_guard::Impl::_set_entered(self);
-
             self.value = !self.value;
 
             let mut flipper = <FlipperStub>::from_account_id(caller);
             <FlipperStub>::flip(&mut flipper);
-
-            reentrancy_guard::Impl::_set_not_entered(self);
         }
     }
 
