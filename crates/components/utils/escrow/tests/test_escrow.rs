@@ -1,7 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use ink_lang as ink;
-
 #[metis_lang::contract]
 pub mod mock {
     use metis_escrow as escrow;
@@ -68,7 +66,7 @@ pub mod mock {
             escrow::Impl::deposits_of(self, &payee)
         }
 
-        #[ink(message)]
+        #[ink(message, payable)]
         pub fn deposit(&mut self, payee: AccountId) {
             escrow::Impl::deposit(self, payee)
         }

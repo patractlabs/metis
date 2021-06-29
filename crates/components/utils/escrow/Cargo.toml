@@ -5,6 +5,7 @@ authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
 
 [dependencies]
+ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
 ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 
@@ -39,6 +40,7 @@ default = ["std"]
 std = [
     "ink_metadata/std",
     "ink_storage/std",
+    "ink_lang/std",
     "scale/std",
     "scale-info/std",
     "metis_lang/std",

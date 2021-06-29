@@ -7,6 +7,7 @@ members = [
     "crates/components/security/pausable",
     "crates/components/security/reentrancy-guard",
     "crates/components/utils/escrow",
+    "crates/components/utils/escrow/stub",
     "crates/lang/",
     "crates/lang/macro",
     "crates/lang/contract",
