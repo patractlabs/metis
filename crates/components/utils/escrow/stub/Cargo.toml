@@ -1,5 +1,5 @@
 [package]
-name = "flipper"
+name = "metis_escrow_stub"
 version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
@@ -12,23 +12,8 @@ ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink"
 ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
-scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
-
-metis_ownable = { path = "../../../../crates/components/access/ownable", default-features = false }
-metis_reentrancy_guard = { path = "../../../../crates/components/security/reentrancy-guard", default-features = false }
-metis_lang = { path = "../../../../crates/lang", default-features = false }
-
-traits = { path = "../traits/", default-features = false, features = ["ink-as-dependency"] }
-
-[lib]
-name = "flipper"
-path = "lib.rs"
-crate-type = [
-    # Used for normal contract Wasm blobs.
-    "cdylib",
-    # Used for ABI generation.
-    "rlib",
-]
+scale-info = { version = "0.6", default-features = false, features = ["derive"] }
+num-traits = { version = "0.2", default-features = false, features = ["i128"] }
 
 [features]
 default = ["std"]
@@ -39,15 +24,7 @@ std = [
     "ink_env/std",
     "ink_storage/std",
     "ink_lang/std",
-
     "scale/std",
-    "scale-info",
     "scale-info/std",
-
-    "metis_ownable/std",
-    "metis_reentrancy_guard/std",
-    "metis_lang/std",
-
-    "traits/std",
 ]
 ink-as-dependency = []

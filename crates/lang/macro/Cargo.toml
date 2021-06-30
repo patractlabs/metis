@@ -24,8 +24,8 @@ metis_lang_codegen = { path = "../codegen/", default-features = false }
 [dev-dependencies]
 trybuild = { version = "1.0", features = ["diff"] }
 metis_contract = { path = "../contract" }
-metis-erc20 = { path = "../../components/token/erc20" }
-metis-ownable = { path = "../../components/access/ownable" }
+metis_erc20 = { path = "../../components/token/erc20" }
+metis_ownable = { path = "../../components/access/ownable" }
 
 ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
