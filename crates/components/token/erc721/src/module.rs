@@ -4,7 +4,6 @@ pub use metis_lang::Env;
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{
     collections::{
-        hashmap::Entry,
         HashMap as StorageHashMap,
     },
     lazy::Lazy,
@@ -72,7 +71,10 @@ impl<E: Env> Data<E> {
 
     /// Return the balance of {owner}
     pub fn balance_of(&self, owner: &E::AccountId) -> E::Balance {
-        self.balances.get(owner).copied().unwrap_or(E::Balance::from(0_u8))
+        self.balances
+            .get(owner)
+            .copied()
+            .unwrap_or(E::Balance::from(0_u8))
     }
 
     pub fn set_approval_for_all(
@@ -95,34 +97,15 @@ impl<E: Env> Data<E> {
         }
     }
 
-    fn _mod_balance(&mut self, owner: &E::AccountId, is_add: bool) {
-        match self.balances.entry(owner.clone()) {
-            Entry::Vacant(vacant) => {
-                assert!(is_add, "ERC721: balance can not dec to -1");
-                vacant.insert(E::Balance::from(1_u8));
-            }
-            Entry::Occupied(mut occupied) => {
-                let old_value = *occupied.get();
-                assert!(
-                    old_value != E::Balance::from(0_u8) || is_add,
-                    "ERC721: balance can not dec to -1 from 0"
-                );
-
-                let new_value = match is_add {
-                    true => old_value + E::Balance::from(1_u8),
-                    false => old_value - E::Balance::from(1_u8),
-                };
-
-                occupied.insert(new_value);
-            }
-        };
+    pub fn balance_inc(&mut self, owner: &E::AccountId) {
+        self.balances
+            .entry(owner.clone())
+            .and_modify(|v| *v += E::Balance::from(1_u8))
+            .or_insert(E::Balance::from(1_u8));
     }
 
-    pub fn balance_inc(&mut self, owner: &E::AccountId){
-        self._mod_balance(owner, true);
-    }
-
-    pub fn balance_dec(&mut self, owner: &E::AccountId){
-        self._mod_balance(owner, false);
+    pub fn balance_dec(&mut self, owner: &E::AccountId) {
+        let count = self.balances.get_mut(owner).expect("ERC721: balance not found");
+        *count -= E::Balance::from(1_u8);
     }
 }

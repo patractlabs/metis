@@ -3,6 +3,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod basic;
+mod extensions;
 mod module;
 mod types;
 
@@ -14,9 +15,7 @@ pub use metis_lang::{
 
 pub use module::Data;
 
-pub use types::{
-    TokenId,
-};
+pub use types::TokenId;
 
 pub use basic::{
     Error,
@@ -29,4 +28,22 @@ pub mod default {
     pub use super::basic::Impl;
 }
 
+pub mod burnable {
+    pub use super::extensions::burnable::{
+        Impl,
+    };
+}
+
+pub mod enumerable {
+    pub use super::extensions::enumerable::{
+        Data,
+        Impl,
+    };
+}
+
+pub mod pausable {
+    pub use super::extensions::pausable::{
+        Impl,
+    };
+}
 // impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> Impl<E> for T {}

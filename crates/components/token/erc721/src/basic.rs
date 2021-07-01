@@ -18,7 +18,7 @@ pub enum Error {
     AccountIsZero,
 }
 
-use crate::types::TokenId;
+pub use crate::types::TokenId;
 
 /// The ERC-20 result type.
 pub type Result<T> = core::result::Result<T, Error>;
@@ -88,6 +88,11 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         token_id: &TokenId,
     ) -> Result<()>;
 
+    /// @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
+    /// token will be the concatenation of the `baseURI` and the `token_id`. Empty
+    /// by default, can be overriden in child contracts.
+    fn _base_url(&self) -> String;
+
     /// Returns the name of the token.
     fn name(&self) -> String {
         self.get().name().clone()
@@ -105,7 +110,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             "ERC721Metadata: URI query for nonexistent token"
         );
 
-        let mut base_url = self._base_url();
+        let mut base_url = self._base_url().clone();
 
         match base_url.len() {
             0 => String::from(""),
@@ -151,7 +156,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     ///
     /// See {setApprovalForAll}
     fn is_approved_for_all(&self, owner: &E::AccountId, operator: &E::AccountId) -> bool {
-        self.get().is_approved_for_all(owner.clone(), operator.clone())
+        self.get()
+            .is_approved_for_all(owner.clone(), operator.clone())
     }
 
     /// @dev Gives permission to `to` to transfer `token_id` token to another account.
@@ -268,11 +274,6 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
 
         self._safe_transfer(from, to, token_id, data)
     }
-
-    /// @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
-    /// token will be the concatenation of the `baseURI` and the `token_id`. Empty
-    /// by default, can be overriden in child contracts.
-    fn _base_url(&self) -> String;
 
     /// @dev Returns whether `token_id` exists.
     ///
@@ -489,6 +490,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         _token_id: &TokenId,
         _data: Vec<u8>,
     ) -> bool {
+        // TODO: make erc721 receive check
         true
     }
 }
