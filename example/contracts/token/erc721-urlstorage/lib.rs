@@ -2,6 +2,7 @@
 
 #[metis_lang::contract]
 pub mod contract {
+    use erc721::urlstorage;
     use ink_prelude::{
         string::String,
         vec::Vec,
@@ -16,11 +17,13 @@ pub mod contract {
         import,
         metis,
     };
+
     /// A simple ERC-20 contract.
     #[ink(storage)]
-    #[import(erc721)]
+    #[import(erc721, urlstorage)]
     pub struct Erc721 {
         erc721: erc721::Data<Erc721>,
+        urlstorage: urlstorage::Data,
     }
 
     // TODO: gen by marco with Erc721 component
@@ -38,7 +41,7 @@ pub mod contract {
             String::from("https://test/")
         }
     }
-    impl erc721::burnable::Impl<Erc721> for Erc721 {}
+    impl erc721::urlstorage::Impl<Erc721> for Erc721 {}
 
     /// Emitted when `token_id` token is transferred from `from` to `to`.
     #[ink(event)]
@@ -80,6 +83,12 @@ pub mod contract {
         pub fn mint(&mut self, to: AccountId, token_id: TokenId) -> Result<()> {
             erc721::Impl::_mint(self, &to, &token_id)
         }
+
+        /// For test to burn
+        #[ink(message)]
+        pub fn burn(&mut self, token_id: TokenId) -> Result<()> {
+            erc721::Impl::_burn(self, &token_id)
+        }
     }
 
     // impl
@@ -88,6 +97,7 @@ pub mod contract {
         pub fn new(name: String, symbol: String) -> Self {
             let mut instance = Self {
                 erc721: erc721::Data::new(),
+                urlstorage: urlstorage::Data::default(),
             };
 
             erc721::Impl::init(&mut instance, name, symbol);
@@ -239,16 +249,6 @@ pub mod contract {
             data: Vec<u8>,
         ) -> Result<()> {
             erc721::Impl::safe_transfer_from_with_data(self, from, to, token_id, data)
-        }
-
-        /// @dev Burns `tokenId`. See {ERC721-_burn}.
-        ///
-        /// Requirements:
-        ///
-        /// - The caller must own `tokenId` or be an approved operator.
-        #[ink(message)]
-        pub fn burn(&mut self, token_id: TokenId) -> Result<()> {
-            erc721::burnable::Impl::burn(self, &token_id)
         }
     }
 }

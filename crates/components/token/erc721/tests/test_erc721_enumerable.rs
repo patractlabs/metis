@@ -55,7 +55,7 @@ mod erc721_basic_tests {
         // Mint, current mint is a mock
         let token_a = TokenId::new([0x0a; 32]);
         assert_eq!(
-            erc721.mint(default_account, &token_a),
+            erc721.mint(default_account, token_a),
             Ok(()),
             "mint should be ok"
         );
@@ -68,7 +68,7 @@ mod erc721_basic_tests {
 
         assert_eq!(
             default_account,
-            erc721.owner_of(&token_a),
+            erc721.owner_of(token_a),
             "token A owner should be default account"
         );
     }

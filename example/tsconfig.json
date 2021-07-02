@@ -7,7 +7,7 @@
     "outDir": "dist",
     "noImplicitAny": false
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/**/*.ts"],
   "exclude": ["node_modules"],
   "files": ["./redspot.config.ts"]
 }

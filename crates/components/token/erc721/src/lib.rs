@@ -45,4 +45,11 @@ pub mod pausable {
         Impl,
     };
 }
+
+pub mod urlstorage {
+    pub use super::extensions::urlstorage::{
+        Data,
+        Impl,
+    };
+}
 // impl<E: Env, T: Storage<E, Data<E>> + EventEmit<E>> Impl<E> for T {}

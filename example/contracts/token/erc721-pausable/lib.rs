@@ -16,15 +16,20 @@ pub mod contract {
         import,
         metis,
     };
+    use metis_ownable as ownable;
+    use metis_pausable as pausable;
+
     /// A simple ERC-20 contract.
     #[ink(storage)]
-    #[import(erc721)]
+    #[import(erc721, ownable, pausable)]
     pub struct Erc721 {
         erc721: erc721::Data<Erc721>,
+        ownable: ownable::Data<Erc721>,
+        pausable: pausable::Data,
     }
 
     // TODO: gen by marco with Erc721 component
-    impl erc721::Impl<Erc721> for Erc721 {
+    impl erc721::pausable::Impl<Erc721> for Erc721 {
         fn _before_token_transfer(
             &mut self,
             _from: Option<AccountId>,
@@ -38,7 +43,6 @@ pub mod contract {
             String::from("https://test/")
         }
     }
-    impl erc721::burnable::Impl<Erc721> for Erc721 {}
 
     /// Emitted when `token_id` token is transferred from `from` to `to`.
     #[ink(event)]
@@ -73,12 +77,48 @@ pub mod contract {
         pub approved: bool,
     }
 
+    /// Event emitted when Owner AccountId Transferred
+    #[ink(event)]
+    #[metis(ownable)]
+    pub struct OwnershipTransferred {
+        /// previous owner account id
+        #[ink(topic)]
+        previous_owner: Option<AccountId>,
+        /// new owner account id
+        #[ink(topic)]
+        new_owner: Option<AccountId>,
+    }
+
+    /// Event emitted when Pause
+    #[ink(event)]
+    #[metis(pausable)]
+    pub struct Paused {
+        /// paused caller
+        #[ink(topic)]
+        account: AccountId,
+    }
+
+    /// Event emitted when unPause
+    #[ink(event)]
+    #[metis(pausable)]
+    pub struct Unpaused {
+        /// unpaused caller
+        #[ink(topic)]
+        account: AccountId,
+    }
+
     // for test message
     impl Erc721 {
         /// For test to mint
         #[ink(message)]
         pub fn mint(&mut self, to: AccountId, token_id: TokenId) -> Result<()> {
             erc721::Impl::_mint(self, &to, &token_id)
+        }
+
+        /// For test to burn
+        #[ink(message)]
+        pub fn burn(&mut self, token_id: TokenId) -> Result<()> {
+            erc721::Impl::_burn(self, &token_id)
         }
     }
 
@@ -88,9 +128,14 @@ pub mod contract {
         pub fn new(name: String, symbol: String) -> Self {
             let mut instance = Self {
                 erc721: erc721::Data::new(),
+                pausable: pausable::Data::new(),
+                ownable: ownable::Data::new(),
             };
 
             erc721::Impl::init(&mut instance, name, symbol);
+            ownable::Impl::init(&mut instance);
+            pausable::Impl::init(&mut instance);
+
             instance
         }
 
@@ -241,14 +286,38 @@ pub mod contract {
             erc721::Impl::safe_transfer_from_with_data(self, from, to, token_id, data)
         }
 
-        /// @dev Burns `tokenId`. See {ERC721-_burn}.
-        ///
-        /// Requirements:
-        ///
-        /// - The caller must own `tokenId` or be an approved operator.
+        // Owner messages
         #[ink(message)]
-        pub fn burn(&mut self, token_id: TokenId) -> Result<()> {
-            erc721::burnable::Impl::burn(self, &token_id)
+        pub fn get_ownership(&self) -> Option<AccountId> {
+            *ownable::Impl::owner(self)
+        }
+
+        #[ink(message)]
+        pub fn renounce_ownership(&mut self) {
+            ownable::Impl::renounce_ownership(self)
+        }
+
+        #[ink(message)]
+        pub fn transfer_ownership(&mut self, new_owner: AccountId) {
+            ownable::Impl::transfer_ownership(self, &new_owner)
+        }
+
+        // Pausable messages
+        #[ink(message)]
+        pub fn paused(&self) -> bool {
+            pausable::Impl::paused(self)
+        }
+
+        #[ink(message)]
+        pub fn pause(&mut self) {
+            ownable::Impl::ensure_caller_is_owner(self);
+            pausable::Impl::_pause(self)
+        }
+
+        #[ink(message)]
+        pub fn unpause(&mut self) {
+            ownable::Impl::ensure_caller_is_owner(self);
+            pausable::Impl::_unpause(self)
         }
     }
 }
