@@ -11,6 +11,7 @@ ink_prelude = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink"
 ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
 scale-info = { version = "0.6", default-features = false, features = ["derive"] }
@@ -21,6 +22,9 @@ metis_lang = { path = "../../../lang/", default-features = false }
 
 metis_ownable = { path = "../../access/ownable", default-features = false }
 metis_pausable = { path = "../../security/pausable", default-features = false }
+
+metis_erc721_types = { path = "./types", default-features = false }
+metis_erc721_receiver = { path = "./receiver", default-features = false , features = ["ink-as-dependency"] }
 
 [dev-dependencies]
 trybuild = { version = "1.0", features = ["diff"] }
@@ -43,6 +47,9 @@ hex = { version = "0.4" }
 
 metis_lang = { path = "../../../lang/" }
 
+metis_erc721_types = { path = "./types" }
+metis_erc721_receiver = { path = "./receiver" }
+
 [features]
 default = ["std"]
 std = [
@@ -57,5 +64,7 @@ std = [
     "metis_lang/std",
     "metis_ownable/std",
     "metis_pausable/std",
+    "metis_erc721_types/std",
+    "metis_erc721_receiver/std",
 ]
 ink-as-dependency = []

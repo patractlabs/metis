@@ -3,6 +3,7 @@ use ink_prelude::string::String;
 pub use metis_lang::{
     Env,
     EnvAccess,
+    FromAccountId,
     Storage,
 };
 
@@ -18,7 +19,9 @@ pub enum Error {
     AccountIsZero,
 }
 
-pub use crate::types::TokenId;
+pub use crate::TokenId;
+
+use metis_erc721_receiver::ERC721ReceiverStub as Receiver;
 
 /// The ERC-20 result type.
 pub type Result<T> = core::result::Result<T, Error>;
@@ -242,9 +245,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Emits a {Transfer} event.
     fn safe_transfer_from(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
-        token_id: &TokenId,
+        from: E::AccountId,
+        to: E::AccountId,
+        token_id: TokenId,
     ) -> Result<()> {
         self.safe_transfer_from_with_data(from, to, token_id, Vec::default())
     }
@@ -262,13 +265,13 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Emits a {Transfer} event.
     fn safe_transfer_from_with_data(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
-        token_id: &TokenId,
+        from: E::AccountId,
+        to: E::AccountId,
+        token_id: TokenId,
         data: Vec<u8>,
     ) -> Result<()> {
         assert!(
-            self._is_approved_or_owner(&Self::caller(), token_id),
+            self._is_approved_or_owner(&Self::caller(), &token_id),
             "ERC721: transfer caller is not owner nor approved"
         );
 
@@ -306,12 +309,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Emits a {Transfer} event.
     fn _safe_transfer(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
-        token_id: &TokenId,
+        from: E::AccountId,
+        to: E::AccountId,
+        token_id: TokenId,
         data: Vec<u8>,
     ) -> Result<()> {
-        self._transfer(from, to, token_id)?;
+        self._transfer(&from, &to, &token_id)?;
 
         assert!(
             self._check_on_erc721_received(from, to, token_id, data),
@@ -347,7 +350,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
     ///
     /// Emits a {Transfer} event.
-    fn _safe_mint(&mut self, to: &E::AccountId, token_id: &TokenId) -> Result<()> {
+    fn _safe_mint(&mut self, to: E::AccountId, token_id: TokenId) -> Result<()> {
         self._safe_mint_with_data(to, token_id, Vec::default())
     }
 
@@ -355,14 +358,14 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
     fn _safe_mint_with_data(
         &mut self,
-        to: &E::AccountId,
-        token_id: &TokenId,
+        to: E::AccountId,
+        token_id: TokenId,
         data: Vec<u8>,
     ) -> Result<()> {
-        self._mint(to, token_id)?;
+        self._mint(&to, &token_id)?;
 
         assert!(
-            self._check_on_erc721_received(&E::AccountId::default(), to, token_id, data),
+            self._check_on_erc721_received(E::AccountId::default(), to, token_id, data),
             "ERC721: transfer to non ERC721Receiver implementer"
         );
 
@@ -485,12 +488,24 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// @return bool whether the call correctly returned the expected magic value
     fn _check_on_erc721_received(
         &mut self,
-        _from: &E::AccountId,
-        _to: &E::AccountId,
-        _token_id: &TokenId,
-        _data: Vec<u8>,
+        from: E::AccountId,
+        to: E::AccountId,
+        token_id: TokenId,
+        data: Vec<u8>,
     ) -> bool {
-        // TODO: make erc721 receive check
-        true
+        let receiver = <Receiver as FromAccountId<E>>::from_account_id(to.clone());
+        let caller = Self::caller();
+
+        let resp = <Receiver>::on_erc721_received(
+            &receiver,
+            caller.into(),
+            from.into(),
+            token_id,
+            data,
+        );
+        
+        resp == [
+            90u8, 119u8, 73u8, 174u8,
+        ] // TODO: use code gen
     }
 }

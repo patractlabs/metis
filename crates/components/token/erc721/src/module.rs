@@ -10,7 +10,7 @@ use ::ink_storage::{
     traits::SpreadLayout,
 };
 
-use crate::types::TokenId;
+use crate::TokenId;
 
 /// The Data of ERC20 component
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]

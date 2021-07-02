@@ -5,7 +5,6 @@
 mod basic;
 mod extensions;
 mod module;
-mod types;
 
 pub use metis_lang::{
     Env,
@@ -15,7 +14,7 @@ pub use metis_lang::{
 
 pub use module::Data;
 
-pub use types::TokenId;
+pub use metis_erc721_types::TokenId;
 
 pub use basic::{
     Error,

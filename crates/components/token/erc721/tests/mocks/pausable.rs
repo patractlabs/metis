@@ -257,9 +257,9 @@ pub mod contract {
         #[ink(message)]
         pub fn safe_transfer_from(
             &mut self,
-            from: &AccountId,
-            to: &AccountId,
-            token_id: &TokenId,
+            from: AccountId,
+            to: AccountId,
+            token_id: TokenId,
         ) -> Result<()> {
             erc721::Impl::safe_transfer_from(self, from, to, token_id)
         }
@@ -278,9 +278,9 @@ pub mod contract {
         #[ink(message)]
         pub fn safe_transfer_from_with_data(
             &mut self,
-            from: &AccountId,
-            to: &AccountId,
-            token_id: &TokenId,
+            from: AccountId,
+            to: AccountId,
+            token_id: TokenId,
             data: Vec<u8>,
         ) -> Result<()> {
             erc721::Impl::safe_transfer_from_with_data(self, from, to, token_id, data)
