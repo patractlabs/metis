@@ -4,6 +4,7 @@ use crate::{
     TokenId,
 };
 
+use ink_prelude::string::String;
 use metis_lang::Env;
 
 pub trait Impl<E>: ERC721<E> + metis_pausable::Impl<E>

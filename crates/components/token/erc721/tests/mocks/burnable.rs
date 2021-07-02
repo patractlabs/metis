@@ -111,7 +111,7 @@ pub mod contract {
 
         /// @dev Returns the number of tokens in ``owner``'s account.
         #[ink(message)]
-        pub fn balance_of(&self, owner: AccountId) -> Balance {
+        pub fn balance_of(&self, owner: AccountId) -> u64 {
             erc721::Impl::balance_of(self, &owner)
         }
 
@@ -131,8 +131,8 @@ pub mod contract {
         ///
         /// - `token_id` must exist.
         #[ink(message)]
-        pub fn get_approved(&self, token_id: &TokenId) -> Option<&AccountId> {
-            erc721::Impl::get_approved(self, token_id)
+        pub fn get_approved(&self, token_id: TokenId) -> Option<AccountId> {
+            erc721::Impl::get_approved(self, &token_id)
         }
 
         /// @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
@@ -191,9 +191,9 @@ pub mod contract {
         #[ink(message)]
         pub fn transfer_from(
             &mut self,
-            from: &AccountId,
-            to: &AccountId,
-            token_id: &TokenId,
+            from: AccountId,
+            to: AccountId,
+            token_id: TokenId,
         ) -> Result<()> {
             erc721::Impl::transfer_from(self, from, to, token_id)
         }

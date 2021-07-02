@@ -3,9 +3,7 @@ pub use metis_lang::Env;
 
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{
-    collections::{
-        HashMap as StorageHashMap,
-    },
+    collections::HashMap as StorageHashMap,
     lazy::Lazy,
     traits::SpreadLayout,
 };
@@ -23,7 +21,7 @@ pub struct Data<E: Env> {
     pub owners: StorageHashMap<TokenId, E::AccountId>,
 
     /// Mapping owner address to token count
-    pub balances: StorageHashMap<E::AccountId, E::Balance>,
+    pub balances: StorageHashMap<E::AccountId, u64>,
 
     /// Mapping from token ID to approved address
     pub token_approvals: StorageHashMap<TokenId, E::AccountId>,
@@ -70,11 +68,11 @@ impl<E: Env> Data<E> {
     }
 
     /// Return the balance of {owner}
-    pub fn balance_of(&self, owner: &E::AccountId) -> E::Balance {
+    pub fn balance_of(&self, owner: &E::AccountId) -> u64 {
         self.balances
             .get(owner)
             .copied()
-            .unwrap_or(E::Balance::from(0_u8))
+            .unwrap_or(0_u64)
     }
 
     pub fn set_approval_for_all(
@@ -98,14 +96,18 @@ impl<E: Env> Data<E> {
     }
 
     pub fn balance_inc(&mut self, owner: &E::AccountId) {
-        self.balances
-            .entry(owner.clone())
-            .and_modify(|v| *v += E::Balance::from(1_u8))
-            .or_insert(E::Balance::from(1_u8));
+        let entry = self.balances.entry(owner.clone());
+
+        entry
+            .and_modify(|v| *v += 1_u64)
+            .or_insert(1_u64);
     }
 
     pub fn balance_dec(&mut self, owner: &E::AccountId) {
-        let count = self.balances.get_mut(owner).expect("ERC721: balance not found");
-        *count -= E::Balance::from(1_u8);
+        let count = self
+            .balances
+            .get_mut(owner)
+            .expect("ERC721: balance not found");
+        *count -= 1_u64;
     }
 }

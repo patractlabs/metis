@@ -26,10 +26,10 @@ use ::ink_storage::{
 #[derive(Debug, SpreadLayout)]
 pub struct Data<E: Env> {
     /// Mapping from owner to list of owned token IDs
-    owned_tokens: StorageHashMap<(E::AccountId, E::Balance), TokenId>,
+    owned_tokens: StorageHashMap<(E::AccountId, u64), TokenId>,
 
     /// Mapping from token ID to index of the owner tokens list
-    owned_tokens_index: StorageHashMap<TokenId, E::Balance>,
+    owned_tokens_index: StorageHashMap<TokenId, u64>,
 
     /// Array with all token ids, used for enumeration
     all_tokens: StorageVec<TokenId>,
@@ -64,7 +64,7 @@ where
 
         Storage::<E, Data<E>>::get_mut(self)
             .owned_tokens
-            .insert((to, length.clone()), token_id.clone());
+            .insert((to, length), token_id.clone());
         Storage::<E, Data<E>>::get_mut(self)
             .owned_tokens_index
             .insert(token_id.clone(), length);
@@ -97,7 +97,7 @@ where
         // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
         // then delete the last slot (swap and pop).
 
-        let last_token_index = ERC721::balance_of(self, &from) - E::Balance::from(1_u32);
+        let last_token_index = ERC721::balance_of(self, &from) - 1_u64;
 
         let data = Storage::<E, Data<E>>::get_mut(self);
         let token_index = data

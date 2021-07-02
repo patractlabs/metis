@@ -2,6 +2,10 @@
 
 #[metis_lang::contract]
 pub mod contract {
+    use ink_prelude::{
+        string::String,
+        vec::Vec,
+    };
     use metis_erc721 as erc721;
     pub use metis_erc721::{
         Error,
@@ -73,14 +77,14 @@ pub mod contract {
     impl Erc721 {
         /// For test to mint
         #[ink(message)]
-        pub fn mint(&mut self, to: AccountId, token_id: &TokenId) -> Result<()> {
-            erc721::Impl::_mint(self, &to, token_id)
+        pub fn mint(&mut self, to: AccountId, token_id: TokenId) -> Result<()> {
+            erc721::Impl::_mint(self, &to, &token_id)
         }
 
         /// For test to burn
         #[ink(message)]
-        pub fn burn(&mut self, token_id: &TokenId) -> Result<()> {
-            erc721::Impl::_burn(self, token_id)
+        pub fn burn(&mut self, token_id: TokenId) -> Result<()> {
+            erc721::Impl::_burn(self, &token_id)
         }
     }
 
@@ -110,8 +114,8 @@ pub mod contract {
 
         /// Returns the Uniform Resource Identifier (URI) for `token_id` token.
         #[ink(message)]
-        pub fn token_url(&self, token_id: &TokenId) -> String {
-            erc721::Impl::token_url(self, token_id)
+        pub fn token_url(&self, token_id: TokenId) -> String {
+            erc721::Impl::token_url(self, &token_id)
         }
 
         /// @dev Returns the number of tokens in ``owner``'s account.
@@ -126,8 +130,8 @@ pub mod contract {
         ///
         /// - `token_id` must exist.
         #[ink(message)]
-        pub fn owner_of(&self, token_id: &TokenId) -> AccountId {
-            erc721::Impl::owner_of(self, token_id)
+        pub fn owner_of(&self, token_id: TokenId) -> AccountId {
+            erc721::Impl::owner_of(self, &token_id)
         }
 
         /// @dev Returns the account approved for `token_id` token.
@@ -136,8 +140,8 @@ pub mod contract {
         ///
         /// - `token_id` must exist.
         #[ink(message)]
-        pub fn get_approved(&self, token_id: &TokenId) -> Option<AccountId> {
-            erc721::Impl::get_approved(self, token_id)
+        pub fn get_approved(&self, token_id: TokenId) -> Option<AccountId> {
+            erc721::Impl::get_approved(self, &token_id)
         }
 
         /// @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
@@ -146,10 +150,10 @@ pub mod contract {
         #[ink(message)]
         pub fn is_approved_for_all(
             &self,
-            owner: &AccountId,
-            operator: &AccountId,
+            owner: AccountId,
+            operator: AccountId,
         ) -> bool {
-            erc721::Impl::is_approved_for_all(self, owner, operator)
+            erc721::Impl::is_approved_for_all(self, &owner, &operator)
         }
 
         /// @dev Gives permission to `to` to transfer `token_id` token to another account.
@@ -164,8 +168,8 @@ pub mod contract {
         ///
         /// Emits an {Approval} event.
         #[ink(message)]
-        pub fn approve(&mut self, to: AccountId, token_id: &TokenId) {
-            erc721::Impl::approve(self, to, token_id)
+        pub fn approve(&mut self, to: AccountId, token_id: TokenId) {
+            erc721::Impl::approve(self, to, &token_id)
         }
 
         /// @dev Approve or remove `operator` as an operator for the caller.

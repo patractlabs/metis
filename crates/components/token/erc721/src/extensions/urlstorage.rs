@@ -3,6 +3,7 @@ use crate::{
     TokenId,
 };
 
+use ink_prelude::string::String;
 use metis_lang::{
     Env,
     Storage,
@@ -10,9 +11,7 @@ use metis_lang::{
 
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{
-    collections::{
-        HashMap as StorageHashMap,
-    },
+    collections::HashMap as StorageHashMap,
     traits::SpreadLayout,
 };
 
@@ -23,8 +22,7 @@ pub struct Data {
     url_storage: StorageHashMap<TokenId, String>,
 }
 
-impl Default for Data
-{
+impl Default for Data {
     fn default() -> Self {
         Self {
             url_storage: StorageHashMap::default(),
@@ -48,15 +46,15 @@ where
 
         // If there is no base URI, return the token URI.
         if base_url.len() == 0 {
-            return token_uri.unwrap_or(&String::from("")).clone();
+            return token_uri.unwrap_or(&String::from("")).clone()
         }
 
         // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
-        if let Some(token_url) = token_uri  {
+        if let Some(token_url) = token_uri {
             if token_url.len() > 0 {
                 let mut res = base_url.clone();
                 res.push_str(&token_url);
-                return res;
+                return res
             }
         }
 

@@ -1,5 +1,8 @@
 pub use super::module::Data;
-use ink_prelude::string::String;
+use ink_prelude::{
+    string::String,
+    vec::Vec,
+};
 pub use metis_lang::{
     Env,
     EnvAccess,
@@ -125,7 +128,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// @dev Returns the number of tokens in ``owner``'s account.
-    fn balance_of(&self, account: &E::AccountId) -> E::Balance {
+    fn balance_of(&self, account: &E::AccountId) -> u64 {
         self.get().balance_of(account)
     }
 
@@ -146,13 +149,16 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Requirements:
     ///
     /// - `token_id` must exist.
-    fn get_approved(&self, token_id: &TokenId) -> Option<&E::AccountId> {
+    fn get_approved(&self, token_id: &TokenId) -> Option<E::AccountId> {
         assert!(
             self._exists(token_id),
             "ERC721: approved query for nonexistent token"
         );
 
-        self.get().token_approvals.get(token_id)
+        match self.get().token_approvals.get(token_id) {
+            Some(a) => Some(a.clone()),
+            None => None,
+        }
     }
 
     /// @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
@@ -219,16 +225,16 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Emits a {Transfer} event.
     fn transfer_from(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
-        token_id: &TokenId,
+        from: E::AccountId,
+        to: E::AccountId,
+        token_id: TokenId,
     ) -> Result<()> {
         assert!(
-            self._is_approved_or_owner(&Self::caller(), token_id),
+            self._is_approved_or_owner(&Self::caller(), &token_id),
             "ERC721: transfer caller is not owner nor approved"
         );
 
-        self._transfer(from, to, token_id)
+        self._transfer(&from, &to, &token_id)
     }
 
     /// @dev Safely transfers `token_id` token from `from` to `to`, checking first that contract recipients
@@ -338,7 +344,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         let owner = &self.owner_of(token_id);
 
         spender == owner
-            || self.get_approved(token_id) == Some(spender)
+            || self.get_approved(token_id) == Some(spender.clone())
             || self.is_approved_for_all(owner, spender)
     }
 
@@ -503,9 +509,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             token_id,
             data,
         );
-        
-        resp == [
-            90u8, 119u8, 73u8, 174u8,
-        ] // TODO: use code gen
+
+        resp == [90u8, 119u8, 73u8, 174u8] // TODO: use code gen
     }
 }

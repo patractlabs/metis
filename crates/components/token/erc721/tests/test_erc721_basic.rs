@@ -153,7 +153,7 @@ mod erc721_basic_tests {
         // transfer from 0x1 to 0x2
 
         assert_eq!(
-            erc721.transfer_from(&default_account, &other_account, &token_a),
+            erc721.transfer_from(default_account, other_account, token_a),
             Ok(()),
             "transfer A should ok"
         );
@@ -177,7 +177,7 @@ mod erc721_basic_tests {
         );
 
         assert_eq!(
-            erc721.transfer_from(&default_account, &second_account, &token_b),
+            erc721.transfer_from(default_account, second_account, token_b),
             Ok(()),
             "transfer B should ok"
         );

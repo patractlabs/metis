@@ -94,7 +94,7 @@ mod erc721_basic_tests {
         erc721.pause();
         assert!(erc721.paused(), "current should be paused");
 
-        let _ = erc721.transfer_from(&default_account, &bob, &token_a);
+        let _ = erc721.transfer_from(default_account, bob, token_a);
     }
 
     #[ink::test]
@@ -121,7 +121,7 @@ mod erc721_basic_tests {
         assert!(!erc721.paused(), "current should be not paused");
 
         assert_eq!(
-            erc721.transfer_from(&default_account, &bob, &token_a),
+            erc721.transfer_from(default_account, bob, token_a),
             Ok(()),
             "tranfer should ok"
         );

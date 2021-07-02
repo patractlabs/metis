@@ -1,3 +1,5 @@
+#![cfg_attr(not(feature = "std"), no_std)]
+
 use scale::{
     Decode,
     Encode,
@@ -12,6 +14,8 @@ use ink_storage::traits::{
     PackedLayout,
     SpreadLayout,
 };
+
+use ink_prelude::string::String;
 
 #[cfg(feature = "std")]
 use ink_storage::traits::StorageLayout;
@@ -41,7 +45,15 @@ impl TokenId {
         Self(data)
     }
 
+    #[cfg(feature = "alloc")]
     pub fn to_string(&self) -> String {
         hex::encode(self.0)
+    }
+
+    #[cfg(not(feature = "alloc"))]
+    pub fn to_string(&self) -> String {
+        let mut output = [0; 64 + 1];
+        hex::encode_to_slice(self.0, &mut output).unwrap();
+        String::from( ::core::str::from_utf8(&output).unwrap())
     }
 }

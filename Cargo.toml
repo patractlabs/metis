@@ -21,6 +21,7 @@ members = [
     "contracts/traits/token/erc20",
 ]
 exclude = [
+    "example/",
     "examples/",
     "contracts/impls",
     "contracts/stub",

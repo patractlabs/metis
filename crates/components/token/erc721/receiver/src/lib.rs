@@ -6,6 +6,7 @@ use metis_erc721_types::TokenId;
 #[ink::contract]
 mod stub {
     use ink_lang as ink;
+    use ink_prelude::vec::Vec;
 
     use super::TokenId;
 
