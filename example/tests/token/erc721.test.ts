@@ -1,29 +1,22 @@
 import { expect } from "chai";
 import { artifacts, network, patract } from "redspot";
+import { hexToU8a } from '@polkadot/util';
 
 const { getContractFactory, getRandomSigner } = patract;
-
 const { api, getAddresses, getSigners } = network;
 
-describe("ERC721", () => {
+const { shouldBehaveLikeERC721 } = require("./erc721.behavior");
+
+const firstTokenId = hexToU8a('0x0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a')
+const secondTokenId = hexToU8a('0x0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b')
+const nonExistentTokenId = hexToU8a('0x0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c')
+const baseURI = 'https://api.com/v1/';
+
+
+describe("ERC721", async () => {
   after(() => {
     return api.disconnect();
   });
 
-  async function setup() {
-    await api.isReady
-    const signerAddresses = await getAddresses();
-    const Alice = signerAddresses[0];
-    const sender = await getRandomSigner(Alice, "10000 UNIT");
-    const contractFactory = await getContractFactory("erc721", sender.address);
-    const contract = await contractFactory.deploy("new", "Test721", "TST");
-    const abi = artifacts.readArtifact("erc721");
-    const receiver = await getRandomSigner();
-
-    return { sender, contractFactory, contract, abi, receiver, Alice };
-  }
-
-  it("Assigns initial balance", async () => {
-    const { contract, sender } = await setup();
-  });
+  await shouldBehaveLikeERC721('ERC721', "erc721" );
 });
