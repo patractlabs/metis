@@ -3,7 +3,10 @@ pub use metis_lang::Env;
 
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{
-    collections::HashMap as StorageHashMap,
+    collections::{
+        hashmap::Entry,
+        HashMap as StorageHashMap,
+    },
     lazy::Lazy,
     traits::SpreadLayout,
 };
@@ -69,10 +72,7 @@ impl<E: Env> Data<E> {
 
     /// Return the balance of {owner}
     pub fn balance_of(&self, owner: &E::AccountId) -> u64 {
-        self.balances
-            .get(owner)
-            .copied()
-            .unwrap_or(0_u64)
+        self.balances.get(owner).copied().unwrap_or(0_u64)
     }
 
     pub fn set_approval_for_all(
@@ -81,7 +81,17 @@ impl<E: Env> Data<E> {
         operator: E::AccountId,
         approved: bool,
     ) {
-        self.operator_approvals.insert((owner, operator), approved);
+        let key = (owner, operator);
+        if !approved {
+            match self.operator_approvals.entry(key.clone()) {
+                Entry::Occupied(entry) => {
+                    entry.remove();
+                }
+                Entry::Vacant(_) => {}
+            }
+        } else {
+            self.operator_approvals.insert(key, approved);
+        }
     }
 
     pub fn is_approved_for_all(
@@ -98,9 +108,7 @@ impl<E: Env> Data<E> {
     pub fn balance_inc(&mut self, owner: &E::AccountId) {
         let entry = self.balances.entry(owner.clone());
 
-        entry
-            .and_modify(|v| *v += 1_u64)
-            .or_insert(1_u64);
+        entry.and_modify(|v| *v += 1_u64).or_insert(1_u64);
     }
 
     pub fn balance_dec(&mut self, owner: &E::AccountId) {

@@ -164,7 +164,7 @@ pub mod contract {
         ///
         /// Emits an {Approval} event.
         #[ink(message)]
-        pub fn approve(&mut self, to: AccountId, token_id: &TokenId) {
+        pub fn approve(&mut self, to: Option<AccountId>, token_id: &TokenId) {
             erc721::Impl::approve(self, to, token_id)
         }
 

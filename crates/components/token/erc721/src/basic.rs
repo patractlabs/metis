@@ -180,18 +180,18 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `token_id` must exist.
     ///
     /// Emits an {Approval} event.
-    fn approve(&mut self, to: E::AccountId, token_id: &TokenId) {
+    fn approve(&mut self, to: Option<E::AccountId>, token_id: &TokenId) {
         let owner = self.owner_of(token_id);
         let caller = Self::caller();
 
-        assert!(to != owner, "ERC721: approval to current owner");
+        assert!(to.is_none() || to.as_ref().unwrap() != &owner, "ERC721: approval to current owner");
 
         assert!(
             caller == owner || self.is_approved_for_all(&owner, &caller),
             "ERC721: approve caller is not owner nor approved for all"
         );
 
-        self._approve(Some(to), token_id);
+        self._approve(to, token_id);
     }
 
     /// @dev Approve or remove `operator` as an operator for the caller.
