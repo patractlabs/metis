@@ -729,303 +729,311 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
         });
     });
 
+    describe('_mint(address, uint256)', function () {
+        let logs = null;
 
+        it('reverts with a null destination address', async function () {
+            await expectRevert(
+                this.token.tx.mint(ZERO_ADDRESS, firstTokenId), 'ERC721: mint to the zero address',
+            );
+        });
 
-    /*
-    
-        describe('_mint(address, uint256)', function () {
-            it('reverts with a null destination address', async function () {
-                await expectRevert(
-                    this.token.mint(ZERO_ADDRESS, firstTokenId), 'ERC721: mint to the zero address',
-                );
+        context('with minted token', async function () {
+            beforeEach(async function () {
+                logs = this.token.tx.mint(this.owner, firstTokenId);
+                await logs;
             });
-    
-            context('with minted token', async function () {
-                beforeEach(async function () {
-                    ({ logs: this.logs } = await this.token.mint(this.owner, firstTokenId));
-                });
-    
-                it('emits a Transfer event', function () {
-                    expectEvent.inLogs(this.logs, 'Transfer', { from: ZERO_ADDRESS, to: this.owner, tokenId: firstTokenId });
-                });
-    
-                it('creates the token', async function () {
-                    expect(await this.token.balanceOf(this.owner)).to.bignumber.equal('1');
-                    expect(await this.token.ownerOf(firstTokenId)).to.equal(this.owner);
-                });
-    
-                it('reverts when adding a token id that already exists', async function () {
-                    await expectRevert(this.token.mint(this.owner, firstTokenId), 'ERC721: token already minted');
-                });
+
+            it('emits a Transfer event', function () {
+                expectEventInLogs(this.logs, this.token, 'Transfer', ZERO_ADDRESS, this.owner, firstTokenId);
+            });
+
+            it('creates the token', async function () {
+                expect((await this.token.query.balanceOf(this.owner)).output).to.equal(1);
+                expect((await this.token.query.ownerOf(firstTokenId)).output).to.equal(this.owner);
+            });
+
+            it('reverts when adding a token id that already exists', async function () {
+                await expectRevert(this.token.tx.mint(this.owner, firstTokenId), 'ERC721: token already minted');
             });
         });
-    
-        describe('_burn', function () {
-            it('reverts when burning a non-existent token id', async function () {
-                await expectRevert(
-                    this.token.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
-                );
-            });
-    
-            context('with minted tokens', function () {
-                beforeEach(async function () {
-                    await this.token.mint(this.owner, firstTokenId);
-                    await this.token.mint(this.owner, secondTokenId);
-                });
-    
-                context('with burnt token', function () {
-                    beforeEach(async function () {
-                        ({ logs: this.logs } = await this.token.burn(firstTokenId));
-                    });
-    
-                    it('emits a Transfer event', function () {
-                        expectEvent.inLogs(this.logs, 'Transfer', { from: this.owner, to: ZERO_ADDRESS, tokenId: firstTokenId });
-                    });
-    
-                    it('emits an Approval event', function () {
-                        expectEvent.inLogs(this.logs, 'Approval', { this.owner, approved: ZERO_ADDRESS, tokenId: firstTokenId });
-                    });
-    
-                    it('deletes the token', async function () {
-                        expect(await this.token.balanceOf(this.owner)).to.bignumber.equal('1');
-                        await expectRevert(
-                            this.token.ownerOf(firstTokenId), 'ERC721: this.owner query for nonexistent token',
-                        );
-                    });
-    
-                    it('reverts when burning a token id that has been deleted', async function () {
-                        await expectRevert(
-                            this.token.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
-                        );
-                    });
-                });
-            });
-        });
-    }
-    */
+    });
 
-    /*
-    function shouldBehaveLikeERC721Enumerable(errorPrefix, this.owner, newOwner, approved, anotherApproved, operator, this.other) {
-        shouldSupportInterfaces([
-            'ERC721Enumerable',
-        ]);
-    
+    describe('_burn', function () {
+        let logs = null;
+
+        it('reverts when burning a non-existent token id', async function () {
+            await expectRevert(
+                this.token.tx.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
+            );
+        });
+
         context('with minted tokens', function () {
             beforeEach(async function () {
-                await this.token.mint(this.owner, firstTokenId);
-                await this.token.mint(this.owner, secondTokenId);
-                this.toWhom = this.other; // default to this.other for toWhom in context-dependent tests
+                await this.token.tx.mint(this.owner, firstTokenId);
+                await this.token.tx.mint(this.owner, secondTokenId);
             });
-    
-            describe('totalSupply', function () {
-                it('returns total token supply', async function () {
-                    expect(await this.token.totalSupply()).to.bignumber.equal('2');
+
+            context('with burnt token', function () {
+                beforeEach(async function () {
+                    logs = this.token.tx.burn(firstTokenId);
+                    await logs;
                 });
-            });
-    
-            describe('tokenOfOwnerByIndex', function () {
-                describe('when the given index is lower than the amount of tokens owned by the given address', function () {
-                    it('returns the token ID placed at the given index', async function () {
-                        expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(firstTokenId);
-                    });
+
+                it('emits a Transfer event', function () {
+                    expectEventInLogs(this.logs, this.token, 'Transfer', this.owner, ZERO_ADDRESS, firstTokenId);
                 });
-    
-                describe('when the index is greater than or equal to the total tokens owned by the given address', function () {
-                    it('reverts', async function () {
-                        await expectRevert(
-                            this.token.tokenOfOwnerByIndex(this.owner, 2), 'ERC721Enumerable: this.owner index out of bounds',
-                        );
-                    });
+
+                it('emits an Approval event', function () {
+                    expectEventInLogs(this.logs, this.token, 'Approval', this.owner, ZERO_ADDRESS, firstTokenId);
                 });
-    
-                describe('when the given address does not own any token', function () {
-                    it('reverts', async function () {
-                        await expectRevert(
-                            this.token.tokenOfOwnerByIndex(this.other, 0), 'ERC721Enumerable: this.owner index out of bounds',
-                        );
-                    });
+
+                it('deletes the token', async function () {
+                    expect((await this.token.query.balanceOf(this.owner)).output).to.equal('1');
+                    await expectRevert(
+                        this.token.query.ownerOf(firstTokenId), 'ERC721: this.owner query for nonexistent token',
+                    );
                 });
-    
-                describe('after transferring all tokens to another user', function () {
-                    beforeEach(async function () {
-                        await this.token.transferFrom(this.owner, this.other, firstTokenId, { from: this.owner });
-                        await this.token.transferFrom(this.owner, this.other, secondTokenId, { from: this.owner });
-                    });
-    
-                    it('returns correct token IDs for target', async function () {
-                        expect(await this.token.balanceOf(this.other)).to.bignumber.equal('2');
-                        const tokensListed = await Promise.all(
-                            [0, 1].map(i => this.token.tokenOfOwnerByIndex(this.other, i)),
-                        );
-                        expect(tokensListed.map(t => t.toNumber())).to.have.members([firstTokenId.toNumber(),
-                        secondTokenId.toNumber()]);
-                    });
-    
-                    it('returns empty collection for original this.owner', async function () {
-                        expect(await this.token.balanceOf(this.owner)).to.bignumber.equal('0');
-                        await expectRevert(
-                            this.token.tokenOfOwnerByIndex(this.owner, 0), 'ERC721Enumerable: this.owner index out of bounds',
-                        );
-                    });
+
+                it('reverts when burning a token id that has been deleted', async function () {
+                    await expectRevert(
+                        this.token.tx.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
+                    );
                 });
             });
-    
-            describe('tokenByIndex', function () {
-                it('returns all tokens', async function () {
+        });
+    });
+
+}
+
+/*
+
+function shouldBehaveLikeERC721Enumerable(errorPrefix, this.owner, newOwner, approved, anotherApproved, operator, this.other) {
+    shouldSupportInterfaces([
+        'ERC721Enumerable',
+    ]);
+
+    context('with minted tokens', function () {
+        beforeEach(async function () {
+            await this.token.mint(this.owner, firstTokenId);
+            await this.token.mint(this.owner, secondTokenId);
+            this.toWhom = this.other; // default to this.other for toWhom in context-dependent tests
+        });
+
+        describe('totalSupply', function () {
+            it('returns total token supply', async function () {
+                expect(await this.token.totalSupply()).to.bignumber.equal('2');
+            });
+        });
+
+        describe('tokenOfOwnerByIndex', function () {
+            describe('when the given index is lower than the amount of tokens owned by the given address', function () {
+                it('returns the token ID placed at the given index', async function () {
+                    expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(firstTokenId);
+                });
+            });
+
+            describe('when the index is greater than or equal to the total tokens owned by the given address', function () {
+                it('reverts', async function () {
+                    await expectRevert(
+                        this.token.tokenOfOwnerByIndex(this.owner, 2), 'ERC721Enumerable: this.owner index out of bounds',
+                    );
+                });
+            });
+
+            describe('when the given address does not own any token', function () {
+                it('reverts', async function () {
+                    await expectRevert(
+                        this.token.tokenOfOwnerByIndex(this.other, 0), 'ERC721Enumerable: this.owner index out of bounds',
+                    );
+                });
+            });
+
+            describe('after transferring all tokens to another user', function () {
+                beforeEach(async function () {
+                    await this.token.transferFrom(this.owner, this.other, firstTokenId, { from: this.owner });
+                    await this.token.transferFrom(this.owner, this.other, secondTokenId, { from: this.owner });
+                });
+
+                it('returns correct token IDs for target', async function () {
+                    expect(await this.token.balanceOf(this.other)).to.bignumber.equal('2');
                     const tokensListed = await Promise.all(
-                        [0, 1].map(i => this.token.tokenByIndex(i)),
+                        [0, 1].map(i => this.token.tokenOfOwnerByIndex(this.other, i)),
                     );
                     expect(tokensListed.map(t => t.toNumber())).to.have.members([firstTokenId.toNumber(),
                     secondTokenId.toNumber()]);
                 });
-    
-                it('reverts if index is greater than supply', async function () {
+
+                it('returns empty collection for original this.owner', async function () {
+                    expect(await this.token.balanceOf(this.owner)).to.bignumber.equal('0');
                     await expectRevert(
-                        this.token.tokenByIndex(2), 'ERC721Enumerable: global index out of bounds',
+                        this.token.tokenOfOwnerByIndex(this.owner, 0), 'ERC721Enumerable: this.owner index out of bounds',
                     );
-                });
-    
-                [firstTokenId, secondTokenId].forEach(function (tokenId) {
-                    it(`returns all tokens after burning token ${tokenId} and minting new tokens`, async function () {
-                        const newTokenId = new BN(300);
-                        const anotherNewTokenId = new BN(400);
-    
-                        await this.token.burn(tokenId);
-                        await this.token.mint(newOwner, newTokenId);
-                        await this.token.mint(newOwner, anotherNewTokenId);
-    
-                        expect(await this.token.totalSupply()).to.bignumber.equal('3');
-    
-                        const tokensListed = await Promise.all(
-                            [0, 1, 2].map(i => this.token.tokenByIndex(i)),
-                        );
-                        const expectedTokens = [firstTokenId, secondTokenId, newTokenId, anotherNewTokenId].filter(
-                            x => (x !== tokenId),
-                        );
-                        expect(tokensListed.map(t => t.toNumber())).to.have.members(expectedTokens.map(t => t.toNumber()));
-                    });
                 });
             });
         });
-    
-        describe('_mint(address, uint256)', function () {
-            it('reverts with a null destination address', async function () {
+
+        describe('tokenByIndex', function () {
+            it('returns all tokens', async function () {
+                const tokensListed = await Promise.all(
+                    [0, 1].map(i => this.token.tokenByIndex(i)),
+                );
+                expect(tokensListed.map(t => t.toNumber())).to.have.members([firstTokenId.toNumber(),
+                secondTokenId.toNumber()]);
+            });
+
+            it('reverts if index is greater than supply', async function () {
                 await expectRevert(
-                    this.token.mint(ZERO_ADDRESS, firstTokenId), 'ERC721: mint to the zero address',
+                    this.token.tokenByIndex(2), 'ERC721Enumerable: global index out of bounds',
                 );
             });
-    
-            context('with minted token', async function () {
+
+            [firstTokenId, secondTokenId].forEach(function (tokenId) {
+                it(`returns all tokens after burning token ${tokenId} and minting new tokens`, async function () {
+                    const newTokenId = new BN(300);
+                    const anotherNewTokenId = new BN(400);
+
+                    await this.token.burn(tokenId);
+                    await this.token.mint(newOwner, newTokenId);
+                    await this.token.mint(newOwner, anotherNewTokenId);
+
+                    expect(await this.token.totalSupply()).to.bignumber.equal('3');
+
+                    const tokensListed = await Promise.all(
+                        [0, 1, 2].map(i => this.token.tokenByIndex(i)),
+                    );
+                    const expectedTokens = [firstTokenId, secondTokenId, newTokenId, anotherNewTokenId].filter(
+                        x => (x !== tokenId),
+                    );
+                    expect(tokensListed.map(t => t.toNumber())).to.have.members(expectedTokens.map(t => t.toNumber()));
+                });
+            });
+        });
+    });
+
+    describe('_mint(address, uint256)', function () {
+        it('reverts with a null destination address', async function () {
+            await expectRevert(
+                this.token.mint(ZERO_ADDRESS, firstTokenId), 'ERC721: mint to the zero address',
+            );
+        });
+
+        context('with minted token', async function () {
+            beforeEach(async function () {
+                ({ logs: this.logs } = await this.token.mint(this.owner, firstTokenId));
+            });
+
+            it('adjusts this.owner tokens by index', async function () {
+                expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(firstTokenId);
+            });
+
+            it('adjusts all tokens list', async function () {
+                expect(await this.token.tokenByIndex(0)).to.bignumber.equal(firstTokenId);
+            });
+        });
+    });
+
+    describe('_burn', function () {
+        it('reverts when burning a non-existent token id', async function () {
+            await expectRevert(
+                this.token.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
+            );
+        });
+
+        context('with minted tokens', function () {
+            beforeEach(async function () {
+                await this.token.mint(this.owner, firstTokenId);
+                await this.token.mint(this.owner, secondTokenId);
+            });
+
+            context('with burnt token', function () {
                 beforeEach(async function () {
-                    ({ logs: this.logs } = await this.token.mint(this.owner, firstTokenId));
+                    ({ logs: this.logs } = await this.token.burn(firstTokenId));
                 });
-    
-                it('adjusts this.owner tokens by index', async function () {
-                    expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(firstTokenId);
+
+                it('removes that token from the token list of the this.owner', async function () {
+                    expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(secondTokenId);
                 });
-    
+
                 it('adjusts all tokens list', async function () {
-                    expect(await this.token.tokenByIndex(0)).to.bignumber.equal(firstTokenId);
+                    expect(await this.token.tokenByIndex(0)).to.bignumber.equal(secondTokenId);
                 });
-            });
-        });
-    
-        describe('_burn', function () {
-            it('reverts when burning a non-existent token id', async function () {
-                await expectRevert(
-                    this.token.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
-                );
-            });
-    
-            context('with minted tokens', function () {
-                beforeEach(async function () {
-                    await this.token.mint(this.owner, firstTokenId);
-                    await this.token.mint(this.owner, secondTokenId);
-                });
-    
-                context('with burnt token', function () {
-                    beforeEach(async function () {
-                        ({ logs: this.logs } = await this.token.burn(firstTokenId));
-                    });
-    
-                    it('removes that token from the token list of the this.owner', async function () {
-                        expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(secondTokenId);
-                    });
-    
-                    it('adjusts all tokens list', async function () {
-                        expect(await this.token.tokenByIndex(0)).to.bignumber.equal(secondTokenId);
-                    });
-    
-                    it('burns all tokens', async function () {
-                        await this.token.burn(secondTokenId, { from: this.owner });
-                        expect(await this.token.totalSupply()).to.bignumber.equal('0');
-                        await expectRevert(
-                            this.token.tokenByIndex(0), 'ERC721Enumerable: global index out of bounds',
-                        );
-                    });
-                });
-            });
-        });
-    }
-    
-    function shouldBehaveLikeERC721Metadata(errorPrefix, name, symbol, this.owner) {
-        shouldSupportInterfaces([
-            'ERC721Metadata',
-        ]);
-    
-        describe('metadata', function () {
-            it('has a name', async function () {
-                expect(await this.token.name()).to.equal(name);
-            });
-    
-            it('has a symbol', async function () {
-                expect(await this.token.symbol()).to.equal(symbol);
-            });
-    
-            describe('token URI', function () {
-                beforeEach(async function () {
-                    await this.token.mint(this.owner, firstTokenId);
-                });
-    
-                it('return empty string by default', async function () {
-                    expect(await this.token.tokenURI(firstTokenId)).to.equal('');
-                });
-    
-                it('reverts when queried for non existent token id', async function () {
+
+                it('burns all tokens', async function () {
+                    await this.token.burn(secondTokenId, { from: this.owner });
+                    expect(await this.token.totalSupply()).to.bignumber.equal('0');
                     await expectRevert(
-                        this.token.tokenURI(nonExistentTokenId), 'ERC721Metadata: URI query for nonexistent token',
+                        this.token.tokenByIndex(0), 'ERC721Enumerable: global index out of bounds',
                     );
                 });
-    
-                describe('base URI', function () {
-                    beforeEach(function () {
-                        if (this.token.setBaseURI === undefined) {
-                            this.skip();
-                        }
-                    });
-    
-                    it('base URI can be set', async function () {
-                        await this.token.setBaseURI(baseURI);
-                        expect(await this.token.baseURI()).to.equal(baseURI);
-                    });
-    
-                    it('base URI is added as a prefix to the token URI', async function () {
-                        await this.token.setBaseURI(baseURI);
-                        expect(await this.token.tokenURI(firstTokenId)).to.equal(baseURI + firstTokenId.toString());
-                    });
-    
-                    it('token URI can be changed by changing the base URI', async function () {
-                        await this.token.setBaseURI(baseURI);
-                        const newBaseURI = 'https://api.com/v2/';
-                        await this.token.setBaseURI(newBaseURI);
-                        expect(await this.token.tokenURI(firstTokenId)).to.equal(newBaseURI + firstTokenId.toString());
-                    });
+            });
+        });
+    });
+}
+
+*/
+
+/*
+
+function shouldBehaveLikeERC721Metadata(errorPrefix, name, symbol, this.owner) {
+    shouldSupportInterfaces([
+        'ERC721Metadata',
+    ]);
+
+    describe('metadata', function () {
+        it('has a name', async function () {
+            expect(await this.token.name()).to.equal(name);
+        });
+
+        it('has a symbol', async function () {
+            expect(await this.token.symbol()).to.equal(symbol);
+        });
+
+        describe('token URI', function () {
+            beforeEach(async function () {
+                await this.token.mint(this.owner, firstTokenId);
+            });
+
+            it('return empty string by default', async function () {
+                expect(await this.token.tokenURI(firstTokenId)).to.equal('');
+            });
+
+            it('reverts when queried for non existent token id', async function () {
+                await expectRevert(
+                    this.token.tokenURI(nonExistentTokenId), 'ERC721Metadata: URI query for nonexistent token',
+                );
+            });
+
+            describe('base URI', function () {
+                beforeEach(function () {
+                    if (this.token.setBaseURI === undefined) {
+                        this.skip();
+                    }
+                });
+
+                it('base URI can be set', async function () {
+                    await this.token.setBaseURI(baseURI);
+                    expect(await this.token.baseURI()).to.equal(baseURI);
+                });
+
+                it('base URI is added as a prefix to the token URI', async function () {
+                    await this.token.setBaseURI(baseURI);
+                    expect(await this.token.tokenURI(firstTokenId)).to.equal(baseURI + firstTokenId.toString());
+                });
+
+                it('token URI can be changed by changing the base URI', async function () {
+                    await this.token.setBaseURI(baseURI);
+                    const newBaseURI = 'https://api.com/v2/';
+                    await this.token.setBaseURI(newBaseURI);
+                    expect(await this.token.tokenURI(firstTokenId)).to.equal(newBaseURI + firstTokenId.toString());
                 });
             });
         });
-    
-        */
+    });
+
 }
+
+*/
 
 module.exports = {
     shouldBehaveLikeERC721,
