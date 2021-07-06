@@ -973,59 +973,85 @@ function shouldBehaveLikeERC721Enumerable(errorPrefix, this.owner, newOwner, app
 
 */
 
-/*
 
-function shouldBehaveLikeERC721Metadata(errorPrefix, name, symbol, this.owner) {
-    shouldSupportInterfaces([
-        'ERC721Metadata',
-    ]);
+
+function shouldBehaveLikeERC721Metadata(errorPrefix, contractName) {
+    // TODO: interface test
+    //shouldSupportInterfaces([
+    //    'ERC721Metadata',
+    //]);
+
+    async function setup() {
+        await api.isReady
+        const signerAddresses = await getAddresses();
+        const Alice = signerAddresses[0];
+        const sender = await getRandomSigner(Alice, "10000 UNIT");
+        const abi = artifacts.readArtifact("erc721");
+
+        return { sender, signerAddresses };
+    }
+
+    beforeEach(async function () {
+        const { signerAddresses, sender } = await setup();
+        const contractFactory = await getContractFactory(contractName, sender.address);
+        let res = await contractFactory.deploy("new", "NFTCoin", "NFT");
+        this.token = res;
+
+        this.sender = signerAddresses[0]
+        this.owner = signerAddresses[0]
+        this.newOwner = signerAddresses[1]
+        this.approved = signerAddresses[2]
+        this.anotherApproved = signerAddresses[3]
+        this.operator = signerAddresses[4]
+        this.other = signerAddresses[5]
+    });
 
     describe('metadata', function () {
         it('has a name', async function () {
-            expect(await this.token.name()).to.equal(name);
+            expect((await this.token.query.name()).output).to.equal("NFTCoin");
         });
 
         it('has a symbol', async function () {
-            expect(await this.token.symbol()).to.equal(symbol);
+            expect((await this.token.query.symbol()).output).to.equal("NFT");
         });
 
         describe('token URI', function () {
             beforeEach(async function () {
-                await this.token.mint(this.owner, firstTokenId);
+                await this.token.tx.mint(this.owner, firstTokenId);
             });
 
             it('return empty string by default', async function () {
-                expect(await this.token.tokenURI(firstTokenId)).to.equal('');
+                expect((await this.token.query.tokenUrl(firstTokenId)).output).to.equal(null);
             });
 
             it('reverts when queried for non existent token id', async function () {
                 await expectRevert(
-                    this.token.tokenURI(nonExistentTokenId), 'ERC721Metadata: URI query for nonexistent token',
+                    this.token.query.tokenUrl(nonExistentTokenId), 'ERC721Metadata: URI query for nonexistent token',
                 );
             });
 
             describe('base URI', function () {
                 beforeEach(function () {
-                    if (this.token.setBaseURI === undefined) {
+                    if (this.token.tx.setBaseUrl === undefined) {
                         this.skip();
                     }
                 });
 
                 it('base URI can be set', async function () {
-                    await this.token.setBaseURI(baseURI);
-                    expect(await this.token.baseURI()).to.equal(baseURI);
+                    await this.token.tx.setBaseUrl(baseURI);
+                    expect((await this.token.query.baseURI()).output).to.equal(baseURI);
                 });
 
                 it('base URI is added as a prefix to the token URI', async function () {
-                    await this.token.setBaseURI(baseURI);
-                    expect(await this.token.tokenURI(firstTokenId)).to.equal(baseURI + firstTokenId.toString());
+                    await this.token.tx.setBaseUrl(baseURI);
+                    expect((await this.token.query.tokenURI(firstTokenId)).output).to.equal(baseURI + firstTokenId.toString());
                 });
 
                 it('token URI can be changed by changing the base URI', async function () {
-                    await this.token.setBaseURI(baseURI);
+                    await this.token.tx.setBaseUrl(baseURI);
                     const newBaseURI = 'https://api.com/v2/';
-                    await this.token.setBaseURI(newBaseURI);
-                    expect(await this.token.tokenURI(firstTokenId)).to.equal(newBaseURI + firstTokenId.toString());
+                    await this.token.tx.setBaseUrl(newBaseURI);
+                    expect((await this.token.query.tokenURI(firstTokenId)).output).to.equal(newBaseURI + firstTokenId.toString());
                 });
             });
         });
@@ -1033,10 +1059,10 @@ function shouldBehaveLikeERC721Metadata(errorPrefix, name, symbol, this.owner) {
 
 }
 
-*/
+
 
 module.exports = {
     shouldBehaveLikeERC721,
     // shouldBehaveLikeERC721Enumerable,
-    // shouldBehaveLikeERC721Metadata,
+    shouldBehaveLikeERC721Metadata,
 };
