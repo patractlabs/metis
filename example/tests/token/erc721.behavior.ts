@@ -141,7 +141,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
 
             const transferWasSuccessful = function () {
                 it('transfers the ownership of the given token ID to the given address', async function () {
-                    expect((await this.token.query.ownerOf(tokenId)).output).to.be.equal(this.toWhom);
+                    expect((await this.token.query.ownerOf(tokenId)).output).to.equal(this.toWhom);
                 });
 
                 it('emits a Transfer event', async function () {
@@ -197,6 +197,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 context('when called by the this.owner without an approved user', function () {
                     beforeEach(async function () {
                         await this.token.connect(this.owner).tx.approve(null, tokenId);
+
                         logs = transferFunction.call(this, this.token, this.owner, this.toWhom, tokenId, { from: this.operator });
                         await logs
                     });
@@ -288,15 +289,15 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 });
             });
 
-            /*
-
+            // FIXME: safe_transfer_from and safe_transfer_from_with_data test
+            /* 
             describe('via safeTransferFrom', function () {
-                const safeTransferFromWithData = function (from, to, tokenId, opts) {
-                    return this.token.methods['safeTransferFrom(address,address,uint256,bytes)'](from, to, tokenId, data, opts);
+                const safeTransferFromWithData = function (token, from, to, tokenId, opts) {
+                    return token.connect(opts.from).tx.safeTransferFromWithData(from, to, tokenId, data);
                 };
 
-                const safeTransferFromWithoutData = function (from, to, tokenId, opts) {
-                    return this.token.methods['safeTransferFrom(address,address,uint256)'](from, to, tokenId, opts);
+                const safeTransferFromWithoutData = function (token, from, to, tokenId, opts) {
+                    return token.connect(opts.from).tx.safeTransferFrom(from, to, tokenId);
                 };
 
                 const shouldTransferSafely = function (transferFun, data) {
@@ -408,7 +409,6 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     });
                 });
             });
-
             */
         });
 
@@ -490,236 +490,243 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 });
             });
         });
- 
+        */
+
         describe('approve', function () {
             const tokenId = firstTokenId;
- 
+
             let logs = null;
- 
+
             const itClearsApproval = function () {
                 it('clears approval for the token', async function () {
-                    expect(await this.token.getApproved(tokenId)).to.be.equal(ZERO_ADDRESS);
+                    expect((await this.token.query.getApproved(tokenId)).output).to.equal(null);
                 });
             };
- 
-            const itApproves = function (address) {
+
+            const itApproves = function (name) {
                 it('sets the approval for the target address', async function () {
-                    expect(await this.token.getApproved(tokenId)).to.be.equal(address);
+                    expect((await this.token.query.getApproved(tokenId)).output).to.equal(this[name]);
                 });
             };
- 
-            const itEmitsApprovalEvent = function (address) {
+
+            const itEmitsApprovalEvent = function (name) {
                 it('emits an approval event', async function () {
-                    expectEvent.inLogs(logs, 'Approval', {
-                        this.owner: this.owner,
-                        approved: address,
-                        tokenId: tokenId,
-                    });
+                    expectEventInLogs(logs, this.token, 'Approval',
+                        this.owner,
+                        this[name],
+                        tokenId,
+                    );
                 });
             };
- 
+
             context('when clearing approval', function () {
                 context('when there was no prior approval', function () {
                     beforeEach(async function () {
-                        ({ logs } = await this.token.approve(ZERO_ADDRESS, tokenId, { from: this.owner }));
+                        logs = this.token.connect(this.owner).tx.approve(null, tokenId);
+                        await logs;
                     });
- 
+
                     itClearsApproval();
-                    itEmitsApprovalEvent(ZERO_ADDRESS);
+                    itEmitsApprovalEvent(null);
                 });
- 
+
                 context('when there was a prior approval', function () {
                     beforeEach(async function () {
-                        await this.token.approve(approved, tokenId, { from: this.owner });
-                        ({ logs } = await this.token.approve(ZERO_ADDRESS, tokenId, { from: this.owner }));
+                        await this.token.connect(this.owner).tx.approve(this.approved, tokenId);
+                        logs = this.token.connect(this.owner).tx.approve(null, tokenId);
+                        await logs;
                     });
- 
+
                     itClearsApproval();
-                    itEmitsApprovalEvent(ZERO_ADDRESS);
+                    itEmitsApprovalEvent(null);
                 });
             });
- 
-            context('when approving a non-zero address', function () {
-                context('when there was no prior approval', function () {
+
+            context('when approving a non-zero address', async function () {
+                context('when there was no prior approval', async function () {
                     beforeEach(async function () {
-                        ({ logs } = await this.token.approve(approved, tokenId, { from: this.owner }));
+                        logs = this.token.connect(this.owner).tx.approve(this.approved, tokenId);
+                        await logs;
                     });
- 
-                    itApproves(approved);
-                    itEmitsApprovalEvent(approved);
+
+                    itApproves('approved');
+                    itEmitsApprovalEvent('approved');
                 });
- 
+
                 context('when there was a prior approval to the same address', function () {
                     beforeEach(async function () {
-                        await this.token.approve(approved, tokenId, { from: this.owner });
-                        ({ logs } = await this.token.approve(approved, tokenId, { from: this.owner }));
+                        await this.token.connect(this.owner).tx.approve(this.approved, tokenId);
+                        ({ logs } = await this.token.connect(this.owner).tx.approve(this.approved, tokenId));
                     });
- 
-                    itApproves(approved);
-                    itEmitsApprovalEvent(approved);
+
+                    itApproves('approved');
+                    itEmitsApprovalEvent('approved');
                 });
- 
+
                 context('when there was a prior approval to a different address', function () {
                     beforeEach(async function () {
-                        await this.token.approve(anotherApproved, tokenId, { from: this.owner });
-                        ({ logs } = await this.token.approve(anotherApproved, tokenId, { from: this.owner }));
+                        await this.token.connect(this.owner).tx.approve(this.anotherApproved, tokenId);
+                        ({ logs } = await this.token.connect(this.owner).tx.approve(this.anotherApproved, tokenId));
                     });
- 
-                    itApproves(anotherApproved);
-                    itEmitsApprovalEvent(anotherApproved);
+
+                    itApproves('anotherApproved');
+                    itEmitsApprovalEvent('anotherApproved');
                 });
             });
- 
+
             context('when the address that receives the approval is the this.owner', function () {
                 it('reverts', async function () {
                     await expectRevert(
-                        this.token.approve(this.owner, tokenId, { from: this.owner }), 'ERC721: approval to current this.owner',
+                        this.token.connect(this.owner).tx.approve(this.owner, tokenId), 'ERC721: approval to current this.owner',
                     );
                 });
             });
- 
+
             context('when the sender does not own the given token ID', function () {
                 it('reverts', async function () {
-                    await expectRevert(this.token.approve(approved, tokenId, { from: this.other }),
+                    await expectRevert(this.token.connect(this.other).tx.approve(this.approved, tokenId),
                         'ERC721: approve caller is not this.owner nor approved');
                 });
             });
- 
+
             context('when the sender is approved for the given token ID', function () {
                 it('reverts', async function () {
-                    await this.token.approve(approved, tokenId, { from: this.owner });
-                    await expectRevert(this.token.approve(anotherApproved, tokenId, { from: approved }),
+                    await this.token.connect(this.owner).tx.approve(this.approved, tokenId);
+                    await expectRevert(this.token.connect(this.approved).tx.approve(this.anotherApproved, tokenId),
                         'ERC721: approve caller is not this.owner nor approved for all');
                 });
             });
- 
+
             context('when the sender is an operator', function () {
                 beforeEach(async function () {
-                    await this.token.setApprovalForAll(operator, true, { from: this.owner });
-                    ({ logs } = await this.token.approve(approved, tokenId, { from: operator }));
+                    await this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
+                    logs = this.token.connect(this.operator).tx.approve(this.approved, tokenId);
+                    await logs;
                 });
- 
-                itApproves(approved);
-                itEmitsApprovalEvent(approved);
+
+                itApproves('approved');
+                itEmitsApprovalEvent('approved');
             });
- 
+
             context('when the given token ID does not exist', function () {
                 it('reverts', async function () {
-                    await expectRevert(this.token.approve(approved, nonExistentTokenId, { from: operator }),
+                    await expectRevert(this.token.connect(this.operator).tx.approve(this.approved, nonExistentTokenId),
                         'ERC721: this.owner query for nonexistent token');
                 });
             });
         });
- 
+
         describe('setApprovalForAll', function () {
             context('when the operator willing to approve is not the this.owner', function () {
                 context('when there is no operator approval set by the sender', function () {
                     it('approves the operator', async function () {
-                        await this.token.setApprovalForAll(operator, true, { from: this.owner });
- 
-                        expect(await this.token.isApprovedForAll(this.owner, operator)).to.equal(true);
+                        await this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
+
+                        expect((await this.token.query.isApprovedForAll(this.owner, this.operator)).output).to.equal(true);
                     });
- 
+
                     it('emits an approval event', async function () {
-                        const { logs } = await this.token.setApprovalForAll(operator, true, { from: this.owner });
- 
-                        expectEvent.inLogs(logs, 'ApprovalForAll', {
-                            this.owner: this.owner,
-                            operator: operator,
-                            approved: true,
-                        });
+                        let logs = this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
+                        await logs;
+
+                        expectEventInLogs(logs, this.token, 'ApprovalForAll',
+                            this.owner,
+                            this.operator,
+                            true,
+                        );
                     });
                 });
- 
+
                 context('when the operator was set as not approved', function () {
                     beforeEach(async function () {
-                        await this.token.setApprovalForAll(operator, false, { from: this.owner });
+                        await this.token.connect(this.owner).tx.setApprovalForAll(this.operator, false);
                     });
- 
+
                     it('approves the operator', async function () {
-                        await this.token.setApprovalForAll(operator, true, { from: this.owner });
- 
-                        expect(await this.token.isApprovedForAll(this.owner, operator)).to.equal(true);
+                        await this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
+
+                        expect((await this.token.query.isApprovedForAll(this.owner, this.operator)).output).to.equal(true);
                     });
- 
+
                     it('emits an approval event', async function () {
-                        const { logs } = await this.token.setApprovalForAll(operator, true, { from: this.owner });
- 
-                        expectEvent.inLogs(logs, 'ApprovalForAll', {
-                            this.owner: this.owner,
-                            operator: operator,
-                            approved: true,
-                        });
+                        let logs = this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
+                        await logs;
+
+                        expectEventInLogs(logs, this.token, 'ApprovalForAll',
+                            this.owner,
+                            this.operator,
+                            true,
+                        );
                     });
- 
+
                     it('can unset the operator approval', async function () {
-                        await this.token.setApprovalForAll(operator, false, { from: this.owner });
- 
-                        expect(await this.token.isApprovedForAll(this.owner, operator)).to.equal(false);
+                        await this.token.connect(this.owner).tx.setApprovalForAll(this.operator, false);
+
+                        expect((await this.token.query.isApprovedForAll(this.owner, this.operator)).output).to.equal(false);
                     });
                 });
- 
+
                 context('when the operator was already approved', function () {
                     beforeEach(async function () {
-                        await this.token.setApprovalForAll(operator, true, { from: this.owner });
+                        await this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
                     });
- 
+
                     it('keeps the approval to the given address', async function () {
-                        await this.token.setApprovalForAll(operator, true, { from: this.owner });
- 
-                        expect(await this.token.isApprovedForAll(this.owner, operator)).to.equal(true);
+                        await this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
+
+                        expect((await this.token.query.isApprovedForAll(this.owner, this.operator)).output).to.equal(true);
                     });
- 
+
                     it('emits an approval event', async function () {
-                        const { logs } = await this.token.setApprovalForAll(operator, true, { from: this.owner });
- 
-                        expectEvent.inLogs(logs, 'ApprovalForAll', {
-                            this.owner: this.owner,
-                            operator: operator,
-                            approved: true,
-                        });
+                        let logs = this.token.connect(this.owner).tx.setApprovalForAll(this.operator, true);
+                        await logs;
+
+                        expectEventInLogs(logs, this.token, 'ApprovalForAll',
+                            this.owner,
+                            this.operator,
+                            true,
+                        );
                     });
                 });
             });
- 
+
             context('when the operator is the this.owner', function () {
                 it('reverts', async function () {
-                    await expectRevert(this.token.setApprovalForAll(this.owner, true, { from: this.owner }),
+                    await expectRevert(this.token.connect(this.owner).tx.setApprovalForAll(this.owner, true),
                         'ERC721: approve to caller');
                 });
             });
         });
- 
+
         describe('getApproved', async function () {
             context('when token is not minted', async function () {
-                it('reverts', async function () {
-                    await expectRevert(
-                        this.token.getApproved(nonExistentTokenId),
-                        'ERC721: approved query for nonexistent token',
-                    );
-                });
+                // TODO: no reverts for query in ink!
+                // it('reverts', async function () {
+                //    await expectRevert(
+                //      this.token.query.getApproved(nonExistentTokenId),
+                //      'ERC721: approved query for nonexistent token',
+                //     );
+                // });
             });
- 
+
             context('when token has been minted ', async function () {
                 it('should return the zero address', async function () {
-                    expect(await this.token.getApproved(firstTokenId)).to.be.equal(
-                        ZERO_ADDRESS,
+                    expect((await this.token.query.getApproved(firstTokenId)).output).to.equal(
+                        null,
                     );
                 });
- 
+
                 context('when account has been approved', async function () {
                     beforeEach(async function () {
-                        await this.token.approve(approved, firstTokenId, { from: this.owner });
+                        await this.token.connect(this.owner).tx.approve(this.approved, firstTokenId);
                     });
- 
+
                     it('returns approved account', async function () {
-                        expect(await this.token.getApproved(firstTokenId)).to.be.equal(approved);
+                        expect((await this.token.query.getApproved(firstTokenId)).output).to.equal(this.approved);
                     });
                 });
             });
         });
- 
-        */
     });
 
 
@@ -743,7 +750,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 });
     
                 it('creates the token', async function () {
-                    expect(await this.token.balanceOf(this.owner)).to.be.bignumber.equal('1');
+                    expect(await this.token.balanceOf(this.owner)).to.bignumber.equal('1');
                     expect(await this.token.ownerOf(firstTokenId)).to.equal(this.owner);
                 });
     
@@ -780,7 +787,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     });
     
                     it('deletes the token', async function () {
-                        expect(await this.token.balanceOf(this.owner)).to.be.bignumber.equal('1');
+                        expect(await this.token.balanceOf(this.owner)).to.bignumber.equal('1');
                         await expectRevert(
                             this.token.ownerOf(firstTokenId), 'ERC721: this.owner query for nonexistent token',
                         );
@@ -812,14 +819,14 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
     
             describe('totalSupply', function () {
                 it('returns total token supply', async function () {
-                    expect(await this.token.totalSupply()).to.be.bignumber.equal('2');
+                    expect(await this.token.totalSupply()).to.bignumber.equal('2');
                 });
             });
     
             describe('tokenOfOwnerByIndex', function () {
                 describe('when the given index is lower than the amount of tokens owned by the given address', function () {
                     it('returns the token ID placed at the given index', async function () {
-                        expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.be.bignumber.equal(firstTokenId);
+                        expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(firstTokenId);
                     });
                 });
     
@@ -846,7 +853,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     });
     
                     it('returns correct token IDs for target', async function () {
-                        expect(await this.token.balanceOf(this.other)).to.be.bignumber.equal('2');
+                        expect(await this.token.balanceOf(this.other)).to.bignumber.equal('2');
                         const tokensListed = await Promise.all(
                             [0, 1].map(i => this.token.tokenOfOwnerByIndex(this.other, i)),
                         );
@@ -855,7 +862,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     });
     
                     it('returns empty collection for original this.owner', async function () {
-                        expect(await this.token.balanceOf(this.owner)).to.be.bignumber.equal('0');
+                        expect(await this.token.balanceOf(this.owner)).to.bignumber.equal('0');
                         await expectRevert(
                             this.token.tokenOfOwnerByIndex(this.owner, 0), 'ERC721Enumerable: this.owner index out of bounds',
                         );
@@ -887,7 +894,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                         await this.token.mint(newOwner, newTokenId);
                         await this.token.mint(newOwner, anotherNewTokenId);
     
-                        expect(await this.token.totalSupply()).to.be.bignumber.equal('3');
+                        expect(await this.token.totalSupply()).to.bignumber.equal('3');
     
                         const tokensListed = await Promise.all(
                             [0, 1, 2].map(i => this.token.tokenByIndex(i)),
@@ -914,11 +921,11 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 });
     
                 it('adjusts this.owner tokens by index', async function () {
-                    expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.be.bignumber.equal(firstTokenId);
+                    expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(firstTokenId);
                 });
     
                 it('adjusts all tokens list', async function () {
-                    expect(await this.token.tokenByIndex(0)).to.be.bignumber.equal(firstTokenId);
+                    expect(await this.token.tokenByIndex(0)).to.bignumber.equal(firstTokenId);
                 });
             });
         });
@@ -942,16 +949,16 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     });
     
                     it('removes that token from the token list of the this.owner', async function () {
-                        expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.be.bignumber.equal(secondTokenId);
+                        expect(await this.token.tokenOfOwnerByIndex(this.owner, 0)).to.bignumber.equal(secondTokenId);
                     });
     
                     it('adjusts all tokens list', async function () {
-                        expect(await this.token.tokenByIndex(0)).to.be.bignumber.equal(secondTokenId);
+                        expect(await this.token.tokenByIndex(0)).to.bignumber.equal(secondTokenId);
                     });
     
                     it('burns all tokens', async function () {
                         await this.token.burn(secondTokenId, { from: this.owner });
-                        expect(await this.token.totalSupply()).to.be.bignumber.equal('0');
+                        expect(await this.token.totalSupply()).to.bignumber.equal('0');
                         await expectRevert(
                             this.token.tokenByIndex(0), 'ERC721Enumerable: global index out of bounds',
                         );
@@ -968,11 +975,11 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
     
         describe('metadata', function () {
             it('has a name', async function () {
-                expect(await this.token.name()).to.be.equal(name);
+                expect(await this.token.name()).to.equal(name);
             });
     
             it('has a symbol', async function () {
-                expect(await this.token.symbol()).to.be.equal(symbol);
+                expect(await this.token.symbol()).to.equal(symbol);
             });
     
             describe('token URI', function () {
@@ -981,7 +988,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 });
     
                 it('return empty string by default', async function () {
-                    expect(await this.token.tokenURI(firstTokenId)).to.be.equal('');
+                    expect(await this.token.tokenURI(firstTokenId)).to.equal('');
                 });
     
                 it('reverts when queried for non existent token id', async function () {
@@ -1004,14 +1011,14 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
     
                     it('base URI is added as a prefix to the token URI', async function () {
                         await this.token.setBaseURI(baseURI);
-                        expect(await this.token.tokenURI(firstTokenId)).to.be.equal(baseURI + firstTokenId.toString());
+                        expect(await this.token.tokenURI(firstTokenId)).to.equal(baseURI + firstTokenId.toString());
                     });
     
                     it('token URI can be changed by changing the base URI', async function () {
                         await this.token.setBaseURI(baseURI);
                         const newBaseURI = 'https://api.com/v2/';
                         await this.token.setBaseURI(newBaseURI);
-                        expect(await this.token.tokenURI(firstTokenId)).to.be.equal(newBaseURI + firstTokenId.toString());
+                        expect(await this.token.tokenURI(firstTokenId)).to.equal(newBaseURI + firstTokenId.toString());
                     });
                 });
             });

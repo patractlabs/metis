@@ -18,5 +18,5 @@ describe("ERC721", async () => {
     return api.disconnect();
   });
 
-  await shouldBehaveLikeERC721('ERC721', "erc721" );
+  await shouldBehaveLikeERC721('ERC721', "erc721");
 });
