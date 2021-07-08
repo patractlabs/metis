@@ -1,4 +1,5 @@
 pub use super::module::Data;
+use ink_lang::ForwardCallMut;
 use ink_prelude::{
     string::String,
     vec::Vec,
@@ -184,7 +185,10 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         let owner = self.owner_of(token_id);
         let caller = Self::caller();
 
-        assert!(to.is_none() || to.as_ref().unwrap() != &owner, "ERC721: approval to current owner");
+        assert!(
+            to.is_none() || to.as_ref().unwrap() != &owner,
+            "ERC721: approval to current owner"
+        );
 
         assert!(
             caller == owner || self.is_approved_for_all(&owner, &caller),
@@ -499,17 +503,23 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         token_id: TokenId,
         data: Vec<u8>,
     ) -> bool {
-        let receiver = <Receiver as FromAccountId<E>>::from_account_id(to.clone());
+        let mut receiver = <Receiver as FromAccountId<E>>::from_account_id(to.clone());
         let caller = Self::caller();
 
-        let resp = <Receiver>::on_erc721_received(
-            &receiver,
-            caller.into(),
-            from.into(),
-            token_id,
-            data,
-        );
+        let resp = receiver
+            .call_mut()
+            .on_erc721_received(caller.into(), from.into(), token_id, data)
+            .fire();
 
-        resp == [90u8, 119u8, 73u8, 174u8] // TODO: use code gen
+        // TODO: use code gen
+        match resp {
+            Ok(selector_id) => selector_id == [90u8, 119u8, 73u8, 174u8],
+            Err(err) => {
+                match err {
+                    ink_env::Error::NotCallable => true,
+                    _ => false,
+                }
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ mod stub {
     pub trait IERC721Receiver {
         #[ink(message)]
         fn on_erc721_received(
-            &self,
+            &mut self,
             operator: AccountId,
             from: AccountId,
             token_id: TokenId,
@@ -32,7 +32,7 @@ mod stub {
         }
         #[ink(message)]
         pub fn on_erc721_received(
-            &self,
+            &mut self,
             _operator: AccountId,
             _from: AccountId,
             _token_id: TokenId,

@@ -289,9 +289,23 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 });
             });
 
-            // FIXME: safe_transfer_from and safe_transfer_from_with_data test
-            /* 
             describe('via safeTransferFrom', function () {
+                beforeEach(async function () {
+                    const sender = await getRandomSigner(this.sender, "10000 UNIT");
+                    const contractFactory = await getContractFactory("erc721_token_receiver", sender.address);
+                    let res = await contractFactory.deploy("new");
+
+                    console.log("1")
+                    await res.connect(this.sender).tx.addAcceptToken(this.token.address);
+                    console.log("1")
+                    await res.connect(this.sender).tx.setReceiveStatus(true);
+                    console.log("1")
+
+                    this.receiver = res;
+                    this.toWhom = this.receiver.address;
+                });
+
+
                 const safeTransferFromWithData = function (token, from, to, tokenId, opts) {
                     return token.connect(opts.from).tx.safeTransferFromWithData(from, to, tokenId, data);
                 };
@@ -306,33 +320,30 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     });
 
                     describe('to a valid receiver contract', function () {
-                        beforeEach(async function () {
-                            this.receiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.None);
-                            this.toWhom = this.receiver.address;
-                        });
-
                         shouldTransferTokensByUsers(transferFun);
 
                         it('calls onERC721Received', async function () {
-                            const receipt = await transferFun.call(this, this.owner, this.receiver.address, tokenId, { from: this.owner });
+                            logs = transferFun.call(this, this.owner, this.receiver.address, tokenId, { from: this.owner });
+                            await logs;
 
-                            await expectEvent.inTransaction(receipt.tx, ERC721ReceiverMock, 'Received', {
-                                operator: this.owner,
-                                from: this.owner,
-                                tokenId: tokenId,
-                                data: data,
-                            });
+                            await expectEventInLogs(logs, this.receiver, 'Erc721Received',
+                                this.owner,
+                                this.owner,
+                                tokenId,
+                                data,
+                            );
                         });
 
                         it('calls onERC721Received from approved', async function () {
-                            const receipt = await transferFun.call(this, this.owner, this.receiver.address, tokenId, { from: approved });
+                            logs = transferFun.call(this, this.owner, this.receiver.address, tokenId, { from: this.approved });
+                            await logs;
 
-                            await expectEvent.inTransaction(receipt.tx, ERC721ReceiverMock, 'Received', {
-                                operator: approved,
-                                from: this.owner,
-                                tokenId: tokenId,
-                                data: data,
-                            });
+                            await expectEventInLogs(logs, this.receiver, 'Erc721Received',
+                                this.approved,
+                                this.owner,
+                                tokenId,
+                                data,
+                            );
                         });
 
                         describe('with an invalid token id', function () {
@@ -362,29 +373,10 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
 
                 describe('to a receiver contract returning unexpected value', function () {
                     it('reverts', async function () {
-                        const invalidReceiver = await ERC721ReceiverMock.new('0x42', Error.None);
-                        await expectRevert(
-                            this.token.safeTransferFrom(this.owner, invalidReceiver.address, tokenId, { from: this.owner }),
-                            'ERC721: transfer to non ERC721Receiver implementer',
-                        );
-                    });
-                });
+                        await this.receiver.connect(this.sender).tx.delAcceptToken(this.token.address);
 
-                describe('to a receiver contract that reverts with message', function () {
-                    it('reverts', async function () {
-                        const revertingReceiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.RevertWithMessage);
                         await expectRevert(
-                            this.token.safeTransferFrom(this.owner, revertingReceiver.address, tokenId, { from: this.owner }),
-                            'ERC721ReceiverMock: reverting',
-                        );
-                    });
-                });
-
-                describe('to a receiver contract that reverts without message', function () {
-                    it('reverts', async function () {
-                        const revertingReceiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.RevertWithoutMessage);
-                        await expectRevert(
-                            this.token.safeTransferFrom(this.owner, revertingReceiver.address, tokenId, { from: this.owner }),
+                            this.token.safeTransferFrom(this.owner, this.receiver.address, tokenId, { from: this.owner }),
                             'ERC721: transfer to non ERC721Receiver implementer',
                         );
                     });
@@ -392,9 +384,11 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
 
                 describe('to a receiver contract that panics', function () {
                     it('reverts', async function () {
-                        const revertingReceiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.Panic);
-                        await expectRevert.unspecified(
-                            this.token.safeTransferFrom(this.owner, revertingReceiver.address, tokenId, { from: this.owner }),
+                        await this.receiver.connect(this.sender).tx.setReceiveStatus(false);
+
+                        await expectRevert(
+                            this.token.safeTransferFrom(this.owner, this.receiver.address, tokenId, { from: this.owner }),
+                            'ERC721: transfer to non ERC721Receiver implementer',
                         );
                     });
                 });
@@ -409,7 +403,6 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     });
                 });
             });
-            */
         });
 
         /*
