@@ -36,16 +36,8 @@ pub mod erc20ownable {
     }
 
     // TODO: gen by marco with erc20 component
-    impl erc20::Impl<Erc20Ownable> for Erc20Ownable {
-        fn _before_token_transfer(
-            &mut self,
-            _from: &AccountId,
-            _to: &AccountId,
-            _amount: Balance,
-        ) -> Result<()> {
-            Ok(())
-        }
-    }
+    #[cfg(not(feature = "ink-as-dependency"))]
+    impl erc20::Impl<Erc20Ownable> for Erc20Ownable {}
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]

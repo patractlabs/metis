@@ -21,16 +21,8 @@ pub mod erc20_contract {
     }
 
     // TODO: gen by marco with erc20 component
-    impl erc20::Impl<Erc20> for Erc20 {
-        fn _before_token_transfer(
-            &mut self,
-            _from: &AccountId,
-            _to: &AccountId,
-            _amount: Balance,
-        ) -> Result<()> {
-            Ok(())
-        }
-    }
+    #[cfg(not(feature = "ink-as-dependency"))]
+    impl erc20::Impl<Erc20> for Erc20 {}
 
     type Event = <Erc20 as ink_lang::BaseEvent>::Type;
 
@@ -100,7 +92,12 @@ pub mod erc20_contract {
         ) -> (AccountId, AccountId, Balance) {
             let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
                 .expect("encountered invalid contract event data buffer");
-            if let Event::Approval(Approval { owner, spender, value }) = decoded_event {
+            if let Event::Approval(Approval {
+                owner,
+                spender,
+                value,
+            }) = decoded_event
+            {
                 return (owner, spender, value)
             }
             panic!("encountered unexpected event kind: expected a Transfer event")

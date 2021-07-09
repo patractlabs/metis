@@ -81,10 +81,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `from` and `to` are never both zero.
     fn _before_token_transfer(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
-        amount: E::Balance,
-    ) -> Result<()>;
+        _from: &E::AccountId,
+        _to: &E::AccountId,
+        _amount: E::Balance,
+    ) -> Result<()>{
+        Ok(())
+    }
 
     /// Returns the name of the token.
     fn name(&self) -> String {
