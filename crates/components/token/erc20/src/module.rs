@@ -19,8 +19,8 @@ pub struct Data<E: Env> {
     /// Mapping of the token amount which an account is allowed to withdraw
     /// from another account.
     pub allowances: StorageHashMap<(E::AccountId, E::AccountId), E::Balance>,
-    /// Symbols of ERC20 Token, by (name, symbol)
-    pub symbols: Lazy<(String, String)>,
+    /// Metadatas Symbols of ERC20 Token, by (name, symbol)
+    pub metadatas: Lazy<(u8, String, String)>,
 }
 
 impl<E: Env> Data<E> {
@@ -38,7 +38,7 @@ where
             total_supply: Lazy::default(),
             balances: StorageHashMap::new(),
             allowances: StorageHashMap::new(),
-            symbols: Lazy::default(),
+            metadatas: Lazy::default(),
         }
     }
 }
@@ -46,17 +46,22 @@ where
 impl<E: Env> Data<E> {
     /// Get name of the ERC20 Token
     pub fn name(&self) -> &String {
-        &self.symbols.0
+        &self.metadatas.1
     }
 
     /// Get symbol of the ERC20 Token
     pub fn symbol(&self) -> &String {
-        &self.symbols.1
+        &self.metadatas.2
+    }
+
+    /// Get decimals of the ERC20 Token
+    pub fn decimals(&self) -> &u8 {
+        &self.metadatas.0
     }
 
     /// Set the name and symbol of Token
-    pub fn set_symbols(&mut self, name: String, symbol: String) {
-        Lazy::set(&mut self.symbols, (name, symbol));
+    pub fn set_symbols(&mut self, name: String, symbol: String, decimals: u8) {
+        Lazy::set(&mut self.metadatas, (decimals, name, symbol));
     }
 
     /// Return the balance of {owner}

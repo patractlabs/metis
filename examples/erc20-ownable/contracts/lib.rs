@@ -88,6 +88,7 @@ pub mod erc20ownable {
                 &mut instance,
                 String::from("MetisTestToken"),
                 String::from("MET"),
+                18_u8,
                 initial_supply,
             );
             ownable::Impl::init(&mut instance);

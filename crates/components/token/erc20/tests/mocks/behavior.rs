@@ -95,7 +95,12 @@ pub trait IERC20New<E>
 where
     E: Env,
 {
-    fn new_erc20(name: String, symbol: String, initial_supply: E::Balance) -> Self;
+    fn new_erc20(
+        name: String,
+        symbol: String,
+        decimals: u8,
+        initial_supply: E::Balance,
+    ) -> Self;
     fn next_call_by(account: E::AccountId);
 }
 
@@ -315,6 +320,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             self.init_amount,
         );
 
@@ -384,6 +390,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             balance,
         );
 
@@ -464,6 +471,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -538,6 +546,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -582,6 +591,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -640,6 +650,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -701,6 +712,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -724,6 +736,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -754,6 +767,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -799,6 +813,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -823,6 +838,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -854,6 +870,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
@@ -898,6 +915,7 @@ impl<Contract: Env + IERC20<Contract> + IERC20Event<Contract>>
         let mut erc20 = Contract::new_erc20(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             amount.clone(),
         );
 
