@@ -33,16 +33,7 @@ pub mod erc20ownable {
     }
 
     // TODO: gen by marco with erc20 component
-    impl erc20::Impl<Erc20Ownable> for Erc20Ownable {
-        fn _before_token_transfer(
-            &mut self,
-            _from: &AccountId,
-            _to: &AccountId,
-            _amount: Balance,
-        ) -> Result<()> {
-            Ok(())
-        }
-    }
+    impl erc20::Impl<Erc20Ownable> for Erc20Ownable {}
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
@@ -93,6 +84,7 @@ pub mod erc20ownable {
                 &mut instance,
                 String::from("MetisTestToken"),
                 String::from("MET"),
+                18_u8,
                 initial_supply,
             );
             ownable::Impl::init(&mut instance);

@@ -13,20 +13,19 @@ mod utils {
 mod erc20_capped_tests {
     /// Imports all the definitions from the outer scope so we can use them here.
     use super::*;
+    use ink::ContractEnv;
     use ink_lang as ink;
     use ink_prelude::string::String;
-    use utils::{
-        env::*,
-        event::*,
-    };
-    use ink::ContractEnv;
     use mocks::{
         behavior::Erc20BehaviorChecker,
         erc20_capped_mock::erc20_capped::*,
     };
+    use utils::{
+        env::*,
+        event::*,
+    };
 
-    type AccountId =
-        <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
+    type AccountId = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::AccountId;
     type Balance = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Balance;
     type Hash = <<Erc20 as ContractEnv>::Env as ink_env::Environment>::Hash;
     type Event = <Erc20 as ink::BaseEvent>::Type;
@@ -104,6 +103,7 @@ mod erc20_capped_tests {
         let erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
             cap_amount,
         );
@@ -156,6 +156,7 @@ mod erc20_capped_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
             cap_amount,
         );
@@ -203,6 +204,7 @@ mod erc20_capped_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
             cap_amount,
         );
@@ -258,6 +260,7 @@ mod erc20_capped_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
             cap_amount,
         );
@@ -291,6 +294,7 @@ mod erc20_capped_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
             cap_amount,
         );
@@ -325,6 +329,7 @@ mod erc20_capped_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
             cap_amount,
         );
@@ -358,6 +363,7 @@ mod erc20_capped_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
             cap_amount,
         );

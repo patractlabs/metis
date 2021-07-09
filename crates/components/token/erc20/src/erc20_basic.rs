@@ -59,12 +59,12 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 /// }
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Initialize the erc20 component
-    fn init(&mut self, name: String, symbol: String, initial_supply: E::Balance) {
+    fn init(&mut self, name: String, symbol: String, decimals: u8, initial_supply: E::Balance) {
         let caller = &Self::caller();
 
         self.get_mut().set_total_supply(initial_supply);
         self.get_mut().set_balance(caller, initial_supply);
-        self.get_mut().set_symbols(name, symbol);
+        self.get_mut().set_symbols(name, symbol, decimals);
 
         self.emit_event_transfer(None, Some(caller.clone()), initial_supply);
     }
@@ -81,10 +81,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `from` and `to` are never both zero.
     fn _before_token_transfer(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
-        amount: E::Balance,
-    ) -> Result<()>;
+        _from: &E::AccountId,
+        _to: &E::AccountId,
+        _amount: E::Balance,
+    ) -> Result<()>{
+        Ok(())
+    }
 
     /// Returns the name of the token.
     fn name(&self) -> String {
@@ -107,7 +109,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// NOTE: This information is only used for _display_ purposes: it in
     /// no way affects any of the arithmetic of the contract
     fn decimals(&self) -> u8 {
-        18_u8
+        self.get().decimals().clone()
     }
 
     /// Returns the amount of tokens in existence.

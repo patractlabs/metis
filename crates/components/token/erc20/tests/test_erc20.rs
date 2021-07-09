@@ -16,13 +16,12 @@
 
 #[metis_lang::contract]
 pub mod erc20_contract {
+    use erc20::Result;
+    use metis_erc20 as erc20;
     use metis_lang::{
         import,
         metis,
     };
-    use metis_erc20 as erc20;
-    use erc20::Result;
-
 
     /// A simple ERC-20 contract.
     #[ink(storage)]
@@ -79,6 +78,7 @@ pub mod erc20_contract {
                 &mut instance,
                 String::from("MetisTestToken"),
                 String::from("MET"),
+                18_u8,
                 initial_supply,
             );
             instance

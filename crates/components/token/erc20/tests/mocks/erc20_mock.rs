@@ -21,16 +21,8 @@ pub mod erc20_contract {
     }
 
     // TODO: gen by marco with erc20 component
-    impl erc20::Impl<Erc20> for Erc20 {
-        fn _before_token_transfer(
-            &mut self,
-            _from: &AccountId,
-            _to: &AccountId,
-            _amount: Balance,
-        ) -> Result<()> {
-            Ok(())
-        }
-    }
+    #[cfg(not(feature = "ink-as-dependency"))]
+    impl erc20::Impl<Erc20> for Erc20 {}
 
     type Event = <Erc20 as ink_lang::BaseEvent>::Type;
 
@@ -58,8 +50,13 @@ pub mod erc20_contract {
     }
 
     impl behavior::IERC20New<Erc20> for Erc20 {
-        fn new_erc20(name: String, symbol: String, initial_supply: Balance) -> Self {
-            Self::new(name, symbol, initial_supply)
+        fn new_erc20(
+            name: String,
+            symbol: String,
+            decimals: u8,
+            initial_supply: Balance,
+        ) -> Self {
+            Self::new(name, symbol, decimals, initial_supply)
         }
 
         fn next_call_by(account: AccountId) {
@@ -100,7 +97,12 @@ pub mod erc20_contract {
         ) -> (AccountId, AccountId, Balance) {
             let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
                 .expect("encountered invalid contract event data buffer");
-            if let Event::Approval(Approval { owner, spender, value }) = decoded_event {
+            if let Event::Approval(Approval {
+                owner,
+                spender,
+                value,
+            }) = decoded_event
+            {
                 return (owner, spender, value)
             }
             panic!("encountered unexpected event kind: expected a Transfer event")
@@ -123,12 +125,17 @@ pub mod erc20_contract {
     // impl
     impl Erc20 {
         #[ink(constructor)]
-        pub fn new(name: String, symbol: String, initial_supply: Balance) -> Self {
+        pub fn new(
+            name: String,
+            symbol: String,
+            decimals: u8,
+            initial_supply: Balance,
+        ) -> Self {
             let mut instance = Self {
                 erc20: erc20::Data::new(),
             };
 
-            erc20::Impl::init(&mut instance, name, symbol, initial_supply);
+            erc20::Impl::init(&mut instance, name, symbol, decimals, initial_supply);
             instance
         }
 
