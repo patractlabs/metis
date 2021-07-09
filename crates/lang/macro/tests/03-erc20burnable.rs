@@ -77,6 +77,7 @@ pub mod erc20burnable {
                 &mut instance,
                 String::from("MetisTestToken"),
                 String::from("MET"),
+                18_u8,
                 initial_supply,
             );
 

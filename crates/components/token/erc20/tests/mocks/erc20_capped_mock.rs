@@ -23,6 +23,7 @@ pub mod erc20_capped {
     }
 
     // TODO: gen by marco with erc20 component
+    #[cfg(not(feature = "ink-as-dependency"))]
     impl erc20::hookable::Impl<Erc20> for Erc20 {
         fn before_token_transfer(
             &mut self,
@@ -36,6 +37,7 @@ pub mod erc20_capped {
 
     type Event = <Erc20 as ink_lang::BaseEvent>::Type;
 
+    #[cfg(not(feature = "ink-as-dependency"))]
     impl capped::Impl<Erc20> for Erc20 {}
 
     /// Event emitted when a token transfer occurs.
@@ -62,8 +64,13 @@ pub mod erc20_capped {
     }
 
     impl behavior::IERC20New<Erc20> for Erc20 {
-        fn new_erc20(name: String, symbol: String, initial_supply: Balance) -> Self {
-            Self::new(name, symbol, initial_supply, initial_supply)
+        fn new_erc20(
+            name: String,
+            symbol: String,
+            decimals: u8,
+            initial_supply: Balance,
+        ) -> Self {
+            Self::new(name, symbol, decimals, initial_supply, initial_supply)
         }
 
         fn next_call_by(account: AccountId) {
@@ -136,6 +143,7 @@ pub mod erc20_capped {
         pub fn new(
             name: String,
             symbol: String,
+            decimals: u8,
             initial_supply: Balance,
             cap_supply: Balance,
         ) -> Self {
@@ -144,7 +152,7 @@ pub mod erc20_capped {
                 capped: capped::Data::new(cap_supply),
             };
 
-            erc20::Impl::init(&mut instance, name, symbol, initial_supply);
+            erc20::Impl::init(&mut instance, name, symbol, decimals, initial_supply);
             instance
         }
 

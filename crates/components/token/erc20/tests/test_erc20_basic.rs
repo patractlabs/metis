@@ -108,6 +108,7 @@ mod erc20_basic_tests {
         let erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
         );
 
@@ -155,6 +156,7 @@ mod erc20_basic_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
         );
 
@@ -200,6 +202,7 @@ mod erc20_basic_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
         );
 
@@ -253,6 +256,7 @@ mod erc20_basic_tests {
         let mut erc20 = Erc20::new(
             String::from("MockErc20Token"),
             String::from("MET"),
+            18_u8,
             init_amount,
         );
 

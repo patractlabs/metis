@@ -109,6 +109,7 @@ pub mod erc20pausable {
                 &mut instance,
                 String::from("MetisTestToken"),
                 String::from("MET"),
+                18_u8,
                 initial_supply,
             );
             ownable::Impl::init(&mut instance);
