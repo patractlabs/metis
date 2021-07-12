@@ -52,7 +52,11 @@ pub mod contract {
     impl Erc721Receiver {
         #[ink(constructor)]
         pub fn new() -> Self {
-            Self::default()
+            let mut res = Self::default();
+
+            ownable::Impl::init(&mut res);
+
+            res
         }
 
         #[ink(constructor)]
@@ -84,6 +88,21 @@ pub mod contract {
             ownable::Impl::ensure_caller_is_owner(self);
 
             self.erc721_receive.take(&contract);
+        }
+
+        #[ink(message)]
+        pub fn get_ownership(&self) -> Option<AccountId> {
+            *ownable::Impl::owner(self)
+        }
+
+        #[ink(message)]
+        pub fn renounce_ownership(&mut self) {
+            ownable::Impl::renounce_ownership(self)
+        }
+
+        #[ink(message)]
+        pub fn transfer_ownership(&mut self, new_owner: AccountId) {
+            ownable::Impl::transfer_ownership(self, &new_owner)
         }
 
         #[ink(message)]

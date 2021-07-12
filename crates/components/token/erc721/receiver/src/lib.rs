@@ -5,22 +5,9 @@ use metis_erc721_types::TokenId;
 
 #[ink::contract]
 mod stub {
-    use ink_lang as ink;
     use ink_prelude::vec::Vec;
 
     use super::TokenId;
-
-    #[ink::trait_definition]
-    pub trait IERC721Receiver {
-        #[ink(message)]
-        fn on_erc721_received(
-            &mut self,
-            operator: AccountId,
-            from: AccountId,
-            token_id: TokenId,
-            data: Vec<u8>,
-        ) -> [u8; 4];
-    }
 
     #[ink(storage)]
     pub struct ERC721Receiver {}
