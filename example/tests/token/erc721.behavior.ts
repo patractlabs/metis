@@ -96,16 +96,6 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     expect((await this.token.query.balanceOf(this.other)).output).to.equal(0);
                 });
             });
-
-            /*
-            context('when querying the zero address', function () {
-                it('throws', async function () {
-                    await expectRevert(
-                        this.token.balanceOf(ZERO_ADDRESS), 'ERC721: balance query for the zero address',
-                    );
-                });
-            });
-            */
         });
 
         describe('ownerOf', function () {
@@ -318,9 +308,9 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 };
 
                 const shouldTransferSafely = function (transferFun, data) {
-                    //describe('to a user account', function () {
-                    //    shouldTransferTokensByUsers(transferFun);
-                    //});
+                    describe('to a user account', function () {
+                        shouldTransferTokensByUsers(transferFun);
+                    });
 
                     describe('to a valid receiver contract', function () {
                         beforeEach(async function () {
@@ -414,86 +404,6 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 });
             });
         });
-
-        /*
-        describe('safe mint', function () {
-            const fourthTokenId = new BN(4);
-            const tokenId = fourthTokenId;
-            const data = '0x42';
- 
-            describe('via safeMint', function () { // regular minting is tested in ERC721Mintable.test.js and others
-                it('calls onERC721Received — with data', async function () {
-                    this.receiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.None);
-                    const receipt = await this.token.safeMint(this.receiver.address, tokenId, data);
- 
-                    await expectEvent.inTransaction(receipt.tx, ERC721ReceiverMock, 'Received', {
-                        from: ZERO_ADDRESS,
-                        tokenId: tokenId,
-                        data: data,
-                    });
-                });
- 
-                it('calls onERC721Received — without data', async function () {
-                    this.receiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.None);
-                    const receipt = await this.token.safeMint(this.receiver.address, tokenId);
- 
-                    await expectEvent.inTransaction(receipt.tx, ERC721ReceiverMock, 'Received', {
-                        from: ZERO_ADDRESS,
-                        tokenId: tokenId,
-                    });
-                });
- 
-                context('to a receiver contract returning unexpected value', function () {
-                    it('reverts', async function () {
-                        const invalidReceiver = await ERC721ReceiverMock.new('0x42', Error.None);
-                        await expectRevert(
-                            this.token.safeMint(invalidReceiver.address, tokenId),
-                            'ERC721: transfer to non ERC721Receiver implementer',
-                        );
-                    });
-                });
- 
-                context('to a receiver contract that reverts with message', function () {
-                    it('reverts', async function () {
-                        const revertingReceiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.RevertWithMessage);
-                        await expectRevert(
-                            this.token.safeMint(revertingReceiver.address, tokenId),
-                            'ERC721ReceiverMock: reverting',
-                        );
-                    });
-                });
- 
-                context('to a receiver contract that reverts without message', function () {
-                    it('reverts', async function () {
-                        const revertingReceiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.RevertWithoutMessage);
-                        await expectRevert(
-                            this.token.safeMint(revertingReceiver.address, tokenId),
-                            'ERC721: transfer to non ERC721Receiver implementer',
-                        );
-                    });
-                });
- 
-                context('to a receiver contract that panics', function () {
-                    it('reverts', async function () {
-                        const revertingReceiver = await ERC721ReceiverMock.new(RECEIVER_MAGIC_VALUE, Error.Panic);
-                        await expectRevert.unspecified(
-                            this.token.safeMint(revertingReceiver.address, tokenId),
-                        );
-                    });
-                });
- 
-                context('to a contract that does not implement the required function', function () {
-                    it('reverts', async function () {
-                        const nonReceiver = this.token;
-                        await expectRevert(
-                            this.token.safeMint(nonReceiver.address, tokenId),
-                            'ERC721: transfer to non ERC721Receiver implementer',
-                        );
-                    });
-                });
-            });
-        });
-        */
 
         describe('approve', function () {
             const tokenId = firstTokenId;
@@ -702,16 +612,6 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
         });
 
         describe('getApproved', async function () {
-            context('when token is not minted', async function () {
-                // TODO: no reverts for query in ink!
-                // it('reverts', async function () {
-                //    await expectRevert(
-                //      this.token.query.getApproved(nonExistentTokenId),
-                //      'ERC721: approved query for nonexistent token',
-                //     );
-                // });
-            });
-
             context('when token has been minted ', async function () {
                 it('should return the zero address', async function () {
                     expect((await this.token.query.getApproved(firstTokenId)).output).to.equal(
