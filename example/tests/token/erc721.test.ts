@@ -5,7 +5,7 @@ import { hexToU8a } from '@polkadot/util';
 const { getContractFactory, getRandomSigner } = patract;
 const { api, getAddresses, getSigners } = network;
 
-const { shouldBehaveLikeERC721, shouldBehaveLikeERC721Metadata } = require("./erc721.behavior");
+const { shouldBehaveLikeERC721, shouldBehaveLikeERC721Metadata, shouldBehaveLikeERC721Enumerable } = require("./erc721.behavior");
 
 const firstTokenId = hexToU8a('0x0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a')
 const secondTokenId = hexToU8a('0x0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b')
@@ -18,6 +18,6 @@ describe("ERC721", async () => {
     return api.disconnect();
   });
 
-  //await shouldBehaveLikeERC721Metadata('ERC721', "erc721");
+  await shouldBehaveLikeERC721Metadata('ERC721', "erc721");
   await shouldBehaveLikeERC721('ERC721', "erc721");
 });
