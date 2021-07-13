@@ -54,11 +54,8 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
     //  'ERC721',
     // ]);
 
-    beforeEach(async function () {
+    before(async function (){
         const { signerAddresses, sender } = await setup(contractName);
-        const contractFactory = await getContractFactory(contractName, sender.address);
-        let res = await contractFactory.deploy("new", "NFT", "NFT");
-        this.token = res;
 
         this.sender = signerAddresses[0]
         this.owner = signerAddresses[0]
@@ -75,6 +72,21 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
         await api.tx.balances.transfer(this.anotherApproved, fee).signAndSend(this.owner);
         await api.tx.balances.transfer(this.operator, fee).signAndSend(this.owner);
         await api.tx.balances.transfer(this.other, fee).signAndSend(this.owner);
+    })
+
+    beforeEach(async function () {
+        const { signerAddresses, sender } = await setup(contractName);
+        const contractFactory = await getContractFactory(contractName, sender.address);
+        let res = await contractFactory.deploy("new", "NFT", "NFT");
+        this.token = res;
+
+        this.sender = signerAddresses[0]
+        this.owner = signerAddresses[0]
+        this.newOwner = signerAddresses[1]
+        this.approved = signerAddresses[2]
+        this.anotherApproved = signerAddresses[3]
+        this.operator = signerAddresses[4]
+        this.other = signerAddresses[5]
     });
 
     context('with minted tokens', function () {
@@ -632,7 +644,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
         });
     });
 
-    describe('_mint(address, uint256)', function () {
+    describe('_mint', function () {
         let logs = null;
 
         it('reverts with a null destination address', async function () {
@@ -647,7 +659,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                 await logs;
             });
 
-            it('emits a Transfer event', function () {
+            it('emits a Transfer event', async function () {
                 expectEventInLogs(this.logs, this.token, 'Transfer', ZERO_ADDRESS, this.owner, firstTokenId);
             });
 
@@ -683,11 +695,11 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
                     await logs;
                 });
 
-                it('emits a Transfer event', function () {
+                it('emits a Transfer event', async function () {
                     expectEventInLogs(this.logs, this.token, 'Transfer', this.owner, ZERO_ADDRESS, firstTokenId);
                 });
 
-                it('emits an Approval event', function () {
+                it('emits an Approval event', async function () {
                     expectEventInLogs(this.logs, this.token, 'Approval', this.owner, ZERO_ADDRESS, firstTokenId);
                 });
 
@@ -708,7 +720,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
     });
 }
 
-function shouldBehaveLikeERC721Metadata(errorPrefix, contractName) {
+async function shouldBehaveLikeERC721Metadata(errorPrefix, contractName) {
     // TODO: interface test
     //shouldSupportInterfaces([
     //    'ERC721Metadata',

@@ -35,6 +35,10 @@ export default {
   },
   mocha: {
     timeout: 60000,
+    useColors: true,
+    slow: 1500,
+    asyncOnly: true
+
   },
   docker: {
     sudo: false,
