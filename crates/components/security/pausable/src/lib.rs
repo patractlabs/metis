@@ -58,12 +58,12 @@ pub trait Impl<E: Env>: Storage<E, Data> + EventEmit<E> {
 
     /// Panic if `owner` is not an owner
     fn ensure_paused(&self) {
-        assert!(self.get().is_paused());
+        assert!(self.get().is_paused(), "Pausable: ensure paused");
     }
 
     /// Panic if caller is not an owner
     fn ensure_not_paused(&self) {
-        assert!(!self.get().is_paused());
+        assert!(!self.get().is_paused(), "Pausable: ensure not paused");
     }
 }
 

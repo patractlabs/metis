@@ -6,16 +6,28 @@ use ink_storage::traits::{
 };
 
 #[cfg(feature = "std")]
-pub trait EnvAccountId: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug {}
+pub trait EnvAccountId:
+    'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug + Into<ink_env::AccountId>
+{
+}
 
 #[cfg(feature = "std")]
-impl<T> EnvAccountId for T where T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug {}
+impl<T> EnvAccountId for T where
+    T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + std::fmt::Debug + Into<ink_env::AccountId>
+{
+}
 
 #[cfg(not(feature = "std"))]
-pub trait EnvAccountId: 'static + scale::Codec + Clone + PartialEq + Eq + Ord {}
+pub trait EnvAccountId:
+    'static + scale::Codec + Clone + PartialEq + Eq + Ord + Into<ink_env::AccountId>
+{
+}
 
 #[cfg(not(feature = "std"))]
-impl<T> EnvAccountId for T where T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord {}
+impl<T> EnvAccountId for T where
+    T: 'static + scale::Codec + Clone + PartialEq + Eq + Ord + Into<ink_env::AccountId>
+{
+}
 
 #[cfg(not(feature = "std"))]
 pub trait AccountId: EnvAccountId + Default + SpreadLayout + PackedLayout {}

@@ -12,7 +12,6 @@ pub use traits::{
     Timestamp,
 };
 
-
 pub trait Env: 'static {
     type AccountId: AccountId;
     type Balance: Balance;
@@ -21,7 +20,7 @@ pub trait Env: 'static {
     type Timestamp: Timestamp;
 }
 
-impl Env for ink_env::DefaultEnvironment{
+impl Env for ink_env::DefaultEnvironment {
     type AccountId = <ink_env::DefaultEnvironment as ink_env::Environment>::AccountId;
     type Balance = <ink_env::DefaultEnvironment as ink_env::Environment>::Balance;
     type BlockNumber = <ink_env::DefaultEnvironment as ink_env::Environment>::BlockNumber;
@@ -44,3 +43,12 @@ pub trait EnvAccess<E: Env> {
     fn balance() -> E::Balance;
     fn transfer(destination: E::AccountId, value: E::Balance) -> ink_env::Result<()>;
 }
+
+pub trait FromAccountId<E>
+where
+    E: Env,
+{
+    /// Creates the contract instance from the account ID of the already instantiated contract.
+    fn from_account_id(account_id: E::AccountId) -> Self;
+}
+
