@@ -1,4 +1,5 @@
 pub use super::module::Data;
+use ink_lang::ForwardCallMut;
 use ink_prelude::{
     string::String,
     vec::Vec,
@@ -9,6 +10,8 @@ pub use metis_lang::{
     FromAccountId,
     Storage,
 };
+
+use metis_erc1155_receiver::ERC1155ReceiverStub as Receiver;
 
 /// The ERC-1155 error types.
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -239,8 +242,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
 
         self._do_safe_transfer_acceptance_check(
             &operator,
-            &Some(&from),
-            &Some(&to),
+            &Some(from.clone()),
+            &to,
             &id,
             &amount,
             &data,
@@ -303,8 +306,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
 
         self._do_safe_batch_transfer_acceptance_check(
             &operator,
-            &Some(&from),
-            &Some(&to),
+            &Some(from.clone()),
+            &to,
             &ids,
             &amounts,
             &data,
@@ -368,12 +371,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
 
         self.get_mut().add_balance(&account, &id, amount);
         self._do_safe_transfer_acceptance_check(
-            &operator,
-            &None,
-            &Some(&account),
-            &id,
-            &amount,
-            &data,
+            &operator, &None, &account, &id, &amount, &data,
         );
 
         self.emit_event_transfer_single(operator, None, Some(account), id, amount);
@@ -416,12 +414,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         }
 
         self._do_safe_batch_transfer_acceptance_check(
-            &operator,
-            &None,
-            &Some(&to),
-            &ids,
-            &amounts,
-            &data,
+            &operator, &None, &to, &ids, &amounts, &data,
         );
         self.emit_event_transfer_batch(operator, None, Some(to), ids, amounts);
 
@@ -512,14 +505,6 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
                 .set_balance(&account, &id, account_balance - amount);
         }
 
-        self._do_safe_batch_transfer_acceptance_check(
-            &operator,
-            &Some(&account),
-            &None,
-            &ids,
-            &amounts,
-            &Vec::<u8>::default(),
-        );
         self.emit_event_transfer_batch(operator, Some(account), None, ids, amounts);
 
         Ok(())
@@ -559,23 +544,91 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     fn _do_safe_transfer_acceptance_check(
         &mut self,
         operator: &E::AccountId,
-        from: &Option<&E::AccountId>,
-        to: &Option<&E::AccountId>,
+        from: &Option<E::AccountId>,
+        to: &E::AccountId,
         id: &TokenId,
         amount: &E::Balance,
         data: &Vec<u8>,
     ) {
+        let mut receiver = <Receiver as FromAccountId<E>>::from_account_id(to.clone());
+
+        let from_account: Option<ink_env::AccountId> = match from {
+            Some(account) => Some(account.clone().into()),
+            None => None,
+        };
+
+        let resp = receiver
+            .call_mut()
+            .on_erc1155_received(
+                operator.clone().into(),
+                from_account,
+                id.clone(),
+                amount.clone().into(),
+                data.clone(),
+            )
+            .fire();
+
+        // TODO: use code gen
+        let is_ok = match resp {
+            Ok(selector_id) => selector_id == [194u8, 238u8, 217u8, 152u8],
+            Err(err) => {
+                match err {
+                    ink_env::Error::NotCallable => true,
+                    _ => panic!("ERC1155: transfer to non ERC1155Receiver implementer"),
+                }
+            }
+        };
+
+        assert!(
+            is_ok,
+            "ERC1155: transfer to non ERC1155Receiver implementer"
+        )
     }
 
     /// Do safe transfer accept check for batch transfer
     fn _do_safe_batch_transfer_acceptance_check(
         &mut self,
         operator: &E::AccountId,
-        from: &Option<&E::AccountId>,
-        to: &Option<&E::AccountId>,
+        from: &Option<E::AccountId>,
+        to: &E::AccountId,
         ids: &Vec<TokenId>,
         amounts: &Vec<E::Balance>,
         data: &Vec<u8>,
     ) {
+        let mut receiver = <Receiver as FromAccountId<E>>::from_account_id(to.clone());
+
+        let from_account: Option<ink_env::AccountId> = match from {
+            Some(account) => Some(account.clone().into()),
+            None => None,
+        };
+
+        let amounts_param: Vec<u128> = amounts.iter().map(|a| a.clone().into()).collect();
+
+        let resp = receiver
+            .call_mut()
+            .on_erc1155_batch_received(
+                operator.clone().into(),
+                from_account,
+                ids.clone(),
+                amounts_param,
+                data.clone(),
+            )
+            .fire();
+
+        // TODO: use code gen
+        let is_ok = match resp {
+            Ok(selector_id) => selector_id == [22u8, 32u8, 73u8, 133u8],
+            Err(err) => {
+                match err {
+                    ink_env::Error::NotCallable => true,
+                    _ => panic!("ERC1155: transfer to non ERC1155Receiver implementer"),
+                }
+            }
+        };
+
+        assert!(
+            is_ok,
+            "ERC1155: transfer to non ERC1155Receiver implementer"
+        )
     }
 }

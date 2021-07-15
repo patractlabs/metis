@@ -7,15 +7,15 @@ mod mocks {
 mod erc1155_basic_tests {
     /// Imports all the definitions from the outer scope so we can use them here.
     use super::*;
-    use ink::ContractEnv;
+    // use ink::ContractEnv;
     use ink_lang as ink;
     use ink_prelude::string::String;
     use mocks::basic::contract::{
         Erc1155,
-        TokenId,
+        // TokenId,
     };
 
-    type AccountId = <<Erc1155 as ContractEnv>::Env as ink_env::Environment>::AccountId;
+    // type AccountId = <<Erc1155 as ContractEnv>::Env as ink_env::Environment>::AccountId;
 
     /// The default constructor does its job.
     #[ink::test]

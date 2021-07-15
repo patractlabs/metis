@@ -24,6 +24,7 @@ metis_ownable = { path = "../../access/ownable", default-features = false }
 metis_pausable = { path = "../../security/pausable", default-features = false }
 
 metis_erc721_types = { path = "../erc721/types", default-features = false }
+metis_erc1155_receiver = { path = "./receiver", default-features = false, features = ["ink-as-dependency"] }
 
 [dev-dependencies]
 trybuild = { version = "1.0", features = ["diff"] }
@@ -47,7 +48,7 @@ hex = { version = "0.4" }
 metis_lang = { path = "../../../lang/" }
 
 metis_erc721_types = { path = "../erc721/types" }
-# metis_erc721_receiver = { path = "./receiver" }
+metis_erc1155_receiver = { path = "./receiver" }
 
 [features]
 default = ["std"]
@@ -64,6 +65,6 @@ std = [
     "metis_ownable/std",
     "metis_pausable/std",
     "metis_erc721_types/std",
-    #"metis_erc721_receiver/std",
+    "metis_erc1155_receiver/std",
 ]
 ink-as-dependency = []

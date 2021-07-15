@@ -24,7 +24,7 @@ metis_ownable = { path = "../../access/ownable", default-features = false }
 metis_pausable = { path = "../../security/pausable", default-features = false }
 
 metis_erc721_types = { path = "./types", default-features = false }
-metis_erc721_receiver = { path = "./receiver", default-features = false , features = ["ink-as-dependency"] }
+metis_erc721_receiver = { path = "./receiver", default-features = false, features = ["ink-as-dependency"] }
 
 [dev-dependencies]
 trybuild = { version = "1.0", features = ["diff"] }
