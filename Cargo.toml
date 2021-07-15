@@ -7,6 +7,7 @@ members = [
     "crates/components/token/erc721",
     "crates/components/token/erc721/receiver",
     "crates/components/token/erc721/types",
+    "crates/components/token/erc1155",
     "crates/components/security/pausable",
     "crates/components/security/reentrancy-guard",
     "crates/components/utils/escrow",
