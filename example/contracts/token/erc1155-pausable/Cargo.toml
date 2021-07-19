@@ -1,5 +1,5 @@
 [package]
-name = "erc721_pausable"
+name = "erc1155_pausable"
 version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
@@ -18,12 +18,12 @@ num-traits = { version = "0.2", default-features = false, features = ["i128"] }
 hex = { version = "0.4", default-features = false }
 
 metis_lang = { path = "../../../../crates/lang", default-features = false }
-metis_erc721 = { path = "../../../../crates/components/token/erc721/", default-features = false }
+metis_erc1155 = { path = "../../../../crates/components/token/erc1155/", default-features = false }
 metis_ownable = { path = "../../../../crates/components/access/ownable", default-features = false }
 metis_pausable = { path = "../../../../crates/components/security/pausable", default-features = false }
 
 [lib]
-name = "erc721_pausable"
+name = "erc1155_pausable"
 path = "lib.rs"
 crate-type = [
     "cdylib",
@@ -43,7 +43,7 @@ std = [
     "scale-info",
     "scale-info/std",
     "metis_lang/std",
-    "metis_erc721/std",
+    "metis_erc1155/std",
     "metis_ownable/std",
     "metis_pausable/std"
 ]

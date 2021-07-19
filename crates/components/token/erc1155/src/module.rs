@@ -88,10 +88,15 @@ impl<E: Env> Data<E> {
         id: &TokenId,
         amount: E::Balance,
     ) {
-        self.balances
-            .entry((id.clone(), account.clone()))
-            .and_modify(|v| *v += amount)
-            .or_insert(amount);
+        match self.balances.entry((id.clone(), account.clone())) {
+            Entry::Occupied(mut entry) => {
+                let v = entry.get_mut();
+                *v += amount;
+            }
+            Entry::Vacant(entry) => {
+                entry.insert(amount);
+            },
+        };
     }
 
     pub fn set_approval_for_all(

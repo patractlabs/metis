@@ -2,12 +2,16 @@
 
 #[metis_lang::contract]
 pub mod contract {
-    pub use erc1155::{
+    use ink_prelude::{
+        string::String,
+        vec::Vec,
+    };
+    use metis_erc1155 as erc1155;
+    pub use metis_erc1155::{
         Error,
         Result,
         TokenId,
     };
-    use metis_erc1155 as erc1155;
     use metis_lang::{
         import,
         metis,
@@ -21,9 +25,22 @@ pub mod contract {
     }
 
     // TODO: gen by marco with Erc1155 component
-    impl erc1155::Impl<Erc1155> for Erc1155 {}
+    impl erc1155::Impl<Erc1155> for Erc1155 {
+        fn _before_token_transfer(
+            &mut self,
+            _operator: &AccountId,
+            _from: &Option<&AccountId>,
+            _to: &Option<&AccountId>,
+            _ids: &Vec<TokenId>,
+            _amounts: &Vec<Balance>,
+            _data: &Vec<u8>,
+        ) -> Result<()> {
+            Ok(())
+        }
+    }
 
-    /// Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
+    /// Emitted when `value` tokens of token type `id` are
+    /// transferred from `from` to `to` by `operator`.
     #[ink(event)]
     #[metis(erc1155)]
     pub struct TransferSingle {
@@ -37,7 +54,8 @@ pub mod contract {
         pub value: Balance,
     }
 
-    /// @dev Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all
+    /// @dev Equivalent to multiple {TransferSingle} events,
+    /// where `operator`, `from` and `to` are the same for all
     /// transfers.
     #[ink(event)]
     #[metis(erc1155)]
@@ -77,7 +95,30 @@ pub mod contract {
     }
 
     // for test message
-    impl Erc1155 {}
+    impl Erc1155 {
+        /// For test to mint
+        #[ink(message)]
+        pub fn mint_test(
+            &mut self,
+            to: AccountId,
+            id: TokenId,
+            amount: Balance,
+            data: Vec<u8>,
+        ) -> Result<()> {
+            erc1155::Impl::_mint(self, to, id, amount, data)
+        }
+
+        /// For test to burn
+        #[ink(message)]
+        pub fn burn_test(
+            &mut self,
+            account: AccountId,
+            id: TokenId,
+            amount: Balance,
+        ) -> Result<()> {
+            erc1155::Impl::_burn(self, account, id, amount)
+        }
+    }
 
     // impl
     impl Erc1155 {
@@ -100,8 +141,8 @@ pub mod contract {
         /// Clients calling this function must replace the `\{id\}` substring with the
         /// actual token type ID.
         #[ink(message)]
-        pub fn url(&self, id: TokenId) -> String {
-            erc1155::Impl::url(self, id)
+        pub fn url(&self, token_id: TokenId) -> String {
+            erc1155::Impl::url(self, token_id)
         }
 
         /// @dev See {IERC1155-balanceOf}.
@@ -110,8 +151,8 @@ pub mod contract {
         ///
         /// - `account` cannot be the zero address.
         #[ink(message)]
-        pub fn balance_of(&self, account: &AccountId, id: &TokenId) -> Balance {
-            erc1155::Impl::balance_of(self, account, id)
+        pub fn balance_of(&self, owner: AccountId, id: TokenId) -> Balance {
+            erc1155::Impl::balance_of(self, &owner, &id)
         }
 
         /// @dev See {IERC1155-balanceOfBatch}.
@@ -128,20 +169,16 @@ pub mod contract {
             erc1155::Impl::balance_of_batch(self, accounts, ids)
         }
 
+        /// @dev See {IERC1155-isApprovedForAll}.
+        #[ink(message)]
+        pub fn is_approved_for_all(&self, owner: AccountId, operator: AccountId) -> bool {
+            erc1155::Impl::is_approved_for_all(self, &owner, &operator)
+        }
+
         /// @dev See {IERC1155-setApprovalForAll}.
         #[ink(message)]
         pub fn set_approval_for_all(&mut self, operator: AccountId, approved: bool) {
             erc1155::Impl::set_approval_for_all(self, operator, approved)
-        }
-
-        /// @dev See {IERC1155-isApprovedForAll}.
-        #[ink(message)]
-        pub fn is_approved_for_all(
-            &self,
-            account: &AccountId,
-            operator: &AccountId,
-        ) -> bool {
-            erc1155::Impl::is_approved_for_all(self, account, operator)
         }
 
         /// @dev See {IERC1155-safeTransferFrom}.
@@ -158,16 +195,15 @@ pub mod contract {
         }
 
         /// @dev See {IERC1155-safeBatchTransferFrom}.
-        #[ink(message)]
-        pub fn safe_batch_transfer_from(
+        fn safe_batch_transfer_from(
             &mut self,
             from: AccountId,
             to: AccountId,
-            ids: Vec<TokenId>,
-            amounts: Vec<Balance>,
+            id: Vec<TokenId>,
+            amount: Vec<Balance>,
             data: Vec<u8>,
         ) -> Result<()> {
-            erc1155::Impl::safe_batch_transfer_from(self, from, to, ids, amounts, data)
+            erc1155::Impl::safe_batch_transfer_from(self, from, to, id, amount, data)
         }
     }
 }

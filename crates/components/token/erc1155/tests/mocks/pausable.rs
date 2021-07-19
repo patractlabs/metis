@@ -12,16 +12,32 @@ pub mod contract {
         import,
         metis,
     };
+    use metis_ownable as ownable;
+    use metis_pausable as pausable;
 
     /// A simple ERC-20 contract.
     #[ink(storage)]
-    #[import(erc1155)]
-    pub struct Erc1155 {
-        erc1155: erc1155::Data<Erc1155>,
+    #[import(erc1155, ownable, pausable)]
+    pub struct Erc1155Pausable {
+        erc1155: erc1155::Data<Erc1155Pausable>,
+        ownable: ownable::Data<Erc1155Pausable>,
+        pausable: pausable::Data,
     }
 
-    // TODO: gen by marco with Erc1155 component
-    impl erc1155::Impl<Erc1155> for Erc1155 {}
+    // TODO: gen by marco with Erc1155Pausable component
+    impl erc1155::pausable::Impl<Erc1155Pausable> for Erc1155Pausable {
+        fn _before_token_transfer(
+            &mut self,
+            _operator: &AccountId,
+            _from: &Option<&AccountId>,
+            _to: &Option<&AccountId>,
+            _ids: &Vec<TokenId>,
+            _amounts: &Vec<Balance>,
+            _data: &Vec<u8>,
+        ) -> Result<()> {
+            Ok(())
+        }
+    }
 
     /// Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
     #[ink(event)]
@@ -76,18 +92,53 @@ pub mod contract {
         pub id: TokenId,
     }
 
+    /// Event emitted when Owner AccountId Transferred
+    #[ink(event)]
+    #[metis(ownable)]
+    pub struct OwnershipTransferred {
+        /// previous owner account id
+        #[ink(topic)]
+        previous_owner: Option<AccountId>,
+        /// new owner account id
+        #[ink(topic)]
+        new_owner: Option<AccountId>,
+    }
+
+    /// Event emitted when Pause
+    #[ink(event)]
+    #[metis(pausable)]
+    pub struct Paused {
+        /// paused caller
+        #[ink(topic)]
+        account: AccountId,
+    }
+
+    /// Event emitted when unPause
+    #[ink(event)]
+    #[metis(pausable)]
+    pub struct Unpaused {
+        /// unpaused caller
+        #[ink(topic)]
+        account: AccountId,
+    }
+
     // for test message
-    impl Erc1155 {}
+    impl Erc1155Pausable {}
 
     // impl
-    impl Erc1155 {
+    impl Erc1155Pausable {
         #[ink(constructor)]
         pub fn new(url: String) -> Self {
             let mut instance = Self {
                 erc1155: erc1155::Data::new(),
+                ownable: ownable::Data::new(),
+                pausable: pausable::Data::new(),
             };
 
             erc1155::Impl::init(&mut instance, url);
+            ownable::Impl::init(&mut instance);
+            pausable::Impl::init(&mut instance);
+
             instance
         }
 
@@ -168,6 +219,57 @@ pub mod contract {
             data: Vec<u8>,
         ) -> Result<()> {
             erc1155::Impl::safe_batch_transfer_from(self, from, to, ids, amounts, data)
+        }
+
+        // Owner messages
+
+        /// Return the owner AccountId
+        #[ink(message)]
+        pub fn get_ownership(&self) -> Option<AccountId> {
+            *ownable::Impl::owner(self)
+        }
+
+        /// Leaves the contract without owner. It will not be possible to call
+        /// `ensure_xxx` functions anymore. Can only be called by the current owner.
+        /// NOTE: Renouncing ownership will leave the contract without an owner,
+        /// thereby removing any functionality that is only available to the owner.
+        #[ink(message)]
+        pub fn renounce_ownership(&mut self) {
+            ownable::Impl::renounce_ownership(self)
+        }
+
+        /// Transfers ownership of the contract to a new account (`new_owner`).
+        /// Can only be called by the current owner.
+        #[ink(message)]
+        pub fn transfer_ownership(&mut self, new_owner: AccountId) {
+            ownable::Impl::transfer_ownership(self, &new_owner)
+        }
+
+        // Pausable messages
+
+        /// Returns true if the contract is paused, and false otherwise
+        #[ink(message)]
+        pub fn paused(&self) -> bool {
+            pausable::Impl::paused(self)
+        }
+
+        /// Returns to normal state.
+        ///
+        /// Requirements:
+        ///
+        /// - The contract must be paused.
+        #[ink(message)]
+        pub fn pause(&mut self) {
+            ownable::Impl::ensure_caller_is_owner(self);
+            pausable::Impl::_pause(self)
+        }
+
+        /// Transfers ownership of the contract to a new account (`new_owner`).
+        /// Can only be called by the current owner.
+        #[ink(message)]
+        pub fn unpause(&mut self) {
+            ownable::Impl::ensure_caller_is_owner(self);
+            pausable::Impl::_unpause(self)
         }
     }
 }

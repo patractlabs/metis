@@ -1,17 +1,17 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod mocks {
-    pub mod basic;
+    pub mod pausable;
 }
 
-mod erc1155_basic_tests {
+mod erc1155_pausable_tests {
     /// Imports all the definitions from the outer scope so we can use them here.
     use super::*;
     // use ink::ContractEnv;
     use ink_lang as ink;
     use ink_prelude::string::String;
-    use mocks::basic::contract::{
-        Erc1155,
+    use mocks::pausable::contract::{
+        Erc1155Pausable,
         TokenId,
     };
 
@@ -21,7 +21,7 @@ mod erc1155_basic_tests {
     #[ink::test]
     fn new_works() {
         // Constructor works.
-        let erc1155 = Erc1155::new(String::from("MockErc1155Token"));
+        let erc1155 = Erc1155Pausable::new(String::from("MockErc1155Token"));
         let token_a = TokenId::new([0x0a; 32]);
 
         // for metadatas

@@ -16,12 +16,13 @@ pub mod contract {
     /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(erc1155)]
-    pub struct Erc1155 {
-        erc1155: erc1155::Data<Erc1155>,
+    pub struct Erc1155Burnable {
+        erc1155: erc1155::Data<Erc1155Burnable>,
     }
 
-    // TODO: gen by marco with Erc1155 component
-    impl erc1155::Impl<Erc1155> for Erc1155 {}
+    // TODO: gen by marco with Erc1155Burnable component
+    impl erc1155::Impl<Erc1155Burnable> for Erc1155Burnable {}
+    impl erc1155::burnable::Impl<Erc1155Burnable> for Erc1155Burnable {}
 
     /// Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
     #[ink(event)]
@@ -77,10 +78,10 @@ pub mod contract {
     }
 
     // for test message
-    impl Erc1155 {}
+    impl Erc1155Burnable {}
 
     // impl
-    impl Erc1155 {
+    impl Erc1155Burnable {
         #[ink(constructor)]
         pub fn new(url: String) -> Self {
             let mut instance = Self {
@@ -168,6 +169,34 @@ pub mod contract {
             data: Vec<u8>,
         ) -> Result<()> {
             erc1155::Impl::safe_batch_transfer_from(self, from, to, ids, amounts, data)
+        }
+
+        /// @dev Burns `id` by `value`
+        ///
+        /// Requirements:
+        ///
+        /// - The caller must own `id` or be an approved operator.
+        fn burn(
+            &mut self,
+            account: AccountId,
+            id: TokenId,
+            value: Balance,
+        ) -> Result<()> {
+            erc1155::burnable::Impl::burn(self, account, id, value)
+        }
+
+        /// @dev Burns Batch `ids` by `values`
+        ///
+        /// Requirements:
+        ///
+        /// - The caller must own `id` or be an approved operator.
+        fn burn_batch(
+            &mut self,
+            account: AccountId,
+            ids: Vec<TokenId>,
+            values: Vec<Balance>,
+        ) -> Result<()> {
+            erc1155::burnable::Impl::burn_batch(self, account, ids, values)
         }
     }
 }

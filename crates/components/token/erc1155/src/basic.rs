@@ -3,6 +3,7 @@ use ink_lang::ForwardCallMut;
 use ink_prelude::{
     string::String,
     vec::Vec,
+    vec,
 };
 pub use metis_lang::{
     Env,
@@ -105,7 +106,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Requirements:
     ///
     /// - `account` cannot be the zero address.
-    fn balance_of(&self, id: &TokenId, account: &E::AccountId) -> E::Balance {
+    fn balance_of(&self, account: &E::AccountId, id: &TokenId) -> E::Balance {
         assert!(
             *account != E::AccountId::default(),
             "ERC1155: balance query for the zero address"
@@ -133,7 +134,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             .collect::<Vec<_>>()
             .iter()
             .map(|idx| {
-                self.balance_of(ids.get(*idx).unwrap(), accounts.get(*idx).unwrap())
+                self.balance_of(accounts.get(*idx).unwrap(), ids.get(*idx).unwrap())
             })
             .collect()
     }
