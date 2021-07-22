@@ -1,0 +1,58 @@
+[package]
+name = "metis_erc777"
+version = "0.1.0"
+authors = ["patract labs <https://github.com/patractlabs>"]
+edition = "2018"
+
+[dependencies]
+ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
+ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_prelude = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+
+scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
+scale-info = { version = "0.6", default-features = false, features = ["derive"] }
+num-traits = { version = "0.2", default-features = false, features = ["i128"] }
+
+metis_lang = { path = "../../../lang/", default-features = false }
+
+metis_ownable = { path = "../../access/ownable", default-features = false }
+metis_pausable = { path = "../../security/pausable", default-features = false }
+
+[dev-dependencies]
+trybuild = { version = "1.0", features = ["diff"] }
+metis_pausable = { path = "../../security/pausable" }
+metis_ownable = { path = "../../access/ownable" }
+metis_erc777 = { path = "." }
+
+ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+
+scale = { package = "parity-scale-codec", version = "2.1", features = ["derive"] }
+scale-info = { version = "0.6", features = ["derive"] }
+num-traits = { version = "0.2", features = ["i128"] }
+
+metis_lang = { path = "../../../lang/" }
+
+[[test]]
+name = "test_basic"
+path = "tests/test_basic.rs"
+
+[features]
+default = ["std"]
+std = [
+    "ink_metadata/std",
+    "ink_storage/std",
+    "scale/std",
+    "scale-info/std",
+    "metis_lang/std",
+    "metis_ownable/std",
+    "metis_pausable/std",
+]
+ink-as-dependency = []
