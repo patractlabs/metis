@@ -485,7 +485,7 @@ pub mod erc20pausable {
             );
         }
 
-        fn transfer_from_works_by(erc20: &mut Erc20Pausable, emitted_events_len: usize ) {
+        fn transfer_from_works_by(erc20: &mut Erc20Pausable, emitted_events_len: usize) {
             // Transfer event triggered during initial construction.
             let accounts =
                 ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
@@ -500,7 +500,10 @@ pub mod erc20pausable {
             assert_eq!(erc20.approve(accounts.bob, 10), Ok(()));
 
             // The approve event takes place.
-            assert_eq!(ink_env::test::recorded_events().count(), 1 + emitted_events_len);
+            assert_eq!(
+                ink_env::test::recorded_events().count(),
+                1 + emitted_events_len
+            );
 
             // Get contract address.
             let callee = ink_env::account_id::<ink_env::DefaultEnvironment>()

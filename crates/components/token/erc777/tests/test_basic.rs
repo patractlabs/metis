@@ -91,7 +91,7 @@ mod erc20_basic_tests {
             default_account,
             AccountId::from([0x00; 32]),
             accounts.bob,
-            |erc20 : &mut Erc777, from, to, amount| -> Result<()> {
+            |erc20: &mut Erc777, from, to, amount| -> Result<()> {
                 next_call_by(from);
                 erc20.transfer(to.clone(), amount)
             },

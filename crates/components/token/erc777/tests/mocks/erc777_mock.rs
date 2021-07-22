@@ -244,9 +244,12 @@ pub mod erc777_contract {
         pub fn burn(&mut self, amount: Balance, data: Vec<u8>) -> Result<()> {
             erc777::Impl::burn(self, amount, data)
         }
-    
         #[ink(message)]
-        pub fn is_operator_for(&self, operator: AccountId, token_holder: AccountId) -> bool {
+        pub fn is_operator_for(
+            &self,
+            operator: AccountId,
+            token_holder: AccountId,
+        ) -> bool {
             erc777::Impl::is_operator_for(self, operator, token_holder)
         }
 
@@ -259,7 +262,6 @@ pub mod erc777_contract {
         pub fn revoke_operator(&mut self, operator: AccountId) {
             erc777::Impl::revoke_operator(self, operator)
         }
-
 
         #[ink(message)]
         pub fn default_operators(&self) -> Vec<AccountId> {
@@ -275,7 +277,14 @@ pub mod erc777_contract {
             data: Vec<u8>,
             operator_data: Vec<u8>,
         ) -> Result<()> {
-            erc777::Impl::operator_send(self, sender, recipient, amount, data, operator_data)
+            erc777::Impl::operator_send(
+                self,
+                sender,
+                recipient,
+                amount,
+                data,
+                operator_data,
+            )
         }
 
         #[ink(message)]
@@ -322,7 +331,15 @@ pub mod erc777_contract {
             to: AccountId,
             value: Balance,
         ) -> Result<()> {
-            erc777::Impl::_move(self, &spender, &from, &to, &value, &Vec::default(), &Vec::default())
+            erc777::Impl::_move(
+                self,
+                &spender,
+                &from,
+                &to,
+                &value,
+                &Vec::default(),
+                &Vec::default(),
+            )
         }
 
         #[ink(message)]

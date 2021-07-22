@@ -238,7 +238,11 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// accounts are their own operator.
     ///
     /// See {operatorSend} and {operatorBurn}.
-    fn is_operator_for(&self, operator: E::AccountId, token_holder: E::AccountId) -> bool {
+    fn is_operator_for(
+        &self,
+        operator: E::AccountId,
+        token_holder: E::AccountId,
+    ) -> bool {
         self.get().is_operator_for(&operator, &token_holder)
     }
 
@@ -258,9 +262,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         let key = (caller.clone(), operator.clone());
 
         if self.get().is_default_operator(&operator) {
-            self.get_mut()
-                .revoked_default_operators
-                .take(&key);
+            self.get_mut().revoked_default_operators.take(&key);
         } else {
             self.get_mut().operators.insert(key, ());
         }
@@ -284,9 +286,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         let key = (caller.clone(), operator.clone());
 
         if self.get().is_default_operator(&operator) {
-            self.get_mut()
-                .revoked_default_operators
-                .insert(key, ());
+            self.get_mut().revoked_default_operators.insert(key, ());
         } else {
             self.get_mut().operators.take(&key);
         }
@@ -472,13 +472,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         user_data: Vec<u8>,
         operator_data: Vec<u8>,
     ) -> Result<()> {
-        self._mint_required_reception_ack(
-            account,
-            amount,
-            user_data,
-            operator_data,
-            true,
-        )
+        self._mint_required_reception_ack(account, amount, user_data, operator_data, true)
     }
 
     /// @dev Creates `amount` tokens and assigns them to `account`, increasing
@@ -533,7 +527,13 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             required_reception_ack,
         );
 
-        self.emit_event_minted(operator, account.clone(), amount, user_data, operator_data);
+        self.emit_event_minted(
+            operator,
+            account.clone(),
+            amount,
+            user_data,
+            operator_data,
+        );
         self.emit_event_transfer(None, Some(account), amount);
 
         Ok(())
