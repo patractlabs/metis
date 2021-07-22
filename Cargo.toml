@@ -11,7 +11,7 @@ members = [
     "crates/components/security/reentrancy-guard",
     "crates/components/utils/escrow",
     "crates/components/utils/escrow/stub",
-    "crates/lang/",
+    "crates/lang",
     "crates/lang/macro",
     "crates/lang/contract",
     "crates/lang/codegen",
@@ -21,10 +21,10 @@ members = [
     "contracts/traits/token/erc20",
 ]
 exclude = [
-    "example/",
-    "examples/",
+    "example",
+    "examples",
     "contracts/impls",
-    "contracts/stub",
+    "contracts/stubs",
 ]
 
 [profile.release]

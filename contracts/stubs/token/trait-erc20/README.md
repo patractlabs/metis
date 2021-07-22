@@ -1,15 +1,15 @@
-# ERC20 Interface
+# Trait ERC20 Interface
 
 ## Usage
 ### Cargo.toml Setting
 ```
 [dependencies]
-erc20-stub = { git = "https://github.com/patractlabs/metis", default-features = false, features = ["ink-as-dependency"] }
+trait-erc20-stub = { git = "https://github.com/patractlabs/metis", default-features = false, features = ["ink-as-dependency"] }
 
 [features]
 default = ["std"]
 std = [
-    "erc20-stub/std",
+    "trait-erc20-stub/std",
 ]
 ```
 ### Example Contract
@@ -20,7 +20,7 @@ use ink_lang as ink;
 
 #[ink::contract]
 mod delegate {
-    use erc20_stub::Erc20Stub;
+    use trait_erc20_stub::Erc20Stub;
     use ink_env::call::FromAccountId;
 
     #[ink(storage)]
