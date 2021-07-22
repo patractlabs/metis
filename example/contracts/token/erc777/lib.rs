@@ -1,30 +1,38 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[metis_lang::contract]
-pub mod erc777_contract {
-    use super::super::behavior;
-    pub use erc777::{
+pub mod contract {
+    use ink_prelude::{
+        string::String,
+        vec::Vec,
+    };
+    use metis_erc777 as erc777;
+    pub use metis_erc777::{
         Error,
         Result,
     };
-    use metis_erc777 as erc777;
     use metis_lang::{
         import,
         metis,
     };
 
-    /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(erc777)]
     pub struct Erc777 {
         erc777: erc777::Data<Erc777>,
     }
 
-    // TODO: gen by marco with erc777 component
-    #[cfg(not(feature = "ink-as-dependency"))]
-    impl erc777::Impl<Erc777> for Erc777 {}
-
-    type Event = <Erc777 as ink_lang::BaseEvent>::Type;
+    impl erc777::Impl<Erc777> for Erc777 {
+        fn _before_token_transfer(
+            &mut self,
+            _operator: &AccountId,
+            _from: &Option<&AccountId>,
+            _to: &Option<&AccountId>,
+            _amount: &Balance,
+        ) -> Result<()> {
+            Ok(())
+        }
+    }
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
@@ -105,79 +113,15 @@ pub mod erc777_contract {
         pub token_holder: AccountId,
     }
 
-    impl behavior::IERC20New<Erc777> for Erc777 {
-        fn new_erc20(
-            name: String,
-            symbol: String,
-            decimals: u8,
-            initial_supply: Balance,
-        ) -> Self {
-            Self::new(name, symbol, decimals, initial_supply)
-        }
-
-        fn next_call_by(account: AccountId) {
-            // Get contract address.
-            let callee = ink_env::account_id::<ink_env::DefaultEnvironment>()
-                .unwrap_or([0x0; 32].into());
-            // Create call.
-            let mut data =
-                ink_env::test::CallData::new(ink_env::call::Selector::new([0x00; 4]));
-
-            data.push_arg(&account.clone());
-
-            // Push the new execution context to set from as caller.
-            ink_env::test::push_execution_context::<ink_env::DefaultEnvironment>(
-                account.clone(),
-                callee,
-                1000000,
-                1000000,
-                data,
-            );
+    // for test message
+    impl Erc777 {
+        /// For test to mint
+        #[ink(message)]
+        pub fn mint(&mut self, to: AccountId, value: Balance) -> Result<()> {
+            erc777::Impl::_mint(self, to, value, Vec::default(), Vec::default())
         }
     }
 
-    impl behavior::IERC20Event<Erc777> for Erc777 {
-        fn decode_transfer_event(
-            event: &ink_env::test::EmittedEvent,
-        ) -> (Option<AccountId>, Option<AccountId>, Balance) {
-            let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
-                .expect("encountered invalid contract event data buffer");
-            if let Event::Transfer(Transfer { from, to, value }) = decoded_event {
-                return (from, to, value)
-            }
-            panic!("encountered unexpected event kind: expected a Transfer event")
-        }
-
-        fn decode_approval_event(
-            event: &ink_env::test::EmittedEvent,
-        ) -> (AccountId, AccountId, Balance) {
-            let decoded_event = <Event as scale::Decode>::decode(&mut &event.data[..])
-                .expect("encountered invalid contract event data buffer");
-            if let Event::Approval(Approval {
-                owner,
-                spender,
-                value,
-            }) = decoded_event
-            {
-                return (owner, spender, value)
-            }
-            panic!("encountered unexpected event kind: expected a Transfer event")
-        }
-
-        fn assert_topics(
-            event: &ink_env::test::EmittedEvent,
-            expected_topics: &Vec<Hash>,
-        ) {
-            for (n, (actual_topic, expected_topic)) in
-                event.topics.iter().zip(expected_topics).enumerate()
-            {
-                let topic = actual_topic
-                    .decode::<Hash>()
-                    .expect("encountered invalid topic encoding");
-                assert_eq!(topic, *expected_topic, "encountered invalid topic at {}", n);
-            }
-        }
-    }
     // impl
     impl Erc777 {
         #[ink(constructor)]
@@ -194,6 +138,7 @@ pub mod erc777_contract {
             erc777::Impl::init(&mut instance, name, symbol, decimals, initial_supply);
             instance
         }
+
 
         #[ink(message)]
         pub fn name(&self) -> String {
@@ -310,11 +255,6 @@ pub mod erc777_contract {
         }
 
         #[ink(message)]
-        pub fn mint(&mut self, to: AccountId, value: Balance) -> Result<()> {
-            erc777::Impl::_mint(self, to, value, Vec::default(), Vec::default())
-        }
-
-        #[ink(message)]
         pub fn transfer_internal(
             &mut self,
             spender: AccountId,
@@ -334,5 +274,7 @@ pub mod erc777_contract {
         ) -> Result<()> {
             erc777::Impl::_approve(self, &owner, &spender, value)
         }
+
+
     }
 }

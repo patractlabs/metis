@@ -1,4 +1,7 @@
-use ink_prelude::string::String;
+use ink_prelude::{
+    string::String,
+    vec::Vec,
+};
 pub use metis_lang::Env;
 
 #[cfg(not(feature = "ink-as-dependency"))]

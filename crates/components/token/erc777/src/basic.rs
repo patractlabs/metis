@@ -1,5 +1,8 @@
 pub use super::module::Data;
-use ink_prelude::string::String;
+use ink_prelude::{
+    string::String,
+    vec::Vec,
+};
 pub use metis_lang::{
     Env,
     EnvAccess,
