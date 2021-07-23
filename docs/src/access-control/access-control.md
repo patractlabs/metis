@@ -50,11 +50,8 @@ pub mod example {
 Define the Event for access control:
 
 ```rust
-    /// Emitted when `newAdminRole` is set as ``role``'s
-    /// admin role, replacing `previousAdminRole`
-    ///
-    /// `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite
-    /// {RoleAdminChanged} not being emitted signaling this.
+    /// Emitted when `new_admin_role` is set as ``role``'s
+    /// admin role, replacing `previous_admin_role`
     #[ink(event)]
     #[metis(access_control)]
     pub struct RoleAdminChanged {
@@ -84,8 +81,8 @@ Define the Event for access control:
     /// Emitted when `account` is revoked `role`.
     ///
     /// `sender` is the account that originated the contract call:
-    ///   - if using `revokeRole`, it is the admin role bearer
-    ///   - if using `renounceRole`, it is the role bearer (i.e. `account`)
+    ///   - if using `revoke_role`, it is the admin role bearer
+    ///   - if using `renounce_role`, it is the role bearer (i.e. `account`)
     #[ink(event)]
     #[metis(access_control)]
     pub struct RoleRevoked {
@@ -142,8 +139,8 @@ Next, Add the message to control the role releations.
         access_control::Impl::has_role(self, role, account)
     }
 
-    /// @dev Returns the admin role that controls `role`. See {grantRole} and
-    /// {revokeRole}.
+    /// @dev Returns the admin role that controls `role`. See {grant_role} and
+    /// {revoke_role}.
     ///
     /// To change a role's admin, use {_setRoleAdmin}.
     #[ink(message)]
@@ -178,7 +175,7 @@ Next, Add the message to control the role releations.
 
     /// @dev Revokes `role` from the calling account.
     ///
-    /// Roles are often managed via {grantRole} and {revokeRole}: this function's
+    /// Roles are often managed via {grant_role} and {revoke_role}: this function's
     /// purpose is to provide a mechanism for accounts to lose their privileges
     /// if they are compromised (such as when a trusted device is misplaced).
     ///
@@ -218,34 +215,272 @@ where
 
 ### grant_role
 
+Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted}
+event.
+
+Requirements:
+
+- the caller must have ``role``'s admin role.
+
+```rust
+    /// @dev Grants `role` to `account`.
+    ///
+    /// If `account` had not been already granted `role`, emits a {RoleGranted}
+    /// event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must have ``role``'s admin role.
+    fn grant_role(&mut self, role: RoleId, account: E::AccountId) {
+        // check the admin role
+        self.ensure_admin_role(role, Self::caller());
+
+        self._setup_role(role, account);
+    }
+```
+
 ### revoke_role
+
+Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event.
+
+Requirements:
+
+- the caller must have ``role``'s admin role.
+
+```rust
+    /// @dev Revokes `role` from `account`.
+    ///
+    /// If `account` had been granted `role`, emits a {RoleRevoked} event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must have ``role``'s admin role.
+    fn revoke_role(&mut self, role: RoleId, account: E::AccountId) {
+        let caller = Self::caller();
+
+        // check the admin role
+        self.ensure_admin_role(role, caller.clone());
+
+        // if has not role
+        self.get_mut()
+            .revoke_role(role, account.clone())
+            .expect("no has role");
+
+        // emit if revoke role success
+        self.emit_event_role_revoked(role, account, caller);
+    }
+```
 
 ### renounce_role
 
+Revokes `role` from the calling account.
+
+Roles are often managed via `grant_role` and `revoke_role`: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced).
+
+If the calling account had been granted `role`, emits a `RoleRevoked` event.
+
+Requirements:
+
+- the caller must be `account`.
+
+```rust
+    /// @dev Revokes `role` from the calling account.
+    ///
+    /// Roles are often managed via {grant_role} and {revoke_role}: this function's
+    /// purpose is to provide a mechanism for accounts to lose their privileges
+    /// if they are compromised (such as when a trusted device is misplaced).
+    ///
+    /// If the calling account had been granted `role`, emits a {RoleRevoked}
+    /// event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must be `account`.
+    fn renounce_role(&mut self, role: RoleId, account: E::AccountId) {
+        let caller = Self::caller();
+
+        // check the caller is account
+        assert!(caller == account, "account not caller");
+
+        // if has not role
+        self.get_mut()
+            .revoke_role(role, account.clone())
+            .expect("no has role");
+
+        // emit if revoke role success
+        self.emit_event_role_revoked(role, account, caller);
+    }
+```
+
 ## Message for Querys
+
+Use `has_role` and `get_role_admin` can to get the role releations of accounts.
 
 ### has_role
 
+Returns `true` if `account` has been granted `role`.
+
+```rust
+    /// Returns `true` if `account` has been granted `role`.
+    fn has_role(&self, role: RoleId, account: E::AccountId) -> bool {
+        self.get().has_role(role, account)
+    }
+```
+
 ### get_role_admin
+
+Returns the admin role that controls `role`. See {grant_role} and {revoke_role}.
+
+To change a role's admin, use `_set_role_admin`.
+
+```rust
+    /// @dev Returns the admin role that controls `role`. See {grant_role} and
+    /// {revoke_role}.
+    ///
+    /// To change a role's admin, use {_set_role_admin}.
+    fn get_role_admin(&self, role: RoleId) -> Option<RoleId> {
+        self.get().admin_roles.get(&role).copied()
+    }
+```
 
 ## APIs
 
+Use Apis to check and ensure account has role.
 
 ### ensure_role
 
+Panic if `owner` is not an owner.
+
+```rust
+    /// Panic if `owner` is not an owner
+    fn ensure_role(&self, role: RoleId, account: E::AccountId) {
+        assert!(self.has_role(role, account), "role missing");
+    }
+```
+
 ### ensure_caller_role
+
+Panic if caller is not granted role.
+
+```rust
+    /// Panic if caller is not granted role
+    fn ensure_caller_role(&self, role: RoleId) {
+        self.ensure_role(role, Self::caller());
+    }
+```
 
 ### ensure_admin_role
 
+Panic error if `account` is missing the admin role of the `role`.
+
+```rust
+    /// Panic error if `account` is missing the admin role of the `role`.
+    fn ensure_admin_role(&self, role: RoleId, account: E::AccountId) {
+        match self.get_role_admin(role) {
+            Some(admin_role) => self.ensure_role(admin_role, account),
+            None => panic!("admin role missing"),
+        }
+    }
+```
+
 ### check_role
 
+Return error if `account` is missing `role`.
+
+```rust
+    /// Return error if `account` is missing `role`.
+    fn check_role(&self, role: RoleId, account: E::AccountId) -> Result<()> {
+        if self.has_role(role, account) {
+            Ok(())
+        } else {
+            Err(Error::RoleNotFound)
+        }
+    }
+```
+
 ### check_admin_role
+
+Return error if `account` is missing the admin role of the `role`.
+
+```rust
+    /// Return error if `account` is missing the admin role of the `role`.
+    fn check_admin_role(&self, role: RoleId, account: E::AccountId) -> Result<()> {
+        match self.get_role_admin(role) {
+            Some(admin_role) => self.check_role(admin_role, account),
+            None => Err(Error::AdminRoleNotFound),
+        }
+    }
+```
 
 ## Events
 
 ### RoleAdminChanged
 
+Emitted when `new_admin_role` is set as ``role``'s admin role, replacing `previous_admin_role`
+
+- will emit by call `_set_role_admin`.
+
+```rust
+    /// Emitted when `new_admin_role` is set as ``role``'s
+    /// admin role, replacing `previous_admin_role`
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleAdminChanged {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub previous_admin_role: Option<RoleId>,
+        #[ink(topic)]
+        pub new_admin_role: RoleId,
+    }
+```
+
 ### RoleGranted
+
+Emitted when `account` is granted `role`.
+
+- will emit by call `_setup_role`.
+
+```rust
+    /// Emitted when `account` is granted `role`.
+    ///
+    /// `sender` is the account that originated the contract call,
+    /// an admin role bearer except when using {_setup_role}.
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleGranted {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub account: AccountId,
+        #[ink(topic)]
+        pub sender: AccountId,
+    }
+```
 
 ### RoleRevoked
 
+Emitted when `account` is revoked `role`.
+
+`sender` is the account that originated the contract call:
+
+- if using `revoke_role`, it is the admin role bearer
+- if using `renounce_role`, it is the role bearer (i.e. `account`)
+
+```rust
+    /// Emitted when `account` is revoked `role`.
+    ///
+    /// `sender` is the account that originated the contract call:
+    ///   - if using `revoke_role`, it is the admin role bearer
+    ///   - if using `renounce_role`, it is the role bearer (i.e. `account`)
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleRevoked {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub account: AccountId,
+        #[ink(topic)]
+        pub sender: AccountId,
+    }
+```
