@@ -1,17 +1,17 @@
 # Pausable
 
-Contract module which allows children to implement an emergency stop
+Contract component which allows children to implement an emergency stop
 mechanism that can be triggered by an authorized account.
 
-This module is used through inheritance. It will make available the
+This component is used through inheritance. It will make available the
 api `ensure_not_paused` and `ensure_paused`, which can be applied to
 the functions of your contract. Note that they will not be pausable by
-simply including this module, only once the modifiers are put in place.
+simply including this component, only once the modifiers are put in place.
 
 ## Usage
 
 To use `Pausable` component, should import pausable, at the same time, if use pausable component,
-we need some access control to control pause or unpause, so we will also import ownerable module.
+we need some access control to control pause or unpause, so we will also import ownerable component.
 
 ```rust
 #[metis_lang::contract]
@@ -35,7 +35,7 @@ mod contract {
 }
 ```
 
-Note pausable module not need use Env for types in environment, just use `pausable::Data`.
+Note pausable component not need use Env for types in environment, just use `pausable::Data`.
 
 Add Events which pausable need:
 
