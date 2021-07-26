@@ -228,9 +228,9 @@ Metis for ink! is divided into several milestones:
 
 Considering that the current ink! and contract-pallet are still in iteration, some metis features will be implemented based on subsequent improvements, including:
 
-* Contract proxy and upgradeable support will depend on the improvement of subsequent contract calls, by [739](https://github.com/paritytech/ink/issues/739).
-* The Event in the component, the Event in the current ink! cannot be independent of the contract, by [759](https://github.com/paritytech/ink/issues/759), the event in the current component is only an early implementation, and it will be refactored based on the improvement of ink! in the future.
+- Contract proxy and upgradeable support will depend on the improvement of subsequent contract calls, by [739](https://github.com/paritytech/ink/issues/739).
+- The Event in the component, the Event in the current ink! cannot be independent of the contract, by [759](https://github.com/paritytech/ink/issues/759), the event in the current component is only an early implementation, and it will be refactored based on the improvement of ink! in the future.
 
 With the richness and completeness of the ink! contract community, metis will further implement more public components and libraries to assist developers in developing large-scale contract projects. Therefore, we may arrange [MR] milestones. It will be developed based on the iterative schedule of ink!
 
-* **[MR]** According to the ink!'s iterative progress, community feedback, contract upgrades, contract proxy and cross-contract call support, refactor Event-related implementations, improve basic components and add development assistance macros to reduce duplication while ensuring auditability Code.
+**[MR]** According to the ink!'s iterative progress, community feedback, contract upgrades, contract proxy and cross-contract call support, refactor Event-related implementations, improve basic components and add development assistance macros to reduce duplication while ensuring auditability Code.
