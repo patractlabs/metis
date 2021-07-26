@@ -81,13 +81,11 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     ///
     /// Calling conditions:
     ///
-    /// - When `from` and `to` are both non-zero, ``from``'s `token_id` will be
+    /// - When `from` and `to` are both non-zero, `from`'s `token_id` will be
     /// transferred to `to`.
     /// - When `from` is zero, `token_id` will be minted for `to`.
-    /// - When `to` is zero, ``from``'s `token_id` will be burned.
+    /// - When `to` is zero, `from`'s `token_id` will be burned.
     /// - `from` and `to` are never both zero.
-    ///
-    /// To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
     fn _before_token_transfer(
         &mut self,
         from: Option<E::AccountId>,
@@ -95,7 +93,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         token_id: &TokenId,
     ) -> Result<()>;
 
-    /// @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
+    /// Base URI for computing `token_url`. If set, the resulting URI for each
     /// token will be the concatenation of the `baseURI` and the `token_id`. Empty
     /// by default, can be overriden in child contracts.
     fn _base_url(&self) -> String;
@@ -128,12 +126,12 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         }
     }
 
-    /// @dev Returns the number of tokens in ``owner``'s account.
+    /// Returns the number of tokens in ``owner``'s account.
     fn balance_of(&self, account: &E::AccountId) -> u64 {
         self.get().balance_of(account)
     }
 
-    /// @dev Returns the owner of the `token_id` token.
+    /// Returns the owner of the `token_id` token.
     ///
     /// Requirements:
     ///
@@ -145,7 +143,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         }
     }
 
-    /// @dev Returns the account approved for `token_id` token.
+    /// Returns the account approved for `token_id` token.
     ///
     /// Requirements:
     ///
@@ -162,25 +160,26 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         }
     }
 
-    /// @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
+    /// Returns if the `operator` is allowed to manage all of the assets of `owner`.
     ///
-    /// See {setApprovalForAll}
+    /// See `set_approval_for_all`
     fn is_approved_for_all(&self, owner: &E::AccountId, operator: &E::AccountId) -> bool {
         self.get()
             .is_approved_for_all(owner.clone(), operator.clone())
     }
 
-    /// @dev Gives permission to `to` to transfer `token_id` token to another account.
+    /// Gives permission to `to` to transfer `token_id` token to another account.
     /// The approval is cleared when the token is transferred.
     ///
-    /// Only a single account can be approved at a time, so approving the zero address clears previous approvals.
+    /// Only a single account can be approved at a time, so approving the
+    /// zero address clears previous approvals.
     ///
     /// Requirements:
     ///
     /// - The caller must own the token or be an approved operator.
     /// - `token_id` must exist.
     ///
-    /// Emits an {Approval} event.
+    /// Emits an `Approval` event.
     fn approve(&mut self, to: Option<E::AccountId>, token_id: &TokenId) {
         let owner = self.owner_of(token_id);
         let caller = Self::caller();
@@ -198,14 +197,15 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._approve(to, token_id);
     }
 
-    /// @dev Approve or remove `operator` as an operator for the caller.
-    /// Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
+    /// Approve or remove `operator` as an operator for the caller.
+    /// Operators can call `transfer_from` or `safe_transfer_from` for
+    /// any token owned by the caller.
     ///
     /// Requirements:
     ///
     /// - The `operator` cannot be the caller.
     ///
-    /// Emits an {ApprovalForAll} event.
+    /// Emits an `ApprovalForAll` event.
     fn set_approval_for_all(&mut self, operator: E::AccountId, approved: bool) {
         let caller = Self::caller();
         assert!(operator != caller, "ERC721: approve to caller");
@@ -215,18 +215,20 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.emit_event_approval_for_all(caller, operator, approved);
     }
 
-    /// @dev Transfers `token_id` token from `from` to `to`.
+    /// Transfers `token_id` token from `from` to `to`.
     ///
-    /// WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible.
+    /// WARNING: Usage of this method is discouraged,
+    /// use `safe_transfer_from` whenever possible.
     ///
     /// Requirements:
     ///
     /// - `from` cannot be the zero address.
     /// - `to` cannot be the zero address.
     /// - `token_id` token must be owned by `from`.
-    /// - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+    /// - If the caller is not `from`, it must be approved
+    ///   to move this token by either `approve` or `set_approval_for_all`.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn transfer_from(
         &mut self,
         from: E::AccountId,
@@ -241,18 +243,21 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._transfer(&from, &to, &token_id)
     }
 
-    /// @dev Safely transfers `token_id` token from `from` to `to`, checking first that contract recipients
-    /// are aware of the ERC721 protocol to prevent tokens from being forever locked.
+    /// Safely transfers `token_id` token from `from` to `to`,
+    /// checking first that contract recipients are aware of 
+    /// the ERC721 protocol to prevent tokens from being forever locked.
     ///
     /// Requirements:
     ///
     /// - `from` cannot be the zero address.
     /// - `to` cannot be the zero address.
     /// - `token_id` token must exist and be owned by `from`.
-    /// - If the caller is not `from`, it must be have been allowed to move this token by either {approve} or {setApprovalForAll}.
-    /// - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+    /// - If the caller is not `from`, it must be have been allowed to
+    ///   move this token by either `approve` or `set_approval_for_all`.
+    /// - If `to` refers to a smart contract, it must implement 
+    ///   `on_erc721_received`, which is called upon a safe transfer.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn safe_transfer_from(
         &mut self,
         from: E::AccountId,
@@ -262,17 +267,19 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.safe_transfer_from_with_data(from, to, token_id, Vec::default())
     }
 
-    /// @dev Safely transfers `token_id` token from `from` to `to`.
+    /// Safely transfers `token_id` token from `from` to `to`.
     ///
     /// Requirements:
     ///
     /// - `from` cannot be the zero address.
     /// - `to` cannot be the zero address.
     /// - `token_id` token must exist and be owned by `from`.
-    /// - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
-    /// - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+    /// - If the caller is not `from`, it must be approved to
+    ///   move this token by either `approve` or `set_approval_for_all`.
+    /// - If `to` refers to a smart contract, it must implement
+    ///   `on_erc721_received`, which is called upon a safe transfer.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn safe_transfer_from_with_data(
         &mut self,
         from: E::AccountId,
@@ -288,9 +295,10 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._safe_transfer(from, to, token_id, data)
     }
 
-    /// @dev Returns whether `token_id` exists.
+    /// Returns whether `token_id` exists.
     ///
-    /// Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
+    /// Tokens can be managed by their owner or approved accounts via
+    /// `approve` or `set_approval_for_all`.
     ///
     /// Tokens start existing when they are minted (`_mint`),
     /// and stop existing when they are burned (`_burn`).
@@ -334,7 +342,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Returns whether `spender` is allowed to manage `token_id`.
+    /// Returns whether `spender` is allowed to manage `token_id`.
     ///
     /// Requirements:
     ///
@@ -352,20 +360,21 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             || self.is_approved_for_all(owner, spender)
     }
 
-    /// @dev Safely mints `token_id` and transfers it to `to`.
+    /// Safely mints `token_id` and transfers it to `to`.
     ///
     /// Requirements:
     ///
     /// - `token_id` must not exist.
-    /// - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+    /// - If `to` refers to a smart contract, it must implement `on_erc721_received`,
+    ///  which is called upon a safe transfer.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn _safe_mint(&mut self, to: E::AccountId, token_id: TokenId) -> Result<()> {
         self._safe_mint_with_data(to, token_id, Vec::default())
     }
 
-    /// @dev Same as {xref-ERC721-_safeMint-address-uint256-}[`_safeMint`], with an additional `data` parameter which is
-    /// forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
+    /// Same as `_safe_mint`, with an additional `data` parameter which is
+    /// forwarded in `on_erc721_received` to contract recipients.
     fn _safe_mint_with_data(
         &mut self,
         to: E::AccountId,
@@ -382,16 +391,16 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Mints `token_id` and transfers it to `to`.
+    /// Mints `token_id` and transfers it to `to`.
     ///
-    /// WARNING: Usage of this method is discouraged, use {_safeMint} whenever possible
+    /// WARNING: Usage of this method is discouraged, use `_safe_mint` whenever possible
     ///
     /// Requirements:
     ///
     /// - `token_id` must not exist.
     /// - `to` cannot be the zero address.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn _mint(&mut self, to: &E::AccountId, token_id: &TokenId) -> Result<()> {
         assert!(
             *to != E::AccountId::default(),
@@ -409,14 +418,14 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Destroys `token_id`.
+    /// Destroys `token_id`.
     /// The approval is cleared when the token is burned.
     ///
     /// Requirements:
     ///
     /// - `token_id` must exist.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn _burn(&mut self, token_id: &TokenId) -> Result<()> {
         let owner = self.owner_of(token_id);
 
@@ -434,15 +443,15 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Transfers `token_id` from `from` to `to`.
-    ///  As opposed to {transferFrom}, this imposes no restrictions on msg.sender.
+    /// Transfers `token_id` from `from` to `to`.
+    ///  As opposed to `transfer_from`, this imposes no restrictions on msg.sender.
     ///
     /// Requirements:
     ///
     /// - `to` cannot be the zero address.
     /// - `token_id` token must be owned by `from`.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn _transfer(
         &mut self,
         from: &E::AccountId,
@@ -472,9 +481,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Approve `to` to operate on `token_id`
+    /// Approve `to` to operate on `token_id`
     ///
-    /// Emits a {Approval} event.
+    /// Emits a `Approval` event.
     fn _approve(&mut self, to: Option<E::AccountId>, token_id: &TokenId) {
         match to.clone() {
             Some(to_account) => {
@@ -488,7 +497,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.emit_event_approval(self.owner_of(token_id), to, *token_id);
     }
 
-    /// @dev Internal function to invoke {IERC721Receiver-onERC721Received} on a target address.
+    /// Internal function to invoke `on_erc721_received` on a target address.
     /// The call is not executed if the target address is not a contract.
     ///
     /// @param from address representing the previous owner of the given token ID

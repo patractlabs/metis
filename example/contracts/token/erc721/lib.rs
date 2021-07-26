@@ -17,7 +17,7 @@ pub mod contract {
         metis,
     };
 
-    /// A simple ERC-20 contract.
+    /// A ERC721 contract.
     #[ink(storage)]
     #[import(erc721)]
     pub struct Erc721 {
@@ -25,6 +25,7 @@ pub mod contract {
     }
 
     // TODO: gen by marco with Erc721 component
+    #[cfg(not(feature = "ink-as-dependency"))]
     impl erc721::Impl<Erc721> for Erc721 {
         fn _before_token_transfer(
             &mut self,
@@ -144,9 +145,9 @@ pub mod contract {
             erc721::Impl::get_approved(self, &token_id)
         }
 
-        /// @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
+        /// Returns if the `operator` is allowed to manage all of the assets of `owner`.
         ///
-        /// See {setApprovalForAll}
+        /// See `set_approval_for_all`
         #[ink(message)]
         pub fn is_approved_for_all(
             &self,
@@ -156,47 +157,51 @@ pub mod contract {
             erc721::Impl::is_approved_for_all(self, &owner, &operator)
         }
 
-        /// @dev Gives permission to `to` to transfer `token_id` token to another account.
+        /// Gives permission to `to` to transfer `token_id` token to another account.
         /// The approval is cleared when the token is transferred.
         ///
-        /// Only a single account can be approved at a time, so approving the zero address clears previous approvals.
+        /// Only a single account can be approved at a time, so approving the 
+        /// zero address clears previous approvals.
         ///
         /// Requirements:
         ///
         /// - The caller must own the token or be an approved operator.
         /// - `token_id` must exist.
         ///
-        /// Emits an {Approval} event.
+        /// Emits an `Approval` event.
         #[ink(message)]
         pub fn approve(&mut self, to: Option<AccountId>, token_id: TokenId) {
             erc721::Impl::approve(self, to, &token_id)
         }
 
-        /// @dev Approve or remove `operator` as an operator for the caller.
-        /// Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
+        /// Approve or remove `operator` as an operator for the caller.
+        /// Operators can call `transfer_from` or `safe_transfer_from` for 
+        /// any token owned by the caller.
         ///
         /// Requirements:
         ///
         /// - The `operator` cannot be the caller.
         ///
-        /// Emits an {ApprovalForAll} event.
+        /// Emits an `ApprovalForAll` event.
         #[ink(message)]
         pub fn set_approval_for_all(&mut self, operator: AccountId, approved: bool) {
             erc721::Impl::set_approval_for_all(self, operator, approved)
         }
 
-        /// @dev Transfers `token_id` token from `from` to `to`.
+        /// Transfers `token_id` token from `from` to `to`.
         ///
-        /// WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible.
+        /// WARNING: Usage of this method is discouraged, 
+        /// use `safe_transfer_from` whenever possible.
         ///
         /// Requirements:
         ///
         /// - `from` cannot be the zero address.
         /// - `to` cannot be the zero address.
         /// - `token_id` token must be owned by `from`.
-        /// - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+        /// - If the caller is not `from`, it must be approved 
+        ///   to move this token by either `approve` or `set_approval_for_all`.
         ///
-        /// Emits a {Transfer} event.
+        /// Emits a `Transfer` event.
         #[ink(message)]
         pub fn transfer_from(
             &mut self,
