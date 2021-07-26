@@ -9,7 +9,6 @@ pub mod mock {
     };
     use metis_ownable as ownable;
 
-    /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(ownable, escrow)]
     pub struct Escrow {
