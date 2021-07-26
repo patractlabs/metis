@@ -9,7 +9,7 @@ use ::ink_storage::{
     traits::SpreadLayout,
 };
 
-/// The Data of ownership component
+/// The Data of escrow component
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]
 #[derive(Debug, SpreadLayout)]
 pub struct Data<E>
