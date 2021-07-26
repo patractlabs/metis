@@ -234,4 +234,3 @@ The Event will emit when the ownership of the contract is transferred:
         new_owner: Option<AccountId>,
     }
 ```
-
