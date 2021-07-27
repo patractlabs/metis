@@ -69,6 +69,7 @@ pub trait Balance:
     + Default
     + SpreadLayout
     + PackedLayout
+    + Into<u128>
 {
 }
 
@@ -84,6 +85,7 @@ impl<T> Balance for T where
         + Default
         + SpreadLayout
         + PackedLayout
+        + Into<u128>
 {
 }
 
@@ -102,6 +104,7 @@ pub trait Balance:
     + ::ink_storage::traits::StorageLayout
     + SpreadLayout
     + PackedLayout
+    + Into<u128>
 {
 }
 
@@ -120,6 +123,7 @@ impl<T> Balance for T where
         + ::ink_storage::traits::StorageLayout
         + SpreadLayout
         + PackedLayout
+        + Into<u128>
 {
 }
 

@@ -1,5 +1,5 @@
 [package]
-name = "metis_erc721"
+name = "metis_erc1155"
 version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
@@ -23,14 +23,14 @@ metis_lang = { path = "../../../lang/", default-features = false }
 metis_ownable = { path = "../../access/ownable", default-features = false }
 metis_pausable = { path = "../../security/pausable", default-features = false }
 
-metis_erc721_types = { path = "./types", default-features = false }
-metis_erc721_receiver = { path = "./receiver", default-features = false, features = ["ink-as-dependency"] }
+metis_erc721_types = { path = "../erc721/types", default-features = false }
+metis_erc1155_receiver = { path = "./receiver", default-features = false, features = ["ink-as-dependency"] }
 
 [dev-dependencies]
 trybuild = { version = "1.0", features = ["diff"] }
 metis_pausable = { path = "../../security/pausable" }
 metis_ownable = { path = "../../access/ownable" }
-metis_erc721 = { path = "." }
+metis_erc1155 = { path = "." }
 
 ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
@@ -47,8 +47,8 @@ hex = { version = "0.4" }
 
 metis_lang = { path = "../../../lang/" }
 
-metis_erc721_types = { path = "./types" }
-metis_erc721_receiver = { path = "./receiver" }
+metis_erc721_types = { path = "../erc721/types" }
+metis_erc1155_receiver = { path = "./receiver" }
 
 [features]
 default = ["std"]
@@ -65,6 +65,6 @@ std = [
     "metis_ownable/std",
     "metis_pausable/std",
     "metis_erc721_types/std",
-    "metis_erc721_receiver/std",
+    "metis_erc1155_receiver/std",
 ]
 ink-as-dependency = []
