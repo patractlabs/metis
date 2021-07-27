@@ -18,4 +18,3 @@
   - [Reentrancy Guard](./security/reentrancy-guard.md)
 - [Tools](./tools.md)
   - [ERC165](./tools/erc165.md)
-- [Develop Components](./dev-components.md)

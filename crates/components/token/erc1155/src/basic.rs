@@ -43,8 +43,8 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
         value: E::Balance,
     );
 
-    /// @dev Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all
-    /// transfers.
+    /// Equivalent to multiple `TransferSingle` events, where `operator`,
+    /// `from` and `to` are the same for all transfers.
     fn emit_event_transfer_batch(
         &mut self,
         operator: E::AccountId,
@@ -62,11 +62,11 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
         approved: bool,
     );
 
-    /// @dev Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
+    /// Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
     ///
-    /// If an {URI} event was emitted for `id`, the standard
+    /// If an `URI` event was emitted for `id`, the standard
     /// https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[guarantees] that `value` will equal the value
-    /// returned by {IERC1155MetadataURI-uri}.
+    /// returned by `uri`.
     fn emit_event_url(&mut self, value: String, id: TokenId);
 }
 
@@ -89,7 +89,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get_mut().set_url(url)
     }
 
-    /// @dev See {IERC1155MetadataURI-uri}.
+    /// Returns the URI for token type `id`.
     ///
     /// This implementation returns the same URI for *all* token types. It relies
     /// on the token type ID substitution mechanism
@@ -101,7 +101,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get().get_url()
     }
 
-    /// @dev See {IERC1155-balanceOf}.
+    /// Returns the amount of tokens of token type `id` owned by `account`.
     ///
     /// Requirements:
     ///
@@ -115,7 +115,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get().balance_of(id, account)
     }
 
-    /// @dev See {IERC1155-balanceOfBatch}.
+    /// Batched version of balance_of
     ///
     /// Requirements:
     ///
@@ -139,7 +139,13 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             .collect()
     }
 
-    /// @dev See {IERC1155-setApprovalForAll}.
+    /// Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
+    /// 
+    /// Emits an `ApprovalForAll` event.
+    /// 
+    /// Requirements:
+    /// 
+    /// - `operator` cannot be the caller.
     fn set_approval_for_all(&mut self, operator: E::AccountId, approved: bool) {
         let caller = Self::caller();
 
@@ -153,7 +159,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.emit_event_approval_for_all(caller, operator, approved);
     }
 
-    /// @dev See {IERC1155-isApprovedForAll}.
+    /// Returns true if `operator` is approved to transfer ``account``'s tokens.
+    /// 
+    /// See `set_approval_for_all`.
     fn is_approved_for_all(
         &self,
         account: &E::AccountId,
@@ -162,7 +170,17 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get().is_approved_for_all(account, operator)
     }
 
-    /// @dev See {IERC1155-safeTransferFrom}.
+    /// Transfers `amount` tokens of token type `id` from `from` to `to`.
+    ///
+    /// Emits a `TransferSingle` event.
+    ///
+    /// Requirements:
+    ///
+    /// - `to` cannot be the zero address.
+    /// - If the caller is not `from`, it must be have been approved to spend ``from``'s tokens via `set_approval_for_all`.
+    /// - `from` must have a balance of tokens of type `id` of at least `amount`.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_received` and return the
+    ///   acceptance magic value.
     fn safe_transfer_from(
         &mut self,
         from: E::AccountId,
@@ -180,7 +198,15 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._safe_transfer_from(from, to, id, amount, data)
     }
 
-    /// @dev See {IERC1155-safeBatchTransferFrom}.
+    /// Batched version of the `safe_transfer_from`
+    ///
+    /// Emits a `TransferBatch` event.
+    ///
+    /// Requirements:
+    ///
+    /// - `ids` and `amounts` must have the same length.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_batch_received` and return the
+    ///   acceptance magic value.
     fn safe_batch_transfer_from(
         &mut self,
         from: E::AccountId,
@@ -198,16 +224,16 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._safe_batch_transfer_from(from, to, id, amount, data)
     }
 
-    /// @dev Transfers `amount` tokens of token type `id` from `from` to `to`.
+    /// Transfers `amount` tokens of token type `id` from `from` to `to`.
     ///
-    /// Emits a {TransferSingle} event.
+    /// Emits a `TransferSingle` event.
     ///
     /// Requirements:
     ///
     /// - `to` cannot be the zero address.
     /// - `from` must have a balance of tokens of type `id` of at least `amount`.
-    /// - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the
-    /// acceptance magic value.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_received` and return the
+    ///   acceptance magic value.
     fn _safe_transfer_from(
         &mut self,
         from: E::AccountId,
@@ -254,14 +280,14 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_safeTransferFrom}.
+    /// Batched version of `_safe_transfer_from`.
     ///
-    /// Emits a {TransferBatch} event.
+    /// Emits a `TransferBatch` event.
     ///
     /// Requirements:
     ///
-    /// - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
-    /// acceptance magic value.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_batch_received` and return the
+    ///   acceptance magic value.
     fn _safe_batch_transfer_from(
         &mut self,
         from: E::AccountId,
@@ -318,7 +344,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Sets a new URI for all token types, by relying on the token type ID
+    /// Sets a new URI for all token types, by relying on the token type ID
     /// substitution mechanism
     /// https://eips.ethereum.org/EIPS/eip-1155#metadata[defined in the EIP].
     ///
@@ -331,23 +357,23 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// `https://token-cdn-domain/000000000000000000000000000000000000000000000000000000000004cce0.json`
     /// for token type ID 0x4cce0.
     ///
-    /// See {uri}.
+    /// See `uri`.
     ///
-    /// Because these URIs cannot be meaningfully represented by the {URI} event,
+    /// Because these URIs cannot be meaningfully represented by the `URI` event,
     /// this function emits no events.
     fn _set_url(&mut self, new_url: String) {
         self.get_mut().set_url(new_url)
     }
 
-    /// @dev Creates `amount` tokens of token type `id`, and assigns them to `account`.
+    /// Creates `amount` tokens of token type `id`, and assigns them to `account`.
     ///
-    /// Emits a {TransferSingle} event.
+    /// Emits a `TransferSingle` event.
     ///
     /// Requirements:
     ///
     /// - `account` cannot be the zero address.
-    /// - If `account` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the
-    /// acceptance magic value.
+    /// - If `account` refers to a smart contract, it must implement `on_erc1155_received` and return the
+    ///   acceptance magic value.
     fn _mint(
         &mut self,
         account: E::AccountId,
@@ -380,13 +406,13 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_mint}.
+    /// Batched version of `_mint`.
     ///
     /// Requirements:
     ///
     /// - `ids` and `amounts` must have the same length.
-    /// - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
-    /// acceptance magic value.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_batch_received` and return the
+    ///   acceptance magic value.
     fn _mint_batch(
         &mut self,
         to: E::AccountId,
@@ -422,7 +448,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Destroys `amount` tokens of token type `id` from `account`
+    /// Destroys `amount` tokens of token type `id` from `account`
     ///
     /// Requirements:
     ///
@@ -462,7 +488,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_burn}.
+    /// Batched version of `_burn`.
     ///
     /// Requirements:
     ///
@@ -511,7 +537,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Hook that is called before any token transfer. This includes minting
+    /// Hook that is called before any token transfer. This includes minting
     /// and burning, as well as batched variants.
     ///
     /// The same hook is called on both single and batched variants. For single
@@ -527,8 +553,6 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// will be burned.
     /// - `from` and `to` are never both zero.
     /// - `ids` and `amounts` have the same, non-zero length.
-    ///
-    /// To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
     fn _before_token_transfer(
         &mut self,
         _operator: &E::AccountId,

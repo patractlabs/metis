@@ -13,7 +13,6 @@ pub mod contract {
         metis,
     };
 
-    /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(erc1155)]
     pub struct Erc1155 {
@@ -37,7 +36,7 @@ pub mod contract {
         pub value: Balance,
     }
 
-    /// @dev Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all
+    /// Equivalent to multiple `TransferSingle` events, where `operator`, `from` and `to` are the same for all
     /// transfers.
     #[ink(event)]
     #[metis(erc1155)]
@@ -63,11 +62,11 @@ pub mod contract {
         pub approved: bool,
     }
 
-    /// @dev Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
+    /// Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
     ///
-    /// If an {URI} event was emitted for `id`, the standard
+    /// If an `URI` event was emitted for `id`, the standard
     /// https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[guarantees] that `value` will equal the value
-    /// returned by {IERC1155MetadataURI-uri}.
+    /// returned by `uri`.
     #[ink(event)]
     #[metis(erc1155)]
     pub struct Url {
@@ -91,7 +90,7 @@ pub mod contract {
             instance
         }
 
-        /// @dev See {IERC1155MetadataURI-uri}.
+        /// Returns the URI for token type `id`.
         ///
         /// This implementation returns the same URI for *all* token types. It relies
         /// on the token type ID substitution mechanism
@@ -104,7 +103,7 @@ pub mod contract {
             erc1155::Impl::url(self, id)
         }
 
-        /// @dev See {IERC1155-balanceOf}.
+        /// Returns the amount of tokens of token type `id` owned by `account`.
         ///
         /// Requirements:
         ///
@@ -114,7 +113,7 @@ pub mod contract {
             erc1155::Impl::balance_of(self, account, id)
         }
 
-        /// @dev See {IERC1155-balanceOfBatch}.
+        /// Batched version of balance_of
         ///
         /// Requirements:
         ///
@@ -128,13 +127,21 @@ pub mod contract {
             erc1155::Impl::balance_of_batch(self, accounts, ids)
         }
 
-        /// @dev See {IERC1155-setApprovalForAll}.
+        /// Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
+        /// 
+        /// Emits an `ApprovalForAll` event.
+        /// 
+        /// Requirements:
+        /// 
+        /// - `operator` cannot be the caller.
         #[ink(message)]
         pub fn set_approval_for_all(&mut self, operator: AccountId, approved: bool) {
             erc1155::Impl::set_approval_for_all(self, operator, approved)
         }
 
-        /// @dev See {IERC1155-isApprovedForAll}.
+        /// Returns true if `operator` is approved to transfer ``account``'s tokens.
+        /// 
+        /// See `set_approval_for_all`.
         #[ink(message)]
         pub fn is_approved_for_all(
             &self,
@@ -144,7 +151,17 @@ pub mod contract {
             erc1155::Impl::is_approved_for_all(self, account, operator)
         }
 
-        /// @dev See {IERC1155-safeTransferFrom}.
+        /// Transfers `amount` tokens of token type `id` from `from` to `to`.
+        ///
+        /// Emits a `TransferSingle` event.
+        ///
+        /// Requirements:
+        ///
+        /// - `to` cannot be the zero address.
+        /// - If the caller is not `from`, it must be have been approved to spend ``from``'s tokens via `set_approval_for_all`.
+        /// - `from` must have a balance of tokens of type `id` of at least `amount`.
+        /// - If `to` refers to a smart contract, it must implement `on_erc1155_received` and return the
+        ///   acceptance magic value.
         #[ink(message)]
         pub fn safe_transfer_from(
             &mut self,
@@ -157,7 +174,15 @@ pub mod contract {
             erc1155::Impl::safe_transfer_from(self, from, to, id, amount, data)
         }
 
-        /// @dev See {IERC1155-safeBatchTransferFrom}.
+        /// Batched version of the `safe_transfer_from`
+        ///
+        /// Emits a `TransferBatch` event.
+        ///
+        /// Requirements:
+        ///
+        /// - `ids` and `amounts` must have the same length.
+        /// - If `to` refers to a smart contract, it must implement `on_erc1155_batch_received` and return the
+        ///   acceptance magic value.
         #[ink(message)]
         pub fn safe_batch_transfer_from(
             &mut self,
