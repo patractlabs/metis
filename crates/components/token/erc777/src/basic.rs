@@ -38,7 +38,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
     );
 
     /// Emitted when the allowance of a `spender` for an `owner` is set by
-    /// a call to {approve}. `value` is the new allowance.
+    /// a call to `approve`. `value` is the new allowance.
     fn emit_event_approval(
         &mut self,
         owner: E::AccountId,
@@ -46,6 +46,10 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
         value: E::Balance,
     );
 
+    /// Indicate a send of `amount` of tokens from the `from` address to the `to`
+    /// address by the `operator` address.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of a send or an ERC-20 transfer process.
     fn emit_event_sent(
         &mut self,
         operator: E::AccountId,
@@ -56,6 +60,10 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
         operator_data: Vec<u8>,
     );
 
+    /// Indicate the minting of `amount` of tokens to the `to` address by
+    /// the `operator` address.
+    ///
+    /// NOTE: This event MUST NOT be emitted outside of a mint process.
     fn emit_event_minted(
         &mut self,
         operator: E::AccountId,
@@ -65,6 +73,10 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
         operator_data: Vec<u8>,
     );
 
+    /// Indicate the burning of `amount` of tokens from the `from` address
+    /// by the `operator` address.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of a burn process.
     fn emit_event_burned(
         &mut self,
         operator: E::AccountId,
@@ -74,12 +86,18 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
         operator_data: Vec<u8>,
     );
 
+    /// Indicates the authorization of `operator` as an operator for `holder`.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of an operator authorization process.
     fn emit_event_authorized_operator(
         &mut self,
         operator: E::AccountId,
         token_holder: E::AccountId,
     );
 
+    /// Indicates the revocation of `operator` as an operator for `holder`.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of an operator revocation process.
     fn emit_event_revoked_operator(
         &mut self,
         operator: E::AccountId,
@@ -121,7 +139,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// be displayed to a user as `5,05` (`505 / 10 ** 2`).
     ///
     /// Tokens usually opt for a value of 18, imitating the relationship between
-    /// Ether and Wei in ETH. This is the value {ERC20} uses, unless this function is
+    /// Ether and Wei in ETH. This is the value `ERC20` uses, unless this function is
     /// overridden;
     ///
     /// NOTE: This information is only used for _display_ purposes: it in
@@ -130,7 +148,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get().decimals().clone()
     }
 
-    /// @dev Returns the smallest part of the token that is not divisible. This
+    /// Returns the smallest part of the token that is not divisible. This
     /// means all token operations (creation, movement and destruction) must have
     /// amounts that are a multiple of this number.
     ///
@@ -149,19 +167,19 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get().balance_of(account)
     }
 
-    /// @dev Moves `amount` tokens from the caller's account to `recipient`.
+    /// Moves `amount` tokens from the caller's account to `recipient`.
     ///
     /// If send or receive hooks are registered for the caller and `recipient`,
     /// the corresponding functions will be called with `data` and empty
-    /// `operator_data`. See {IERC777Sender} and {IERC777Recipient}.
+    /// `operator_data`. See `erc777_sender` and `erc777_recipient`.
     ///
-    /// Emits a {Sent} event.
+    /// Emits a `Sent` event.
     ///
     /// Requirements
     ///
     /// - the caller must have at least `amount` tokens.
     /// - `recipient` cannot be the zero address.
-    /// - if `recipient` is a contract, it must implement the {IERC777Recipient}
+    /// - if `recipient` is a contract, it must implement the `erc777_recipient`
     /// interface.
     fn send(
         &mut self,
@@ -183,7 +201,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     ///
     /// Returns a boolean value indicating whether the operation succeeded.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn transfer(&mut self, recipient: &E::AccountId, amount: E::Balance) -> Result<()> {
         let null_account = &E::AccountId::default();
         let from = &Self::caller();
@@ -218,13 +236,13 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Destroys `amount` tokens from the caller's account, reducing the
+    /// Destroys `amount` tokens from the caller's account, reducing the
     /// total supply.
     ///
     /// If a send hook is registered for the caller, the corresponding function
-    /// will be called with `data` and empty `operator_data`. See {IERC777Sender}.
+    /// will be called with `data` and empty `operator_data`. See `erc777_sender`.
     ///
-    /// Emits a {Burned} event.
+    /// Emits a `Burned` event.
     ///
     /// Requirements
     ///
@@ -233,11 +251,11 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._burn(Self::caller(), amount, data, Vec::default())
     }
 
-    /// @dev Returns true if an account is an operator of `token_holder`.
+    /// Returns true if an account is an operator of `token_holder`.
     /// Operators can send and burn tokens on behalf of their owners. All
     /// accounts are their own operator.
     ///
-    /// See {operatorSend} and {operatorBurn}.
+    /// See `operator_send` and `operator_burn`.
     fn is_operator_for(
         &self,
         operator: E::AccountId,
@@ -246,11 +264,11 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.get().is_operator_for(&operator, &token_holder)
     }
 
-    /// @dev Make an account an operator of the caller.
+    /// Make an account an operator of the caller.
     ///
-    /// See {isOperatorFor}.
+    /// See `is_operator_for`.
     ///
-    /// Emits an {AuthorizedOperator} event.
+    /// Emits an `AuthorizedOperator` event.
     ///
     /// Requirements
     ///
@@ -270,11 +288,11 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.emit_event_authorized_operator(operator, caller);
     }
 
-    /// @dev Revoke an account's operator status for the caller.
+    /// Revoke an account's operator status for the caller.
     ///
-    /// See {isOperatorFor} and {defaultOperators}.
+    /// See `is_operator_for` and `default_operators`.
     ///
-    /// Emits a {RevokedOperator} event.
+    /// Emits a `RevokedOperator` event.
     ///
     /// Requirements
     ///
@@ -294,24 +312,24 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self.emit_event_revoked_operator(operator, caller);
     }
 
-    /// @dev Returns the list of default operators. These accounts are operators
-    /// for all token holders, even if {authorizeOperator} was never called on
+    /// Returns the list of default operators. These accounts are operators
+    /// for all token holders, even if `authorize_operator` was never called on
     /// them.
     ///
     /// This list is immutable, but individual holders may revoke these via
-    /// {revokeOperator}, in which case {isOperatorFor} will return false.
+    /// `revoke_operator`, in which case `is_operator_for` will return false.
     fn default_operators(&self) -> Vec<E::AccountId> {
         self.get().default_operators_array.clone()
     }
 
-    /// @dev Moves `amount` tokens from `sender` to `recipient`. The caller must
+    /// Moves `amount` tokens from `sender` to `recipient`. The caller must
     /// be an operator of `sender`.
     ///
     /// If send or receive hooks are registered for `sender` and `recipient`,
     /// the corresponding functions will be called with `data` and
-    /// `operator_data`. See {IERC777Sender} and {IERC777Recipient}.
+    /// `operator_data`. See `erc777_sender` and `erc777_recipient`.
     ///
-    /// Emits a {Sent} event.
+    /// Emits a `Sent` event.
     ///
     /// Requirements
     ///
@@ -319,8 +337,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `sender` must have at least `amount` tokens.
     /// - the caller must be an operator for `sender`.
     /// - `recipient` cannot be the zero address.
-    /// - if `recipient` is a contract, it must implement the {IERC777Recipient}
-    /// interface.
+    /// - if `recipient` is a contract, it must implement the `erc777_recipient` interface.
     fn operator_send(
         &mut self,
         sender: E::AccountId,
@@ -337,13 +354,13 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._send(sender, recipient, amount, data, operator_data, true)
     }
 
-    /// @dev Destroys `amount` tokens from `account`, reducing the total supply.
+    /// Destroys `amount` tokens from `account`, reducing the total supply.
     /// The caller must be an operator of `account`.
     ///
     /// If a send hook is registered for `account`, the corresponding function
-    /// will be called with `data` and `operator_data`. See {IERC777Sender}.
+    /// will be called with `data` and `operator_data`. See `erc777_sender`.
     ///
-    /// Emits a {Burned} event.
+    /// Emits a `Burned` event.
     ///
     /// Requirements
     ///
@@ -366,10 +383,10 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Returns the remaining number of tokens that `spender` will be
-    /// allowed to spend on behalf of `owner` through {transferFrom}. This is
+    /// allowed to spend on behalf of `owner` through `transfer_from`. This is
     /// zero by default.
     ///
-    /// This value changes when {approve} or {transferFrom} are called.
+    /// This value changes when `approve` or `transfer_from` are called.
     fn allowance(&self, owner: &E::AccountId, spender: &E::AccountId) -> E::Balance {
         self.get().allowance(owner, spender)
     }
@@ -385,7 +402,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// desired value afterwards:
     /// <https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729>
     ///
-    /// Emits an {Approval} event.
+    /// Emits an `Approval` event.
     fn approve(&mut self, spender: &E::AccountId, amount: E::Balance) -> Result<()> {
         self._approve(&Self::caller(), spender, amount)
     }
@@ -396,7 +413,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     ///
     /// Returns a boolean value indicating whether the operation succeeded.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn transfer_from(
         &mut self,
         holder: &E::AccountId,
@@ -450,21 +467,20 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Creates `amount` tokens and assigns them to `account`, increasing
+    /// Creates `amount` tokens and assigns them to `account`, increasing
     /// the total supply.
     ///
     /// If a send hook is registered for `account`, the corresponding function
     /// will be called with `operator`, `data` and `operator_data`.
     ///
-    /// See {IERC777Sender} and {IERC777Recipient}.
+    /// See `erc777_sender` and `erc777_recipient`.
     ///
-    /// Emits {Minted} and {IERC20-Transfer} events.
+    /// Emits `Minted` and `Transfer` events.
     ///
     /// Requirements
     ///
     /// - `account` cannot be the zero address.
-    /// - if `account` is a contract, it must implement the {IERC777Recipient}
-    /// interface.
+    /// - if `account` is a contract, it must implement the `erc777_recipient` interface.
     fn _mint(
         &mut self,
         account: E::AccountId,
@@ -475,22 +491,21 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         self._mint_required_reception_ack(account, amount, user_data, operator_data, true)
     }
 
-    /// @dev Creates `amount` tokens and assigns them to `account`, increasing
+    /// Creates `amount` tokens and assigns them to `account`, increasing
     /// the total supply.
     ///
     /// If `requireReceptionAck` is set to true, and if a send hook is
     /// registered for `account`, the corresponding function will be called with
     /// `operator`, `data` and `operator_data`.
     ///
-    /// See {IERC777Sender} and {IERC777Recipient}.
+    /// See `erc777_sender` and `erc777_recipient`.
     ///
-    /// Emits {Minted} and {IERC20-Transfer} events.
+    /// Emits `Minted` and `Transfer` events.
     ///
     /// Requirements
     ///
     /// - `account` cannot be the zero address.
-    /// - if `account` is a contract, it must implement the {IERC777Recipient}
-    /// interface.
+    /// - if `account` is a contract, it must implement the `erc777_recipient` interface.
     fn _mint_required_reception_ack(
         &mut self,
         account: E::AccountId,
@@ -539,13 +554,17 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Send tokens
-    /// @param from address token holder address
-    /// @param to address recipient address
-    /// @param amount uint256 amount of tokens to transfer
-    /// @param userData bytes extra information provided by the token holder (if any)
-    /// @param operator_data bytes extra information provided by the operator (if any)
-    /// @param requireReceptionAck if true, contract recipients are required to implement ERC777TokensRecipient
+    /// Send tokens
+    /// 
+    /// Params :
+    /// 
+    /// - from address token holder address
+    /// - to address recipient address
+    /// - amount uint256 amount of tokens to transfer
+    /// - userData bytes extra information provided by the token holder (if any)
+    /// - operator_data bytes extra information provided by the operator (if any)
+    /// - requireReceptionAck if true, contract recipients are
+    ///   required to implement `erc777_recipient`
     fn _send(
         &mut self,
         from: E::AccountId,
@@ -586,11 +605,14 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Burn tokens
-    /// @param from address token holder address
-    /// @param amount uint256 amount of tokens to burn
-    /// @param data bytes extra information provided by the token holder
-    /// @param operator_data bytes extra information provided by the operator (if any)
+    /// Burn tokens
+    /// 
+    /// Params:
+    /// 
+    /// - from address token holder address
+    /// - amount uint256 amount of tokens to burn
+    /// - data bytes extra information provided by the token holder
+    /// - operator_data bytes extra information provided by the operator (if any)
     fn _burn(
         &mut self,
         from: E::AccountId,
@@ -684,13 +706,16 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         Ok(())
     }
 
-    /// @dev Call from.tokensToSend() if the interface is registered
-    /// @param operator address operator requesting the transfer
-    /// @param from address token holder address
-    /// @param to address recipient address
-    /// @param amount uint256 amount of tokens to transfer
-    /// @param user_data bytes extra information provided by the token holder (if any)
-    /// @param operator_data bytes extra information provided by the operator (if any)
+    /// Call from.tokensToSend() if the interface is registered
+    /// 
+    /// Params:
+    /// 
+    /// - operator address operator requesting the transfer
+    /// - from address token holder address
+    /// - to address recipient address
+    /// - amount uint256 amount of tokens to transfer
+    /// - user_data bytes extra information provided by the token holder (if any)
+    /// - operator_data bytes extra information provided by the operator (if any)
     fn _call_tokens_to_send(
         &mut self,
         _operator: &E::AccountId,
@@ -703,15 +728,19 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         // TODO: support ERC1820
     }
 
-    /// @dev Call to.tokensReceived() if the interface is registered. Reverts if the recipient is a contract but
+    /// Call to.tokensReceived() if the interface is registered.
+    /// Reverts if the recipient is a contract but
     /// tokensReceived() was not registered for the recipient
-    /// @param operator address operator requesting the transfer
-    /// @param from address token holder address
-    /// @param to address recipient address
-    /// @param amount uint256 amount of tokens to transfer
-    /// @param userData bytes extra information provided by the token holder (if any)
-    /// @param operator_data bytes extra information provided by the operator (if any)
-    /// @param requireReceptionAck if true, contract recipients are required to implement ERC777TokensRecipient
+    /// 
+    /// Params:
+    /// 
+    /// - operator address operator requesting the transfer
+    /// - from address token holder address
+    /// - to address recipient address
+    /// - amount uint256 amount of tokens to transfer
+    /// - userData bytes extra information provided by the token holder (if any)
+    /// - operator_data bytes extra information provided by the operator (if any)
+    /// - requireReceptionAck if true, contract recipients are required to implement `erc777_recipient`
     fn _call_tokens_received(
         &mut self,
         _operator: &E::AccountId,
@@ -725,8 +754,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         // TODO: support ERC1820
     }
 
-    /// @dev Hook that is called before any token transfer. This includes
-    /// calls to {send}, {transfer}, {operatorSend}, minting and burning.
+    /// Hook that is called before any token transfer. This includes
+    /// calls to `send`, `transfer`, `operator_send`, minting and burning.
     ///
     /// Calling conditions:
     ///
@@ -735,8 +764,6 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - when `from` is zero, `amount` tokens will be minted for `to`.
     /// - when `to` is zero, `amount` of ``from``'s tokens will be burned.
     /// - `from` and `to` are never both zero.
-    ///
-    /// To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
     fn _before_token_transfer(
         &mut self,
         _operator: &E::AccountId,
