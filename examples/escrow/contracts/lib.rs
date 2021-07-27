@@ -1,7 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use ink_lang as ink;
-
 #[metis_lang::contract]
 pub mod mock {
     use metis_escrow as escrow;
