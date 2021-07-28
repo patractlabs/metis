@@ -1,10 +1,6 @@
 extern crate proc_macro;
-use proc_macro2::{
-    TokenStream as TokenStream2,
-};
-use quote::{
-    quote,
-};
+use proc_macro2::TokenStream as TokenStream2;
+use quote::quote;
 use syn::{
     punctuated::Punctuated,
     Result,
@@ -13,15 +9,28 @@ use syn::{
 pub fn generate_hash_string_or_err(input: TokenStream2) -> Result<TokenStream2> {
     let bytes = blake2b_256_str(input.to_string()); // is \"string\", should delete \"
 
-    println!("{}", input.to_string());
+    // println!("{}", input.to_string());
 
     let mut segments = Punctuated::new();
-    bytes
-        .iter()
-        .for_each(|item| {
-             segments.push_value(quote! { #item });
-             segments.push_punct(<syn::Token![,]>::default());
-        });
+    bytes.iter().for_each(|item| {
+        segments.push_value(quote! { #item });
+        segments.push_punct(<syn::Token![,]>::default());
+    });
+
+    Ok(quote! { [#segments] })
+}
+
+pub fn generate_msg_selector_id_or_err(input: TokenStream2) -> Result<TokenStream2> {
+    let output = blake2b_256_str(input.to_string()); // is \"string\", should delete \"
+
+    // println!("{}", input.to_string());
+    let id = [output[0], output[1], output[2], output[3]];
+
+    let mut segments = Punctuated::new();
+    id.iter().for_each(|item| {
+        segments.push_value(quote! { #item });
+        segments.push_punct(<syn::Token![,]>::default());
+    });
 
     Ok(quote! { [#segments] })
 }

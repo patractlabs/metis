@@ -20,4 +20,5 @@ pub use metis_lang_macro::{
     reentrancy_guard,
     supports,
     hash,
+    selector_id,
 };

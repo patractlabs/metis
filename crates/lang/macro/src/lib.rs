@@ -40,10 +40,19 @@ pub fn reentrancy_guard(attr: TokenStream, item: TokenStream) -> TokenStream {
     reentrancy_guard::generate(attr.into(), item.into()).into()
 }
 
-/// The marco to generate hash from a string.
+/// The marco to generate hash by input.
 #[proc_macro]
 pub fn hash(input: TokenStream) -> TokenStream {
     match utils::generate_hash_string_or_err(input.into()) {
+        Ok(tokens) => tokens,
+        Err(err) => err.to_compile_error(),
+    }.into()
+}
+
+/// Gen selector id form input message name.
+#[proc_macro]
+pub fn selector_id(input: TokenStream) -> TokenStream {
+    match utils::generate_msg_selector_id_or_err(input.into()) {
         Ok(tokens) => tokens,
         Err(err) => err.to_compile_error(),
     }.into()
