@@ -9,8 +9,12 @@ categories = ["no-std", "embedded"]
 include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE"]
 
 [dependencies]
+quote = "1"
 syn = "1"
 proc-macro2 = "1"
+
+blake2 = "0.9"
+impl-serde = "0.3.1"
 
 ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
@@ -39,6 +43,14 @@ scale = { package = "parity-scale-codec", version = "2.1", features = ["derive"]
 scale-info = { version = "0.6", features = ["derive"] }
 num-traits = { version = "0.2", features = ["i128"] }
 
+blake2 = "0.9"
+impl-serde = "0.3.1"
+
+quote = "1"
+syn = "1"
+proc-macro2 = "1"
+
+
 metis_lang = { path = "../../../crates/lang" }
 
 [lib]
@@ -48,6 +60,10 @@ proc-macro = true
 [[test]]
 name = "tests"
 path = "tests/contract.rs"
+
+[[test]]
+name = "test_hash"
+path = "tests/05-hash.rs"
 
 [features]
 default = ["std"]

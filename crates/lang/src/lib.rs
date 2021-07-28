@@ -19,4 +19,5 @@ pub use metis_lang_macro::{
     metis,
     reentrancy_guard,
     supports,
+    hash,
 };
