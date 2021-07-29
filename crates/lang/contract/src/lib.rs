@@ -12,6 +12,11 @@ pub use traits::{
     Timestamp,
 };
 
+pub use ink_env::hash::{
+    HashOutput,
+    CryptoHash,
+};
+
 pub trait Env: 'static {
     type AccountId: AccountId;
     type Balance: Balance;
@@ -42,6 +47,8 @@ pub trait EnvAccess<E: Env> {
     fn account_id() -> E::AccountId;
     fn balance() -> E::Balance;
     fn transfer(destination: E::AccountId, value: E::Balance) -> ink_env::Result<()>;
+    fn block_timestamp() -> E::Timestamp;
+    fn hash_bytes<H>(input: &[u8]) -> <H as HashOutput>::Type where H : CryptoHash;
 }
 
 pub trait FromAccountId<E>
@@ -51,4 +58,3 @@ where
     /// Creates the contract instance from the account ID of the already instantiated contract.
     fn from_account_id(account_id: E::AccountId) -> Self;
 }
-

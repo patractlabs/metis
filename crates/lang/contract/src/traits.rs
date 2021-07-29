@@ -146,6 +146,10 @@ pub trait Hash:
     'static
     + scale::Codec
     + std::fmt::Debug
+    + ::scale_info::TypeInfo
+    + ::ink_storage::traits::StorageLayout
+    + SpreadLayout
+    + PackedLayout
     + Copy
     + Clone
     + Clear
@@ -154,6 +158,7 @@ pub trait Hash:
     + Ord
     + AsRef<[u8]>
     + AsMut<[u8]>
+    + Default
 {
 }
 
@@ -162,6 +167,10 @@ impl<T> Hash for T where
     T: 'static
         + scale::Codec
         + std::fmt::Debug
+        + ::scale_info::TypeInfo
+        + ::ink_storage::traits::StorageLayout
+        + SpreadLayout
+        + PackedLayout
         + Copy
         + Clone
         + Clear
@@ -170,6 +179,7 @@ impl<T> Hash for T where
         + Ord
         + AsRef<[u8]>
         + AsMut<[u8]>
+        + Default
 {
 }
 
@@ -179,12 +189,15 @@ pub trait Hash:
     + scale::Codec
     + Copy
     + Clone
+    + SpreadLayout
+    + PackedLayout
     + Clear
     + PartialEq
     + Eq
     + Ord
     + AsRef<[u8]>
     + AsMut<[u8]>
+    + Default
 {
 }
 
@@ -194,12 +207,15 @@ impl<T> Hash for T where
         + scale::Codec
         + Copy
         + Clone
+        + SpreadLayout
+        + PackedLayout
         + Clear
         + PartialEq
         + Eq
         + Ord
         + AsRef<[u8]>
         + AsMut<[u8]>
+        + Default
 {
 }
 
