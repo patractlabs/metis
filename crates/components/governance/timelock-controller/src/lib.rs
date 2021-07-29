@@ -10,6 +10,8 @@
 //! to position this {TimelockController} as the owner of a smart contract, with
 //! a multisig or a DAO as the sole proposer.
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 pub use access_control::{
     Error,
     Result,
@@ -17,6 +19,9 @@ pub use access_control::{
 };
 use ink_env::hash::Blake2x256;
 use ink_lang::ForwardCallMut;
+use ink_prelude::{
+    vec::Vec,
+};
 use metis_access_control as access_control;
 use metis_lang::{
     Env,
@@ -74,7 +79,7 @@ impl<E: Env> Data<E> {}
 /// The `EventEmit` impl the event emit api for component.
 pub trait EventEmit<E: Env> {
     /// Emitted when a call is scheduled as part of operation `id`.
-    fn emit_event_role_call_scheduled(
+    fn emit_event_call_scheduled(
         &mut self,
         id: [u8; 32],
         target: E::AccountId,
@@ -85,7 +90,7 @@ pub trait EventEmit<E: Env> {
     );
 
     /// Emitted when a call is performed as part of operation `id`.
-    fn emit_event_role_call_executed(
+    fn emit_event_call_executed(
         &mut self,
         id: [u8; 32],
         target: E::AccountId,
@@ -94,10 +99,10 @@ pub trait EventEmit<E: Env> {
     );
 
     /// Emitted when operation `id` is cancelled.
-    fn emit_event_role_cancelled(&mut self, id: [u8; 32]);
+    fn emit_event_cancelled(&mut self, id: [u8; 32]);
 
     /// Emitted when the minimum delay for future operations is modified.
-    fn emit_event_role_min_delay_change(
+    fn emit_event_min_delay_change(
         &mut self,
         old_duration: E::Timestamp,
         new_duration: E::Timestamp,
@@ -141,7 +146,7 @@ where
             &mut Storage::<E, Data<E>>::get_mut(self).min_delay,
             min_delay,
         );
-        self.emit_event_role_min_delay_change(E::Timestamp::from(0_u8), min_delay);
+        self.emit_event_min_delay_change(E::Timestamp::from(0_u8), min_delay);
     }
 
     /// To make a function callable only by a certain role. In
@@ -219,7 +224,7 @@ where
 
     /// Schedule an operation containing a single transaction.
     ///
-    /// Emits a {CallScheduled} event.
+    /// Emits a `CallScheduled` event.
     ///
     /// Requirements:
     ///
@@ -239,7 +244,7 @@ where
 
         self._schedule(id, delay);
 
-        self.emit_event_role_call_scheduled(id, target, value, data, predecessor, delay);
+        self.emit_event_call_scheduled(id, target, value, data, predecessor, delay);
     }
 
     /// Schedule an operation that is to becomes valid after a given delay.
@@ -272,12 +277,12 @@ where
         );
         Storage::<E, Data<E>>::get_mut(self).timestamps.take(&id);
 
-        self.emit_event_role_cancelled(id);
+        self.emit_event_cancelled(id);
     }
 
     /// Execute an (ready) operation containing a single transaction.
     ///
-    /// Emits a {CallExecuted} event.
+    /// Emits a `CallExecuted` event.
     ///
     /// Requirements:
     ///
@@ -328,7 +333,7 @@ where
 
     /// Execute an operation's call.
     ///
-    /// Emits a {CallExecuted} event.
+    /// Emits a `CallExecuted` event.
     fn _call(
         &mut self,
         id: [u8; 32],
@@ -354,12 +359,12 @@ where
             "TimelockController: underlying transaction reverted"
         );
 
-        self.emit_event_role_call_executed(id, target, value, data);
+        self.emit_event_call_executed(id, target, value, data);
     }
 
     /// Changes the minimum timelock duration for future operations.
     ///
-    /// Emits a {MinDelayChange} event.
+    /// Emits a `MinDelayChange` event.
     ///
     /// Requirements:
     ///
@@ -368,7 +373,7 @@ where
     fn _set_update_delay(&mut self, new_delay: E::Timestamp) {
         let current_min_delay = self.get_min_delay();
 
-        self.emit_event_role_min_delay_change(current_min_delay, new_delay);
+        self.emit_event_min_delay_change(current_min_delay, new_delay);
 
         *Storage::<E, Data<E>>::get_mut(self).min_delay = new_delay;
     }

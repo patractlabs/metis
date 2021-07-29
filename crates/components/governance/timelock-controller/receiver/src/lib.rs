@@ -15,7 +15,7 @@ mod stub {
             unimplemented!()
         }
 
-        #[ink(message)]
+        #[ink(message, payable)]
         pub fn on_call(
             &mut self,
             _operator: AccountId,
