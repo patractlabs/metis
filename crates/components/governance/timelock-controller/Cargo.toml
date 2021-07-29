@@ -9,12 +9,14 @@ ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", de
 ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
 ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
 scale-info = { version = "0.6", default-features = false, features = ["derive"] }
 
 metis_lang = { path = "../../../lang/", default-features = false }
 metis_access_control = { path = "../../access/control/", default-features = false }
+metis_timelock_controller_receiver = { path = "./receiver", default-features = false, features = ["ink-as-dependency"] }
 
 [dev-dependencies]
 trybuild = { version = "1.0", features = ["diff"] }
@@ -35,6 +37,7 @@ num-traits = { version = "0.2", features = ["i128"] }
 
 metis_lang = { path = "../../../lang/" }
 metis_access_control = { path = "../../access/control/" }
+metis_timelock_controller_receiver = { path = "./receiver" }
 
 [features]
 default = ["std"]
@@ -46,5 +49,6 @@ std = [
     "scale-info/std",
     "metis_lang/std",
     "metis_access_control/std",
+    "metis_timelock_controller_receiver/std",
 ]
 ink-as-dependency = []

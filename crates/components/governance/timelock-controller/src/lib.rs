@@ -15,15 +15,16 @@ pub use access_control::{
     Result,
     RoleId,
 };
+use ink_env::hash::Blake2x256;
+use ink_lang::ForwardCallMut;
 use metis_access_control as access_control;
-
 use metis_lang::{
     Env,
+    FromAccountId,
     Storage,
 };
-
+use metis_timelock_controller_receiver::Receiver;
 use scale::Encode;
-use ink_env::hash::Blake2x256;
 
 #[cfg(not(feature = "ink-as-dependency"))]
 use ::ink_storage::{
@@ -335,8 +336,18 @@ where
         value: E::Balance,
         data: Vec<u8>,
     ) {
-        // TODO:
-        let success = true;
+        let mut receiver =
+            <Receiver as FromAccountId<E>>::from_account_id(target.clone());
+        let success = receiver
+            .call_mut()
+            .on_call(Self::caller().into(), data.clone())
+            .transferred_value(value.into())
+            .fire();
+
+        let success = match success {
+            Ok(success) => success,
+            Err(_) => false,
+        };
 
         assert!(
             success,
