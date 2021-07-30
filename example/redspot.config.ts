@@ -21,7 +21,8 @@ export default {
       endpoint: "ws://127.0.0.1:9944",
       gasLimit: "400000000000",
       types: {
-        TokenId: '[u8;32]'
+        TokenId: '[u8;32]',
+        RoleId: '[u8;32]'
       },
     },
     jupiter: {
@@ -29,7 +30,8 @@ export default {
       gasLimit: "400000000000",
       accounts: ["//Alice"],
       types: {
-        TokenId: '[u8;32]'
+        TokenId: '[u8;32]',
+        RoleId: '[u8;32]'
       },
     },
   },
