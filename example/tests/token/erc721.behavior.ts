@@ -673,51 +673,6 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
             });
         });
     });
-
-    describe('_burn', function () {
-        let logs = null;
-
-        it('reverts when burning a non-existent token id', async function () {
-            await expectRevert(
-                this.token.tx.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
-            );
-        });
-
-        context('with minted tokens', function () {
-            beforeEach(async function () {
-                await this.token.tx.mint(this.owner, firstTokenId);
-                await this.token.tx.mint(this.owner, secondTokenId);
-            });
-
-            context('with burnt token', function () {
-                beforeEach(async function () {
-                    logs = this.token.tx.burn(firstTokenId);
-                    await logs;
-                });
-
-                it('emits a Transfer event', async function () {
-                    expectEventInLogs(this.logs, this.token, 'Transfer', this.owner, ZERO_ADDRESS, firstTokenId);
-                });
-
-                it('emits an Approval event', async function () {
-                    expectEventInLogs(this.logs, this.token, 'Approval', this.owner, ZERO_ADDRESS, firstTokenId);
-                });
-
-                it('deletes the token', async function () {
-                    expect((await this.token.query.balanceOf(this.owner)).output).to.equal('1');
-                    await expectRevert(
-                        this.token.query.ownerOf(firstTokenId), 'ERC721: this.owner query for nonexistent token',
-                    );
-                });
-
-                it('reverts when burning a token id that has been deleted', async function () {
-                    await expectRevert(
-                        this.token.tx.burn(firstTokenId), 'ERC721: this.owner query for nonexistent token',
-                    );
-                });
-            });
-        });
-    });
 }
 
 async function shouldBehaveLikeERC721Metadata(errorPrefix, contractName) {
