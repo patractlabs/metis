@@ -3,6 +3,7 @@ extern crate proc_macro;
 mod contract;
 mod erc165;
 mod reentrancy_guard;
+mod stub;
 mod utils;
 
 use proc_macro::TokenStream;
@@ -38,6 +39,12 @@ pub fn supports(attr: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn reentrancy_guard(attr: TokenStream, item: TokenStream) -> TokenStream {
     reentrancy_guard::generate(attr.into(), item.into()).into()
+}
+
+/// The marco to generate stub code in metis
+#[proc_macro_attribute]
+pub fn stub(attr: TokenStream, item: TokenStream) -> TokenStream {
+    stub::generate(attr.into(), item.into()).into()
 }
 
 /// The marco to generate hash by input.
