@@ -16,7 +16,7 @@ members = [
     "crates/components/governance/timelock-controller/receiver",
     "crates/components/utils/escrow",
     "crates/components/utils/escrow/stub",
-    "crates/lang/",
+    "crates/lang",
     "crates/lang/macro",
     "crates/lang/contract",
     "crates/lang/codegen",
@@ -26,9 +26,14 @@ members = [
     "contracts/traits/token/erc20",
 ]
 exclude = [
+<<<<<<< HEAD
     "example/",
+=======
+    "example",
+    "examples",
+>>>>>>> 1720fb0d2d0009558db50bdc61e39fffca276e4d
     "contracts/impls",
-    "contracts/stub",
+    "contracts/stubs",
 ]
 
 [profile.release]
