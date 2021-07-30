@@ -594,7 +594,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             .fire();
 
         let is_ok = match resp {
-            Ok(selector_id) => selector_id == metis::selector_id!(on_erc1155_received),
+            Ok(selector_id) => selector_id == metis_lang::selector_id!(on_erc1155_received),
             Err(err) => {
                 match err {
                     ink_env::Error::NotCallable => true,
