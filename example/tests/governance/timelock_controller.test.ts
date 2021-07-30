@@ -202,9 +202,5 @@ async function shouldBehaveLikeTimelockController() {
 }
 
 describe("TimelockController", async () => {
-    after(() => {
-        return api.disconnect();
-    });
-
     await shouldBehaveLikeTimelockController();
 });
