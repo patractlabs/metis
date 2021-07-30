@@ -39,6 +39,12 @@ pub fn generate_code(
             fn transfer(destination: <#storage_ident as metis_lang::Env>::AccountId, value: <#storage_ident as metis_lang::Env>::Balance) -> ink_env::Result<()>{
                 Self::env().transfer(destination, value)
             }
+            fn block_timestamp() -> <#storage_ident as metis_lang::Env>::Timestamp{
+                Self::env().block_timestamp()
+            }
+            fn hash_bytes<H>(input: &[u8]) -> <H as ink_env::hash::HashOutput>::Type where H : ink_env::hash::CryptoHash{
+                Self::env().hash_bytes::<H>(input)
+            }
         }
     };
 

@@ -12,6 +12,8 @@ members = [
     "crates/components/token/erc1155/receiver/",
     "crates/components/security/pausable",
     "crates/components/security/reentrancy-guard",
+    "crates/components/governance/timelock-controller",
+    "crates/components/governance/timelock-controller/receiver",
     "crates/components/utils/escrow",
     "crates/components/utils/escrow/stub",
     "crates/lang/",
