@@ -520,9 +520,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             .on_erc721_received(caller.into(), from.into(), token_id, data)
             .fire();
 
-        // TODO: use code gen
         match resp {
-            Ok(selector_id) => selector_id == [90u8, 119u8, 73u8, 174u8],
+            Ok(selector_id) => selector_id == metis::selector_id!(on_erc721_received),
             Err(err) => {
                 match err {
                     ink_env::Error::NotCallable => true,
