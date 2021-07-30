@@ -6,6 +6,8 @@
   - [Ownable](./access-control/ownable.md)
   - [Access Control](./access-control/access-control.md)
   - [Access Control Enumerable](./access-control/access-control-enumerable.md)
+- [Governance](./governance.md)
+  - [Timelock Controller](./governance/timelock-controller.md)
 - [Tokens](./tokens.md)
   - [ERC20](./tokens/erc20.md)
   - [ERC721](./tokens/erc721.md)
