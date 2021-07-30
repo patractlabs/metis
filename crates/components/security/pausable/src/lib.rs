@@ -29,22 +29,25 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 
 /// The `Impl` define ownable component impl funcs
 pub trait Impl<E: Env>: Storage<E, Data> + EventEmit<E> {
-    /// init Initializes the contract setting the deployer as the initial owner.
+    /// init Initializes the contract setting
     fn init(&mut self) {}
 
-    /// Returns to normal state.
+    /// Pause the contract, will emit the Paused Event
     ///
     /// Requirements:
     ///
-    /// - The contract must be paused.
+    /// - The contract must be not paused.
     fn _pause(&mut self) {
         self.ensure_not_paused();
         self.get_mut().pause();
         self.emit_event_paused(Self::caller());
     }
 
-    /// Transfers ownership of the contract to a new account (`new_owner`).
-    /// Can only be called by the current owner.
+    /// Unpause the contract, will emit the `Unpaused` Event
+    ///
+    /// Requirements:
+    ///
+    /// - The contract must be paused.
     fn _unpause(&mut self) {
         self.ensure_paused();
         self.get_mut().unpause();
@@ -56,12 +59,12 @@ pub trait Impl<E: Env>: Storage<E, Data> + EventEmit<E> {
         self.get().is_paused()
     }
 
-    /// Panic if `owner` is not an owner
+    /// Panic if current is not paused.
     fn ensure_paused(&self) {
         assert!(self.get().is_paused(), "Pausable: ensure paused");
     }
 
-    /// Panic if caller is not an owner
+    /// Panic if current is paused.
     fn ensure_not_paused(&self) {
         assert!(!self.get().is_paused(), "Pausable: ensure not paused");
     }

@@ -15,7 +15,7 @@ use crate::types::{
     RoleId,
 };
 
-/// The Data of ownership component
+/// The Data of access control component
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]
 #[derive(Debug, SpreadLayout)]
 pub struct Data<E>

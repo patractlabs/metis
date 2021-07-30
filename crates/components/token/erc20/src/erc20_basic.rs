@@ -123,19 +123,19 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Returns the remaining number of tokens that `spender` will be
-    /// allowed to spend on behalf of `owner` through {transferFrom}. This is
+    /// allowed to spend on behalf of `owner` through `transfer_from`. This is
     /// zero by default.
     ///
-    /// This value changes when {approve} or {transferFrom} are called.
+    /// This value changes when `approve` or `transfer_from` are called.
     fn allowance(&self, owner: &E::AccountId, spender: &E::AccountId) -> E::Balance {
         self.get().allowance(owner, spender)
     }
 
     /// Moves `amount` tokens from the caller's account to `recipient`.
     ///
-    /// Returns a boolean value indicating whether the operation succeeded.
+    /// Returns a Result indicating whether the operation succeeded.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     fn transfer(&mut self, to: &E::AccountId, value: E::Balance) -> Result<()> {
         self._transfer_from_to(&Self::caller(), to, value)
     }
@@ -151,7 +151,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// desired value afterwards:
     /// <https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729>
     ///
-    /// Emits an {Approval} event.
+    /// Emits an `Approval` event.
     fn approve(&mut self, spender: &E::AccountId, amount: E::Balance) -> Result<()> {
         self._approve(&Self::caller(), spender, amount)
     }
@@ -204,10 +204,10 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
 
     /// Moves tokens `amount` from `sender` to `recipient`.
     ///
-    /// This is internal function is equivalent to {transfer}, and can be used to
+    /// This is internal function is equivalent to `transfer`, and can be used to
     /// e.g. implement automatic token fees, slashing mechanisms, etc.
     ///
-    /// Emits a {Transfer} event.
+    /// Emits a `Transfer` event.
     ///
     /// Requirements:
     ///
@@ -279,7 +279,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Creates `amount` tokens and assigns them to `account`, increasing
     /// the total supply.
     ///
-    /// Emits a {Transfer} event with `from` set to the zero address.
+    /// Emits a `Transfer` event with `from` set to the zero address.
     ///
     /// Requirements:
     ///

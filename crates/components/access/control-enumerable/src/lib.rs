@@ -1,4 +1,4 @@
-//! Extension of {AccessControl} that allows enumerating the members of each role.
+//! Extension of `Access Control` Component that allows enumerating the members of each role.
 
 pub use access_control::{
     Error,

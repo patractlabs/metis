@@ -17,7 +17,6 @@ pub mod access_control_mock {
         metis,
     };
 
-    /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(access_control)]
     pub struct AccessControl {

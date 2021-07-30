@@ -18,7 +18,6 @@ pub mod mock {
         metis,
     };
 
-    /// A simple ERC-20 contract.
     #[ink(storage)]
     #[import(access_control, access_control_enumerable)]
     pub struct AccessControl {
@@ -30,10 +29,7 @@ pub mod mock {
 
     impl access_control_enumerable::Impl<AccessControl> for AccessControl{}
 
-    /// Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole`
-    ///
-    /// `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite
-    /// {RoleAdminChanged} not being emitted signaling this.
+    /// Emitted when `new_admin_role` is set as ``role``'s admin role, replacing `previous_admin_role`
     #[ink(event)]
     #[metis(access_control)]
     pub struct RoleAdminChanged {
@@ -48,7 +44,7 @@ pub mod mock {
     /// Emitted when `account` is granted `role`.
     ///
     /// `sender` is the account that originated the contract call, an admin role
-    /// bearer except when using {_setupRole}.
+    /// bearer except when using {_setup_role}.
     #[ink(event)]
     #[metis(access_control)]
     pub struct RoleGranted {
@@ -63,8 +59,8 @@ pub mod mock {
     /// Emitted when `account` is revoked `role`.
     ///
     /// `sender` is the account that originated the contract call:
-    ///   - if using `revokeRole`, it is the admin role bearer
-    ///   - if using `renounceRole`, it is the role bearer (i.e. `account`)
+    ///   - if using `revoke_role`, it is the admin role bearer
+    ///   - if using `renounce_role`, it is the role bearer (i.e. `account`)
     #[ink(event)]
     #[metis(access_control)]
     pub struct RoleRevoked {
