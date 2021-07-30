@@ -1,0 +1,49 @@
+[package]
+name = "reentrancy_guard_caller"
+version = "0.1.0"
+authors = ["patract labs <https://github.com/patractlabs>"]
+edition = "2018"
+
+[dependencies]
+ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
+ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
+scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
+
+metis_reentrancy_guard = { path = "../../../../../crates/components/security/reentrancy-guard", default-features = false }
+metis_lang = { path = "../../../../../crates/lang", default-features = false }
+
+reentrancy_guard_traits = { path = "../traits/", default-features = false, features = ["ink-as-dependency"] }
+
+[lib]
+name = "reentrancy_guard_caller"
+path = "lib.rs"
+crate-type = [
+    # Used for normal contract Wasm blobs.
+    "cdylib",
+    # Used for ABI generation.
+    "rlib",
+]
+
+[features]
+default = ["std"]
+std = [
+    "ink_primitives/std",
+    "ink_metadata",
+    "ink_metadata/std",
+    "ink_env/std",
+    "ink_storage/std",
+    "ink_lang/std",
+    "scale/std",
+    "scale-info",
+    "scale-info/std",
+
+    "metis_reentrancy_guard/std",
+    "metis_lang/std",
+
+    "reentrancy_guard_traits/std",
+]
+ink-as-dependency = []

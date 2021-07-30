@@ -6,3 +6,8 @@ npx redspot test ./tests/token/erc721.urlstorage.test.ts
 npx redspot test ./tests/token/erc777.test.ts
 npx redspot test ./tests/token/erc1155.test.ts
 npx redspot test ./tests/governance/timelock_controller.test.ts
+npx redspot test ./tests/security/reentrancy-guard.test.ts
+npx redspot test ./tests/access-control/access-control.test.ts
+npx redspot test ./tests/access-control/ownable.test.ts
+npx redspot test ./tests/tools/erc165.test.ts
+npx redspot test ./tests/utils/escrow.test.ts
