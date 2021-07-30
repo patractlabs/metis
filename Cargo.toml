@@ -27,7 +27,6 @@ members = [
 ]
 exclude = [
     "example/",
-    "examples/",
     "contracts/impls",
     "contracts/stub",
 ]
