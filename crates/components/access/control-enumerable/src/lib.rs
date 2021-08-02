@@ -25,7 +25,7 @@ use ::ink_storage::{
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]
 #[derive(Debug, SpreadLayout)]
 pub struct Data<E: Env> {
-    role_members: StorageHashMap<RoleId, Vec<E::AccountId>>, /* TODO: need a lazy map of vec to support too much roles */
+    role_members: StorageHashMap<RoleId, Vec<E::AccountId>>,
 }
 
 impl<E: Env> Data<E> {

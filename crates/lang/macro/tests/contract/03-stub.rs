@@ -15,18 +15,17 @@ mod stub {
         pub fn default() -> Self {
             unimplemented!()
         }
-
-        #[ink(message, payable)]
-        pub fn on_call(
+        #[ink(message)]
+        pub fn do_sth(
             &mut self,
             _operator: AccountId,
+            _from: AccountId,
             _data: Vec<u8>,
-        ) -> bool {
+        ) -> [u8; 4] {
             unimplemented!()
         }
+
     }
 }
 
-pub use stub::{
-    Receiver,
-};
+fn main() {}

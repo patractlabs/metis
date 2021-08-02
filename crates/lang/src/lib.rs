@@ -17,6 +17,7 @@ pub use metis_lang_macro::{
     contract,
     import,
     metis,
+    stub,
     reentrancy_guard,
     supports,
     hash,

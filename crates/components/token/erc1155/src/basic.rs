@@ -593,9 +593,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             )
             .fire();
 
-        // TODO: use code gen
         let is_ok = match resp {
-            Ok(selector_id) => selector_id == [194u8, 238u8, 217u8, 152u8],
+            Ok(selector_id) => selector_id == metis_lang::selector_id!(on_erc1155_received),
             Err(err) => {
                 match err {
                     ink_env::Error::NotCallable => true,
@@ -640,9 +639,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             )
             .fire();
 
-        // TODO: use code gen
         let is_ok = match resp {
-            Ok(selector_id) => selector_id == [22u8, 32u8, 73u8, 133u8],
+            Ok(selector_id) => selector_id == metis_lang::selector_id!(on_erc1155_batch_received),
             Err(err) => {
                 match err {
                     ink_env::Error::NotCallable => true,

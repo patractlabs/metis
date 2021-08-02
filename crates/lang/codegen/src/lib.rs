@@ -9,6 +9,8 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use syn::Result;
 
+pub mod stub;
+
 pub mod component{
     pub use super::components::erc165;
     pub use super::components::reentrancy_guard;

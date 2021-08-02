@@ -38,6 +38,7 @@ ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
+ink_prelude = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
 
 scale = { package = "parity-scale-codec", version = "2.1", features = ["derive"] }
 scale-info = { version = "0.6", features = ["derive"] }

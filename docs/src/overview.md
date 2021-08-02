@@ -117,7 +117,7 @@ mod flipper {
     }
 
     #[ink(event)]
-    #[metis(ownable)] // TODO: event in ink! will refactor
+    #[metis(ownable)] // event in ink! will refactor
     pub struct OwnershipTransferred {
         //...
     }
