@@ -73,9 +73,9 @@ impl<E: Env> Data<E> {
     }
 
     /// Returns the allowance from {owner} to {spender}
-    pub fn allowance(&self, owner: &E::AccountId, spender: &E::AccountId) -> E::Balance {
+    pub fn allowance(&self, owner: E::AccountId, spender: E::AccountId) -> E::Balance {
         self.allowances
-            .get(&(owner.clone(), spender.clone()))
+            .get(&(owner, spender))
             .copied()
             .unwrap_or(E::Balance::from(0_u8))
     }
@@ -91,18 +91,18 @@ impl<E: Env> Data<E> {
     }
 
     /// Set the owner balance
-    pub fn set_balance(&mut self, owner: &E::AccountId, value: E::Balance) {
-        self.balances.insert(owner.clone(), value);
+    pub fn set_balance(&mut self, owner: E::AccountId, value: E::Balance) {
+        self.balances.insert(owner, value);
     }
 
     /// Set the allowance from owner to spender
     pub fn set_allowance(
         &mut self,
-        owner: &E::AccountId,
-        spender: &E::AccountId,
+        owner: E::AccountId,
+        spender: E::AccountId,
         value: E::Balance,
     ) {
         self.allowances
-            .insert((owner.clone(), spender.clone()), value);
+            .insert((owner, spender), value);
     }
 }

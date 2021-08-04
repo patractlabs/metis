@@ -11,7 +11,7 @@ where
         &mut self,
         from: &E::AccountId,
         to: &E::AccountId,
-        amount: E::Balance,
+        amount: &E::Balance,
     ) -> Result<()>;
 }
 
@@ -30,7 +30,7 @@ impl<E: Env, I: Impl<E>> crate::Impl<E> for I {
         &mut self,
         from: &E::AccountId,
         to: &E::AccountId,
-        amount: E::Balance,
+        amount: &E::Balance,
     ) -> Result<()> {
         Impl::<E>::before_token_transfer(self, from, to, amount)
     }

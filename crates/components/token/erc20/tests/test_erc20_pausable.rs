@@ -141,22 +141,22 @@ pub mod erc20pausable {
 
         #[ink(message)]
         pub fn balance_of(&self, owner: AccountId) -> Balance {
-            erc20::Impl::balance_of(self, &owner)
+            erc20::Impl::balance_of(self, owner)
         }
 
         #[ink(message)]
         pub fn allowance(&self, owner: AccountId, spender: AccountId) -> Balance {
-            erc20::Impl::allowance(self, &owner, &spender)
+            erc20::Impl::allowance(self, owner, spender)
         }
 
         #[ink(message)]
         pub fn transfer(&mut self, to: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::transfer(self, &to, value)
+            erc20::Impl::transfer(self, to, value)
         }
 
         #[ink(message)]
         pub fn approve(&mut self, spender: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::approve(self, &spender, value)
+            erc20::Impl::approve(self, spender, value)
         }
 
         #[ink(message)]
@@ -166,7 +166,7 @@ pub mod erc20pausable {
             to: AccountId,
             value: Balance,
         ) -> Result<()> {
-            erc20::Impl::transfer_from(self, &from, &to, value)
+            erc20::Impl::transfer_from(self, from, to, value)
         }
 
         // Owner messages

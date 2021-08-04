@@ -61,7 +61,7 @@ where
     }
 
     /// See {ERC20-_mint}.
-    fn _mint(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
+    fn _mint(&mut self, account: E::AccountId, amount: E::Balance) -> Result<()> {
         assert!(
             ERC20::total_supply(self) + amount <= self.cap(),
             "ERC20Capped: cap exceeded"
