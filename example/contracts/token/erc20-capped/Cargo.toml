@@ -1,5 +1,5 @@
 [package]
-name = "erc20_basic"
+name = "erc20_capped"
 version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
@@ -20,7 +20,7 @@ metis_lang = { path = "../../../../crates/lang", default-features = false }
 metis_erc20 = { path = "../../../../crates/components/token/erc20", default-features = false }
 
 [lib]
-name = "erc20_basic"
+name = "erc20_capped"
 path = "lib.rs"
 crate-type = [
     "cdylib",
