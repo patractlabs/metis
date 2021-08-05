@@ -1,0 +1,974 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ERC1155 - The Documentation of Metis</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../favicon.svg">
+                        <link rel="shortcut icon" href="../favicon.png">
+                <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+                <link rel="stylesheet" href="../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../use-component.html"><strong aria-hidden="true">2.</strong> Use Component</a></li><li class="chapter-item expanded "><a href="../access-control.html"><strong aria-hidden="true">3.</strong> Access Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../access-control/ownable.html"><strong aria-hidden="true">3.1.</strong> Ownable</a></li><li class="chapter-item expanded "><a href="../access-control/access-control.html"><strong aria-hidden="true">3.2.</strong> Access Control</a></li><li class="chapter-item expanded "><a href="../access-control/access-control-enumerable.html"><strong aria-hidden="true">3.3.</strong> Access Control Enumerable</a></li></ol></li><li class="chapter-item expanded "><a href="../governance.html"><strong aria-hidden="true">4.</strong> Governance</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../governance/timelock-controller.html"><strong aria-hidden="true">4.1.</strong> Timelock Controller</a></li></ol></li><li class="chapter-item expanded "><a href="../tokens.html"><strong aria-hidden="true">5.</strong> Tokens</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tokens/erc20.html"><strong aria-hidden="true">5.1.</strong> ERC20</a></li><li class="chapter-item expanded "><a href="../tokens/erc721.html"><strong aria-hidden="true">5.2.</strong> ERC721</a></li><li class="chapter-item expanded "><a href="../tokens/erc777.html"><strong aria-hidden="true">5.3.</strong> ERC777</a></li><li class="chapter-item expanded "><a href="../tokens/erc1155.html" class="active"><strong aria-hidden="true">5.4.</strong> ERC1155</a></li></ol></li><li class="chapter-item expanded "><a href="../utilities.html"><strong aria-hidden="true">6.</strong> Utilities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../utilities/escrow.html"><strong aria-hidden="true">6.1.</strong> Escrow</a></li></ol></li><li class="chapter-item expanded "><a href="../security.html"><strong aria-hidden="true">7.</strong> Security</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../security/pausable.html"><strong aria-hidden="true">7.1.</strong> Pausable</a></li><li class="chapter-item expanded "><a href="../security/reentrancy-guard.html"><strong aria-hidden="true">7.2.</strong> Reentrancy Guard</a></li></ol></li><li class="chapter-item expanded "><a href="../tools.html"><strong aria-hidden="true">8.</strong> Tools</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tools/erc165.html"><strong aria-hidden="true">8.1.</strong> ERC165</a></li></ol></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Documentation of Metis</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="erc1155"><a class="header" href="#erc1155">ERC1155</a></h1>
+<p>Details of ERC1155 can be found in <a href="https://eips.ethereum.org/EIPS/eip-1155">ERC1155</a>.</p>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<p>To make a new erc1155-like token, we should import erc1155 at first:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span>#![cfg_attr(not(feature = &quot;std&quot;), no_std)]
+
+<span class="boring">fn main() {
+</span>#[metis_lang::contract]
+pub mod contract {
+    pub use erc1155::{
+        Error,
+        Result,
+        TokenId,
+    };
+    use metis_erc1155 as erc1155;
+    use metis_lang::{
+        import,
+        metis,
+    };
+
+    #[ink(storage)]
+    #[import(erc1155)]
+    pub struct Erc1155 {
+        erc1155: erc1155::Data&lt;Erc1155&gt;,
+    }
+
+    impl erc1155::Impl&lt;Erc1155&gt; for Erc1155 {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Then add the event for erc1155:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when `value` tokens of token type `id` are transferred from `from` to `to` by `operator`.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct TransferSingle {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: Option&lt;AccountId&gt;,
+        #[ink(topic)]
+        pub to: Option&lt;AccountId&gt;,
+        pub id: TokenId,
+        pub value: Balance,
+    }
+
+    /// Equivalent to multiple `TransferSingle` events, where `operator`, `from` and `to` are the same for all
+    /// transfers.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct TransferBatch {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: Option&lt;AccountId&gt;,
+        #[ink(topic)]
+        pub to: Option&lt;AccountId&gt;,
+        pub id: Vec&lt;TokenId&gt;,
+        pub value: Vec&lt;Balance&gt;,
+    }
+
+    /// Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct ApprovalForAll {
+        #[ink(topic)]
+        pub owner: AccountId,
+        #[ink(topic)]
+        pub operator: AccountId,
+        pub approved: bool,
+    }
+
+    /// Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
+    ///
+    /// If an `URI` event was emitted for `id`, the standard
+    /// https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[guarantees] that `value` will equal the value
+    /// returned by `uri`.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct Url {
+        pub value: String,
+        #[ink(topic)]
+        pub id: TokenId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>impl the constructor for contract:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    impl Erc1155 {
+        #[ink(constructor)]
+        pub fn new(url: String) -&gt; Self {
+            let mut instance = Self {
+                erc1155: erc1155::Data::new(),
+            };
+
+            erc1155::Impl::init(&amp;mut instance, url);
+            instance
+        }
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>Then implement the messages for contract:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    impl Erc1155 {
+        /// Returns the URI for token type `id`.
+        ///
+        /// This implementation returns the same URI for *all* token types. It relies
+        /// on the token type ID substitution mechanism
+        /// https://eips.ethereum.org/EIPS/eip-1155#metadata[defined in the EIP].
+        ///
+        /// Clients calling this function must replace the `\{id\}` substring with the
+        /// actual token type ID.
+        #[ink(message)]
+        pub fn url(&amp;self, id: TokenId) -&gt; String {
+            erc1155::Impl::url(self, id)
+        }
+
+        /// Returns the amount of tokens of token type `id` owned by `account`.
+        ///
+        /// Requirements:
+        ///
+        /// - `account` cannot be the zero address.
+        #[ink(message)]
+        pub fn balance_of(&amp;self, account: &amp;AccountId, id: &amp;TokenId) -&gt; Balance {
+            erc1155::Impl::balance_of(self, account, id)
+        }
+
+        /// Batched version of balance_of
+        ///
+        /// Requirements:
+        ///
+        /// - `accounts` and `ids` must have the same length.
+        #[ink(message)]
+        pub fn balance_of_batch(
+            &amp;self,
+            accounts: Vec&lt;AccountId&gt;,
+            ids: Vec&lt;TokenId&gt;,
+        ) -&gt; Vec&lt;Balance&gt; {
+            erc1155::Impl::balance_of_batch(self, accounts, ids)
+        }
+
+        /// Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
+        /// 
+        /// Emits an `ApprovalForAll` event.
+        /// 
+        /// Requirements:
+        /// 
+        /// - `operator` cannot be the caller.
+        #[ink(message)]
+        pub fn set_approval_for_all(&amp;mut self, operator: AccountId, approved: bool) {
+            erc1155::Impl::set_approval_for_all(self, operator, approved)
+        }
+
+        /// Returns true if `operator` is approved to transfer ``account``'s tokens.
+        /// 
+        /// See `set_approval_for_all`.
+        #[ink(message)]
+        pub fn is_approved_for_all(
+            &amp;self,
+            account: &amp;AccountId,
+            operator: &amp;AccountId,
+        ) -&gt; bool {
+            erc1155::Impl::is_approved_for_all(self, account, operator)
+        }
+
+        /// Transfers `amount` tokens of token type `id` from `from` to `to`.
+        ///
+        /// Emits a `TransferSingle` event.
+        ///
+        /// Requirements:
+        ///
+        /// - `to` cannot be the zero address.
+        /// - If the caller is not `from`, it must be have been approved to spend ``from``'s tokens via `set_approval_for_all`.
+        /// - `from` must have a balance of tokens of type `id` of at least `amount`.
+        /// - If `to` refers to a smart contract, it must implement `on_erc1155_received` and return the
+        ///   acceptance magic value.
+        #[ink(message)]
+        pub fn safe_transfer_from(
+            &amp;mut self,
+            from: AccountId,
+            to: AccountId,
+            id: TokenId,
+            amount: Balance,
+            data: Vec&lt;u8&gt;,
+        ) -&gt; Result&lt;()&gt; {
+            erc1155::Impl::safe_transfer_from(self, from, to, id, amount, data)
+        }
+
+        /// Batched version of the `safe_transfer_from`
+        ///
+        /// Emits a `TransferBatch` event.
+        ///
+        /// Requirements:
+        ///
+        /// - `ids` and `amounts` must have the same length.
+        /// - If `to` refers to a smart contract, it must implement `on_erc1155_batch_received` and return the
+        ///   acceptance magic value.
+        #[ink(message)]
+        pub fn safe_batch_transfer_from(
+            &amp;mut self,
+            from: AccountId,
+            to: AccountId,
+            ids: Vec&lt;TokenId&gt;,
+            amounts: Vec&lt;Balance&gt;,
+            data: Vec&lt;u8&gt;,
+        ) -&gt; Result&lt;()&gt; {
+            erc1155::Impl::safe_batch_transfer_from(self, from, to, ids, amounts, data)
+        }
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>In the end, we can add some other messages.</p>
+<h2 id="messages-for-txs"><a class="header" href="#messages-for-txs">Messages for Txs</a></h2>
+<h3 id="set_approval_for_all"><a class="header" href="#set_approval_for_all">set_approval_for_all</a></h3>
+<p>Grants or revokes permission to <code>operator</code> to transfer the caller's tokens, according to <code>approved</code>,</p>
+<p>Emits an <code>ApprovalForAll</code> event.</p>
+<p>Requirements:</p>
+<ul>
+<li><code>operator</code> cannot be the caller.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
+    /// 
+    /// Emits an `ApprovalForAll` event.
+    /// 
+    /// Requirements:
+    /// 
+    /// - `operator` cannot be the caller.
+    fn set_approval_for_all(&amp;mut self, operator: E::AccountId, approved: bool) {
+        let caller = Self::caller();
+
+        assert!(
+            caller != operator,
+            &quot;ERC1155: setting approval status for self&quot;
+        );
+
+        self.get_mut()
+            .set_approval_for_all(caller.clone(), operator.clone(), approved);
+        self.emit_event_approval_for_all(caller, operator, approved);
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="safe_transfer_from"><a class="header" href="#safe_transfer_from">safe_transfer_from</a></h3>
+<p>Transfers <code>amount</code> tokens of token type <code>id</code> from <code>from</code> to <code>to</code>.</p>
+<p>Emits a <code>TransferSingle</code> event.</p>
+<p>Requirements:</p>
+<ul>
+<li><code>to</code> cannot be the zero address.</li>
+<li>If the caller is not <code>from</code>, it must be have been approved to spend <code>from</code>'s tokens via <code>set_approval_for_all</code>.</li>
+<li><code>from</code> must have a balance of tokens of type <code>id</code> of at least <code>amount</code>.</li>
+<li>If <code>to</code> refers to a smart contract, it must implement <code>on_erc1155_received</code> and return the acceptance magic value.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Transfers `amount` tokens of token type `id` from `from` to `to`.
+    ///
+    /// Emits a `TransferSingle` event.
+    ///
+    /// Requirements:
+    ///
+    /// - `to` cannot be the zero address.
+    /// - If the caller is not `from`, it must be have been approved to spend ``from``'s tokens via `set_approval_for_all`.
+    /// - `from` must have a balance of tokens of type `id` of at least `amount`.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_received` and return the
+    ///   acceptance magic value.
+    fn safe_transfer_from(
+        &amp;mut self,
+        from: E::AccountId,
+        to: E::AccountId,
+        id: TokenId,
+        amount: E::Balance,
+        data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        let caller = Self::caller();
+        assert!(
+            from == caller || self.is_approved_for_all(&amp;from, &amp;caller),
+            &quot;ERC1155: caller is not owner nor approved&quot;
+        );
+
+        self._safe_transfer_from(from, to, id, amount, data)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="safe_batch_transfer_from"><a class="header" href="#safe_batch_transfer_from">safe_batch_transfer_from</a></h3>
+<p>Batched version of the <code>safe_transfer_from</code></p>
+<p>Emits a <code>TransferBatch</code> event.</p>
+<p>Requirements:</p>
+<ul>
+<li><code>ids</code> and <code>amounts</code> must have the same length.</li>
+<li>If <code>to</code> refers to a smart contract, it must implement <code>on_erc1155_batch_received</code> and return the acceptance magic value.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Batched version of the `safe_transfer_from`
+    ///
+    /// Emits a `TransferBatch` event.
+    ///
+    /// Requirements:
+    ///
+    /// - `ids` and `amounts` must have the same length.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_batch_received` and return the
+    ///   acceptance magic value.
+    fn safe_batch_transfer_from(
+        &amp;mut self,
+        from: E::AccountId,
+        to: E::AccountId,
+        id: Vec&lt;TokenId&gt;,
+        amount: Vec&lt;E::Balance&gt;,
+        data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        let caller = Self::caller();
+        assert!(
+            from == caller || self.is_approved_for_all(&amp;from, &amp;caller),
+            &quot;ERC1155: transfer caller is not owner nor approved&quot;
+        );
+
+        self._safe_batch_transfer_from(from, to, id, amount, data)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="message-for-querys"><a class="header" href="#message-for-querys">Message for Querys</a></h2>
+<h3 id="url"><a class="header" href="#url">url</a></h3>
+<p>Returns the URI for token type <code>id</code>.</p>
+<p>This implementation returns the same URI for <em>all</em> token types. It relies on the token type ID substitution mechanism
+<a href="https://eips.ethereum.org/EIPS/eip-1155#metadata">defined in the EIP</a>.</p>
+<p>Clients calling this function must replace the <code>\{id\}</code> substring with the actual token type ID.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the URI for token type `id`.
+    ///
+    /// This implementation returns the same URI for *all* token types. It relies
+    /// on the token type ID substitution mechanism
+    /// https://eips.ethereum.org/EIPS/eip-1155#metadata[defined in the EIP].
+    ///
+    /// Clients calling this function must replace the `\{id\}` substring with the
+    /// actual token type ID.
+    fn url(&amp;self, _id: TokenId) -&gt; String {
+        self.get().get_url()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="balance_of"><a class="header" href="#balance_of">balance_of</a></h3>
+<p>Returns the amount of tokens of token type <code>id</code> owned by <code>account</code>.</p>
+<p>Requirements:</p>
+<ul>
+<li><code>account</code> cannot be the zero address.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the amount of tokens of token type `id` owned by `account`.
+    ///
+    /// Requirements:
+    ///
+    /// - `account` cannot be the zero address.
+    fn balance_of(&amp;self, account: &amp;E::AccountId, id: &amp;TokenId) -&gt; E::Balance {
+        assert!(
+            *account != E::AccountId::default(),
+            &quot;ERC1155: balance query for the zero address&quot;
+        );
+
+        self.get().balance_of(id, account)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="balance_of_batch"><a class="header" href="#balance_of_batch">balance_of_batch</a></h3>
+<p>Batched version of balance_of</p>
+<p>Requirements:</p>
+<ul>
+<li><code>accounts</code> and <code>ids</code> must have the same length.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Batched version of balance_of
+    ///
+    /// Requirements:
+    ///
+    /// - `accounts` and `ids` must have the same length.
+    fn balance_of_batch(
+        &amp;self,
+        accounts: Vec&lt;E::AccountId&gt;,
+        ids: Vec&lt;TokenId&gt;,
+    ) -&gt; Vec&lt;E::Balance&gt; {
+        assert!(
+            accounts.len() == ids.len(),
+            &quot;ERC1155: accounts and ids length mismatch&quot;
+        );
+
+        (0..accounts.len())
+            .collect::&lt;Vec&lt;_&gt;&gt;()
+            .iter()
+            .map(|idx| {
+                self.balance_of(accounts.get(*idx).unwrap(), ids.get(*idx).unwrap())
+            })
+            .collect()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="is_approved_for_all"><a class="header" href="#is_approved_for_all">is_approved_for_all</a></h3>
+<p>Returns true if <code>operator</code> is approved to transfer <code>account</code>'s tokens.</p>
+<p>See <code>set_approval_for_all</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns true if `operator` is approved to transfer ``account``'s tokens.
+    /// 
+    /// See `set_approval_for_all`.
+    fn is_approved_for_all(
+        &amp;self,
+        account: &amp;E::AccountId,
+        operator: &amp;E::AccountId,
+    ) -&gt; bool {
+        self.get().is_approved_for_all(account, operator)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="apis"><a class="header" href="#apis">APIs</a></h2>
+<h3 id="_mint"><a class="header" href="#_mint">_mint</a></h3>
+<p>Creates <code>amount</code> tokens of token type <code>id</code>, and assigns them to <code>account</code>.</p>
+<p>Emits a <code>TransferSingle</code> event.</p>
+<p>Requirements:</p>
+<ul>
+<li><code>account</code> cannot be the zero address.</li>
+<li>If <code>account</code> refers to a smart contract, it must implement <code>on_erc1155_received</code> and return the acceptance magic value.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Creates `amount` tokens of token type `id`, and assigns them to `account`.
+    ///
+    /// Emits a `TransferSingle` event.
+    ///
+    /// Requirements:
+    ///
+    /// - `account` cannot be the zero address.
+    /// - If `account` refers to a smart contract, it must implement `on_erc1155_received` and return the
+    ///   acceptance magic value.
+    fn _mint(
+        &amp;mut self,
+        account: E::AccountId,
+        id: TokenId,
+        amount: E::Balance,
+        data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        if account == E::AccountId::default() {
+            return Err(Error::AccountIsZero)
+        }
+
+        let operator = Self::caller();
+
+        self._before_token_transfer(
+            &amp;operator,
+            &amp;None,
+            &amp;Some(&amp;account),
+            &amp;vec![id],
+            &amp;vec![amount],
+            &amp;data,
+        )?;
+
+        self.get_mut().add_balance(&amp;account, &amp;id, amount);
+        self._do_safe_transfer_acceptance_check(
+            &amp;operator, &amp;None, &amp;account, &amp;id, &amp;amount, &amp;data,
+        );
+
+        self.emit_event_transfer_single(operator, None, Some(account), id, amount);
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="_mint_batch"><a class="header" href="#_mint_batch">_mint_batch</a></h3>
+<p>Batched version of <code>_mint</code>.</p>
+<p>Requirements:</p>
+<ul>
+<li><code>ids</code> and <code>amounts</code> must have the same length.</li>
+<li>If <code>to</code> refers to a smart contract, it must implement <code>on_erc1155_batch_received</code> and return the acceptance magic value.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Batched version of `_mint`.
+    ///
+    /// Requirements:
+    ///
+    /// - `ids` and `amounts` must have the same length.
+    /// - If `to` refers to a smart contract, it must implement `on_erc1155_batch_received` and return the
+    ///   acceptance magic value.
+    fn _mint_batch(
+        &amp;mut self,
+        to: E::AccountId,
+        ids: Vec&lt;TokenId&gt;,
+        amounts: Vec&lt;E::Balance&gt;,
+        data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        assert!(
+            ids.len() == amounts.len(),
+            &quot;ERC1155: ids and amounts length mismatch&quot;
+        );
+
+        if to == E::AccountId::default() {
+            return Err(Error::AccountIsZero)
+        }
+
+        let operator = Self::caller();
+
+        self._before_token_transfer(&amp;operator, &amp;None, &amp;Some(&amp;to), &amp;ids, &amp;amounts, &amp;data)?;
+
+        for i in 0..ids.len() {
+            let id = ids[i];
+            let amount = amounts[i];
+
+            self.get_mut().add_balance(&amp;to, &amp;id, amount);
+        }
+
+        self._do_safe_batch_transfer_acceptance_check(
+            &amp;operator, &amp;None, &amp;to, &amp;ids, &amp;amounts, &amp;data,
+        );
+        self.emit_event_transfer_batch(operator, None, Some(to), ids, amounts);
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="_burn"><a class="header" href="#_burn">_burn</a></h3>
+<p>Destroys <code>amount</code> tokens of token type <code>id</code> from <code>account</code></p>
+<p>Requirements:</p>
+<ul>
+<li><code>account</code> cannot be the zero address.</li>
+<li><code>account</code> must have at least <code>amount</code> tokens of token type <code>id</code>.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Destroys `amount` tokens of token type `id` from `account`
+    ///
+    /// Requirements:
+    ///
+    /// - `account` cannot be the zero address.
+    /// - `account` must have at least `amount` tokens of token type `id`.
+    fn _burn(
+        &amp;mut self,
+        account: E::AccountId,
+        id: TokenId,
+        amount: E::Balance,
+    ) -&gt; Result&lt;()&gt; {
+        if account == E::AccountId::default() {
+            return Err(Error::AccountIsZero)
+        }
+
+        let operator = Self::caller();
+
+        self._before_token_transfer(
+            &amp;operator,
+            &amp;Some(&amp;account),
+            &amp;None,
+            &amp;vec![id],
+            &amp;vec![amount],
+            &amp;Vec::&lt;u8&gt;::default(),
+        )?;
+
+        let account_balance = self.get().balance_of(&amp;id, &amp;account);
+        assert!(
+            account_balance &gt;= amount,
+            &quot;ERC1155: burn amount exceeds balance&quot;
+        );
+        self.get_mut()
+            .set_balance(&amp;account, &amp;id, account_balance - amount);
+
+        self.emit_event_transfer_single(operator, Some(account), None, id, amount);
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="_burn_batch"><a class="header" href="#_burn_batch">_burn_batch</a></h3>
+<p>Batched version of <code>_burn</code>.</p>
+<p>Requirements:</p>
+<ul>
+<li><code>ids</code> and <code>amounts</code> must have the same length.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Batched version of `_burn`.
+    ///
+    /// Requirements:
+    ///
+    /// - `ids` and `amounts` must have the same length.
+    fn _burn_batch(
+        &amp;mut self,
+        account: E::AccountId,
+        ids: Vec&lt;TokenId&gt;,
+        amounts: Vec&lt;E::Balance&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        assert!(
+            ids.len() == amounts.len(),
+            &quot;ERC1155: ids and amounts length mismatch&quot;
+        );
+
+        if account == E::AccountId::default() {
+            return Err(Error::AccountIsZero)
+        }
+
+        let operator = Self::caller();
+
+        self._before_token_transfer(
+            &amp;operator,
+            &amp;Some(&amp;account),
+            &amp;None,
+            &amp;ids,
+            &amp;amounts,
+            &amp;Vec::&lt;u8&gt;::default(),
+        )?;
+
+        for i in 0..ids.len() {
+            let id = ids[i];
+            let amount = amounts[i];
+
+            let account_balance = self.get().balance_of(&amp;id, &amp;account);
+            assert!(
+                account_balance &gt;= amount,
+                &quot;ERC1155: burn amount exceeds balance&quot;
+            );
+            self.get_mut()
+                .set_balance(&amp;account, &amp;id, account_balance - amount);
+        }
+
+        self.emit_event_transfer_batch(operator, Some(account), None, ids, amounts);
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="hooks"><a class="header" href="#hooks">Hooks</a></h2>
+<h3 id="_before_token_transfer"><a class="header" href="#_before_token_transfer">_before_token_transfer</a></h3>
+<p>Hook that is called before any token transfer. This includes minting
+and burning, as well as batched variants.</p>
+<p>The same hook is called on both single and batched variants. For single
+transfers, the length of the <code>id</code> and <code>amount</code> arrays will be 1.</p>
+<p>Calling conditions (for each <code>id</code> and <code>amount</code> pair):</p>
+<ul>
+<li>When <code>from</code> and <code>to</code> are both non-zero, <code>amount</code> of <code>from</code>'s tokens of token type <code>id</code> will be  transferred to <code>to</code>.</li>
+<li>When <code>from</code> is zero, <code>amount</code> tokens of token type <code>id</code> will be minted for <code>to</code>.</li>
+<li>when <code>to</code> is zero, <code>amount</code> of <code>from</code>'s tokens of token type <code>id</code> will be burned.</li>
+<li><code>from</code> and <code>to</code> are never both zero.</li>
+<li><code>ids</code> and <code>amounts</code> have the same, non-zero length.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Hook that is called before any token transfer. This includes minting
+    /// and burning, as well as batched variants.
+    ///
+    /// The same hook is called on both single and batched variants. For single
+    /// transfers, the length of the `id` and `amount` arrays will be 1.
+    ///
+    /// Calling conditions (for each `id` and `amount` pair):
+    ///
+    /// - When `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+    /// of token type `id` will be  transferred to `to`.
+    /// - When `from` is zero, `amount` tokens of token type `id` will be minted
+    /// for `to`.
+    /// - when `to` is zero, `amount` of ``from``'s tokens of token type `id`
+    /// will be burned.
+    /// - `from` and `to` are never both zero.
+    /// - `ids` and `amounts` have the same, non-zero length.
+    fn _before_token_transfer(
+        &amp;mut self,
+        _operator: &amp;E::AccountId,
+        _from: &amp;Option&lt;&amp;E::AccountId&gt;,
+        _to: &amp;Option&lt;&amp;E::AccountId&gt;,
+        _ids: &amp;Vec&lt;TokenId&gt;,
+        _amounts: &amp;Vec&lt;E::Balance&gt;,
+        _data: &amp;Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="events"><a class="header" href="#events">Events</a></h2>
+<h3 id="transfersingle"><a class="header" href="#transfersingle">TransferSingle</a></h3>
+<p>Emitted when <code>value</code> tokens of token type <code>id</code> are transferred
+from <code>from</code> to <code>to</code> by <code>operator</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when `value` tokens of token type `id` are transferred
+    /// from `from` to `to` by `operator`.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct TransferSingle {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: Option&lt;AccountId&gt;,
+        #[ink(topic)]
+        pub to: Option&lt;AccountId&gt;,
+        pub id: TokenId,
+        pub value: Balance,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="transferbatch"><a class="header" href="#transferbatch">TransferBatch</a></h3>
+<p>Equivalent to multiple <code>TransferSingle</code> events, where <code>operator</code>,
+<code>from</code> and <code>to</code> are the same for all transfers.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Equivalent to multiple `TransferSingle` events, where `operator`,
+    /// `from` and `to` are the same for all transfers.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct TransferBatch {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: Option&lt;AccountId&gt;,
+        #[ink(topic)]
+        pub to: Option&lt;AccountId&gt;,
+        pub id: Vec&lt;TokenId&gt;,
+        pub value: Vec&lt;Balance&gt;,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="approvalforall"><a class="header" href="#approvalforall">ApprovalForAll</a></h3>
+<p>Emitted when <code>owner</code> enables or disables (<code>approved</code>) <code>operator</code> to manage all of its assets.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when `owner` enables or disables (`approved`)
+    /// `operator` to manage all of its assets.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct ApprovalForAll {
+        #[ink(topic)]
+        pub owner: AccountId,
+        #[ink(topic)]
+        pub operator: AccountId,
+        pub approved: bool,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="url-1"><a class="header" href="#url-1">Url</a></h3>
+<p>Emitted when the URI for token type <code>id</code> changes to <code>value</code>, if it is a non-programmatic URI.</p>
+<p>If an <code>URI</code> event was emitted for <code>id</code>, the standard
+<a href="https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions">eip-1155#metadata-extensions</a> that <code>value</code> will equal the value
+returned by <code>uri</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when the URI for token type `id` changes to `value`, if it is a non-programmatic URI.
+    ///
+    /// If an `URI` event was emitted for `id`, the standard
+    /// https://eips.ethereum.org/EIPS/eip-1155#metadata-extensions[guarantees] that `value` will equal the value
+    /// returned by `uri`.
+    #[ink(event)]
+    #[metis(erc1155)]
+    pub struct Url {
+        pub value: String,
+        #[ink(topic)]
+        pub id: TokenId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../tokens/erc777.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../utilities.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../tokens/erc777.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../utilities.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

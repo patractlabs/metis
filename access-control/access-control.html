@@ -1,0 +1,676 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Access Control - The Documentation of Metis</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../favicon.svg">
+                        <link rel="shortcut icon" href="../favicon.png">
+                <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+                <link rel="stylesheet" href="../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../use-component.html"><strong aria-hidden="true">2.</strong> Use Component</a></li><li class="chapter-item expanded "><a href="../access-control.html"><strong aria-hidden="true">3.</strong> Access Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../access-control/ownable.html"><strong aria-hidden="true">3.1.</strong> Ownable</a></li><li class="chapter-item expanded "><a href="../access-control/access-control.html" class="active"><strong aria-hidden="true">3.2.</strong> Access Control</a></li><li class="chapter-item expanded "><a href="../access-control/access-control-enumerable.html"><strong aria-hidden="true">3.3.</strong> Access Control Enumerable</a></li></ol></li><li class="chapter-item expanded "><a href="../governance.html"><strong aria-hidden="true">4.</strong> Governance</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../governance/timelock-controller.html"><strong aria-hidden="true">4.1.</strong> Timelock Controller</a></li></ol></li><li class="chapter-item expanded "><a href="../tokens.html"><strong aria-hidden="true">5.</strong> Tokens</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tokens/erc20.html"><strong aria-hidden="true">5.1.</strong> ERC20</a></li><li class="chapter-item expanded "><a href="../tokens/erc721.html"><strong aria-hidden="true">5.2.</strong> ERC721</a></li><li class="chapter-item expanded "><a href="../tokens/erc777.html"><strong aria-hidden="true">5.3.</strong> ERC777</a></li><li class="chapter-item expanded "><a href="../tokens/erc1155.html"><strong aria-hidden="true">5.4.</strong> ERC1155</a></li></ol></li><li class="chapter-item expanded "><a href="../utilities.html"><strong aria-hidden="true">6.</strong> Utilities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../utilities/escrow.html"><strong aria-hidden="true">6.1.</strong> Escrow</a></li></ol></li><li class="chapter-item expanded "><a href="../security.html"><strong aria-hidden="true">7.</strong> Security</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../security/pausable.html"><strong aria-hidden="true">7.1.</strong> Pausable</a></li><li class="chapter-item expanded "><a href="../security/reentrancy-guard.html"><strong aria-hidden="true">7.2.</strong> Reentrancy Guard</a></li></ol></li><li class="chapter-item expanded "><a href="../tools.html"><strong aria-hidden="true">8.</strong> Tools</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tools/erc165.html"><strong aria-hidden="true">8.1.</strong> ERC165</a></li></ol></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Documentation of Metis</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="access-control"><a class="header" href="#access-control">Access Control</a></h1>
+<p>Contract module that allows children to implement role-based access control mechanisms. This is a lightweight version that doesn't allow enumerating role members except through off-chain means by accessing the contract event logs. Some applications may benefit from on-chain enumerability, for those cases see <code>access-control-eunmerable</code>.</p>
+<p>Roles are referred to by their <code>RoleId</code> which is a 32-bytes. These should be exposed in the external API and be unique. The best way to achieve this is by using hash digests.</p>
+<p>Roles can be used to represent a set of permissions. To restrict access to a function call, use <code>ensure_caller_role</code>:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    // need role
+    #[ink(message)]
+    pub fn func(&amp;mut self) {
+        access_control::Impl::ensure_caller_role(self, ROLE_ID_XXX);
+
+        // other logics
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>Roles can be granted and revoked dynamically via the <code>grant_role</code> and <code>revoke_role</code> functions. Each role has an associated admin role, and only accounts that have a role's admin role can call <code>grant_role</code> and <code>revoke_role</code>.</p>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<p>To use the Access Control Component, First is import the <code>access_control</code>:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span>#![cfg_attr(not(feature = &quot;std&quot;), no_std)]
+
+<span class="boring">fn main() {
+</span>#[metis_lang::contract]
+pub mod example {
+    pub use access_control::{
+        Error,
+        Result,
+        RoleId,
+    };
+    use metis_access_control as access_control;
+    use metis_lang::{
+        import,
+        metis,
+    };
+
+    #[ink(storage)]
+    #[import(access_control)]
+    pub struct Contract {
+        access_control: access_control::Data&lt;Contract&gt;,
+
+        // other modules
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>Define the Event for access control:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when `new_admin_role` is set as ``role``'s
+    /// admin role, replacing `previous_admin_role`
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleAdminChanged {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub previous_admin_role: Option&lt;RoleId&gt;,
+        #[ink(topic)]
+        pub new_admin_role: RoleId,
+    }
+
+    /// Emitted when `account` is granted `role`.
+    ///
+    /// `sender` is the account that originated the contract call,
+    /// an admin role bearer except when using {_setupRole}.
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleGranted {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub account: AccountId,
+        #[ink(topic)]
+        pub sender: AccountId,
+    }
+
+    /// Emitted when `account` is revoked `role`.
+    ///
+    /// `sender` is the account that originated the contract call:
+    ///   - if using `revoke_role`, it is the admin role bearer
+    ///   - if using `renounce_role`, it is the role bearer (i.e. `account`)
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleRevoked {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub account: AccountId,
+        #[ink(topic)]
+        pub sender: AccountId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>Impl the <code>constructor</code> of the contract:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    #[ink(constructor)]
+    pub fn new(
+        fliper: AccountId,
+        setter: AccountId,
+        admin: AccountId,
+    ) -&gt; Self {
+        let mut instance = Self {
+            // Need add access_control module
+            access_control: access_control::Data::new(),
+        };
+
+        // Use the `_setup_role` set the ROLEs
+        access_control::Impl::_setup_role(&amp;mut instance, ROLE_ID_FLIPER, fliper);
+        access_control::Impl::_setup_role(&amp;mut instance, ROLE_ID_SETTER, setter);
+        access_control::Impl::_setup_role(&amp;mut instance, ROLE_ID_ADMIN, admin);
+
+        // Use `_set_role_admin` set the role admin
+        access_control::Impl::_set_role_admin(
+            &amp;mut instance,
+            ROLE_ID_FLIPER,
+            ROLE_ID_ADMIN,
+        );
+
+        // create the default role
+        instance
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<blockquote>
+<p>WARNNING: In metis, access control not have a <code>default admin role</code> which be admin role of all roles, so we need defined the role releations in constructor.</p>
+</blockquote>
+<p>In constructor, we can use <code>_setup_role</code> and <code>_set_role_admin</code> to set the role releations for contract.</p>
+<p>Next, Add the message to control the role releations.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns `true` if `account` has been granted `role`.
+    #[ink(message)]
+    pub fn has_role(&amp;self, role: RoleId, account: AccountId) -&gt; bool {
+        access_control::Impl::has_role(self, role, account)
+    }
+
+    /// @dev Returns the admin role that controls `role`. See {grant_role} and
+    /// {revoke_role}.
+    ///
+    /// To change a role's admin, use {_setRoleAdmin}.
+    #[ink(message)]
+    pub fn get_role_admin(&amp;self, role: RoleId) -&gt; Option&lt;RoleId&gt; {
+        access_control::Impl::get_role_admin(self, role)
+    }
+
+    /// @dev Grants `role` to `account`.
+    ///
+    /// If `account` had not been already granted `role`, emits a {RoleGranted}
+    /// event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must have ``role``'s admin role.
+    #[ink(message)]
+    pub fn grant_role(&amp;mut self, role: RoleId, account: AccountId) {
+        access_control::Impl::grant_role(self, role, account)
+    }
+
+    /// @dev Revokes `role` from `account`.
+    ///
+    /// If `account` had been granted `role`, emits a {RoleRevoked} event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must have ``role``'s admin role.
+    #[ink(message)]
+    pub fn revoke_role(&amp;mut self, role: RoleId, account: AccountId) {
+        access_control::Impl::revoke_role(self, role, account)
+    }
+
+    /// @dev Revokes `role` from the calling account.
+    ///
+    /// Roles are often managed via {grant_role} and {revoke_role}: this function's
+    /// purpose is to provide a mechanism for accounts to lose their privileges
+    /// if they are compromised (such as when a trusted device is misplaced).
+    ///
+    /// If the calling account had been granted `role`, emits a {RoleRevoked}
+    /// event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must be `account`.
+    #[ink(message)]
+    pub fn renounce_role(&amp;mut self, role: RoleId, account: AccountId) {
+        access_control::Impl::renounce_role(self, role, account)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="module"><a class="header" href="#module">Module</a></h2>
+<p>The module contains the <code>roles</code> and <code>admin_roles</code>:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// The Data of access control component
+#[cfg_attr(feature = &quot;std&quot;, derive(::ink_storage::traits::StorageLayout))]
+#[derive(Debug, SpreadLayout)]
+pub struct Data&lt;E&gt;
+where
+    E: Env,
+{
+    /// the account - role relationship map
+    pub roles: StorageHashMap&lt;(RoleId, E::AccountId), ()&gt;,
+
+    /// the admin role of a role
+    pub admin_roles: StorageHashMap&lt;RoleId, RoleId&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="messages-for-txs"><a class="header" href="#messages-for-txs">Messages for Txs</a></h2>
+<h3 id="grant_role"><a class="header" href="#grant_role">grant_role</a></h3>
+<p>Grants <code>role</code> to <code>account</code>. If <code>account</code> had not been already granted <code>role</code>, emits a {RoleGranted}
+event.</p>
+<p>Requirements:</p>
+<ul>
+<li>the caller must have <code>role</code>'s admin role.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// @dev Grants `role` to `account`.
+    ///
+    /// If `account` had not been already granted `role`, emits a {RoleGranted}
+    /// event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must have ``role``'s admin role.
+    fn grant_role(&amp;mut self, role: RoleId, account: E::AccountId) {
+        // check the admin role
+        self.ensure_admin_role(role, Self::caller());
+
+        self._setup_role(role, account);
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="revoke_role"><a class="header" href="#revoke_role">revoke_role</a></h3>
+<p>Revokes <code>role</code> from <code>account</code>. If <code>account</code> had been granted <code>role</code>, emits a {RoleRevoked} event.</p>
+<p>Requirements:</p>
+<ul>
+<li>the caller must have <code>role</code>'s admin role.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// @dev Revokes `role` from `account`.
+    ///
+    /// If `account` had been granted `role`, emits a {RoleRevoked} event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must have ``role``'s admin role.
+    fn revoke_role(&amp;mut self, role: RoleId, account: E::AccountId) {
+        let caller = Self::caller();
+
+        // check the admin role
+        self.ensure_admin_role(role, caller.clone());
+
+        // if has not role
+        self.get_mut()
+            .revoke_role(role, account.clone())
+            .expect(&quot;no has role&quot;);
+
+        // emit if revoke role success
+        self.emit_event_role_revoked(role, account, caller);
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="renounce_role"><a class="header" href="#renounce_role">renounce_role</a></h3>
+<p>Revokes <code>role</code> from the calling account.</p>
+<p>Roles are often managed via <code>grant_role</code> and <code>revoke_role</code>: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced).</p>
+<p>If the calling account had been granted <code>role</code>, emits a <code>RoleRevoked</code> event.</p>
+<p>Requirements:</p>
+<ul>
+<li>the caller must be <code>account</code>.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// @dev Revokes `role` from the calling account.
+    ///
+    /// Roles are often managed via {grant_role} and {revoke_role}: this function's
+    /// purpose is to provide a mechanism for accounts to lose their privileges
+    /// if they are compromised (such as when a trusted device is misplaced).
+    ///
+    /// If the calling account had been granted `role`, emits a {RoleRevoked}
+    /// event.
+    ///
+    /// Requirements:
+    ///
+    /// - the caller must be `account`.
+    fn renounce_role(&amp;mut self, role: RoleId, account: E::AccountId) {
+        let caller = Self::caller();
+
+        // check the caller is account
+        assert!(caller == account, &quot;account not caller&quot;);
+
+        // if has not role
+        self.get_mut()
+            .revoke_role(role, account.clone())
+            .expect(&quot;no has role&quot;);
+
+        // emit if revoke role success
+        self.emit_event_role_revoked(role, account, caller);
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="message-for-querys"><a class="header" href="#message-for-querys">Message for Querys</a></h2>
+<p>Use <code>has_role</code> and <code>get_role_admin</code> can to get the role releations of accounts.</p>
+<h3 id="has_role"><a class="header" href="#has_role">has_role</a></h3>
+<p>Returns <code>true</code> if <code>account</code> has been granted <code>role</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns `true` if `account` has been granted `role`.
+    fn has_role(&amp;self, role: RoleId, account: E::AccountId) -&gt; bool {
+        self.get().has_role(role, account)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="get_role_admin"><a class="header" href="#get_role_admin">get_role_admin</a></h3>
+<p>Returns the admin role that controls <code>role</code>. See {grant_role} and {revoke_role}.</p>
+<p>To change a role's admin, use <code>_set_role_admin</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// @dev Returns the admin role that controls `role`. See {grant_role} and
+    /// {revoke_role}.
+    ///
+    /// To change a role's admin, use {_set_role_admin}.
+    fn get_role_admin(&amp;self, role: RoleId) -&gt; Option&lt;RoleId&gt; {
+        self.get().admin_roles.get(&amp;role).copied()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="apis"><a class="header" href="#apis">APIs</a></h2>
+<p>Use Apis to check and ensure account has role.</p>
+<h3 id="ensure_role"><a class="header" href="#ensure_role">ensure_role</a></h3>
+<p>Panic if <code>owner</code> is not an owner.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Panic if `owner` is not an owner
+    fn ensure_role(&amp;self, role: RoleId, account: E::AccountId) {
+        assert!(self.has_role(role, account), &quot;role missing&quot;);
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="ensure_caller_role"><a class="header" href="#ensure_caller_role">ensure_caller_role</a></h3>
+<p>Panic if caller is not granted role.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Panic if caller is not granted role
+    fn ensure_caller_role(&amp;self, role: RoleId) {
+        self.ensure_role(role, Self::caller());
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="ensure_admin_role"><a class="header" href="#ensure_admin_role">ensure_admin_role</a></h3>
+<p>Panic error if <code>account</code> is missing the admin role of the <code>role</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Panic error if `account` is missing the admin role of the `role`.
+    fn ensure_admin_role(&amp;self, role: RoleId, account: E::AccountId) {
+        match self.get_role_admin(role) {
+            Some(admin_role) =&gt; self.ensure_role(admin_role, account),
+            None =&gt; panic!(&quot;admin role missing&quot;),
+        }
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="check_role"><a class="header" href="#check_role">check_role</a></h3>
+<p>Return error if <code>account</code> is missing <code>role</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Return error if `account` is missing `role`.
+    fn check_role(&amp;self, role: RoleId, account: E::AccountId) -&gt; Result&lt;()&gt; {
+        if self.has_role(role, account) {
+            Ok(())
+        } else {
+            Err(Error::RoleNotFound)
+        }
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="check_admin_role"><a class="header" href="#check_admin_role">check_admin_role</a></h3>
+<p>Return error if <code>account</code> is missing the admin role of the <code>role</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Return error if `account` is missing the admin role of the `role`.
+    fn check_admin_role(&amp;self, role: RoleId, account: E::AccountId) -&gt; Result&lt;()&gt; {
+        match self.get_role_admin(role) {
+            Some(admin_role) =&gt; self.check_role(admin_role, account),
+            None =&gt; Err(Error::AdminRoleNotFound),
+        }
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="events"><a class="header" href="#events">Events</a></h2>
+<h3 id="roleadminchanged"><a class="header" href="#roleadminchanged">RoleAdminChanged</a></h3>
+<p>Emitted when <code>new_admin_role</code> is set as <code>role</code>'s admin role, replacing <code>previous_admin_role</code></p>
+<ul>
+<li>will emit by call <code>_set_role_admin</code>.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when `new_admin_role` is set as ``role``'s
+    /// admin role, replacing `previous_admin_role`
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleAdminChanged {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub previous_admin_role: Option&lt;RoleId&gt;,
+        #[ink(topic)]
+        pub new_admin_role: RoleId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="rolegranted"><a class="header" href="#rolegranted">RoleGranted</a></h3>
+<p>Emitted when <code>account</code> is granted <code>role</code>.</p>
+<ul>
+<li>will emit by call <code>_setup_role</code>.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when `account` is granted `role`.
+    ///
+    /// `sender` is the account that originated the contract call,
+    /// an admin role bearer except when using {_setup_role}.
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleGranted {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub account: AccountId,
+        #[ink(topic)]
+        pub sender: AccountId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="rolerevoked"><a class="header" href="#rolerevoked">RoleRevoked</a></h3>
+<p>Emitted when <code>account</code> is revoked <code>role</code>.</p>
+<p><code>sender</code> is the account that originated the contract call:</p>
+<ul>
+<li>if using <code>revoke_role</code>, it is the admin role bearer</li>
+<li>if using <code>renounce_role</code>, it is the role bearer (i.e. <code>account</code>)</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Emitted when `account` is revoked `role`.
+    ///
+    /// `sender` is the account that originated the contract call:
+    ///   - if using `revoke_role`, it is the admin role bearer
+    ///   - if using `renounce_role`, it is the role bearer (i.e. `account`)
+    #[ink(event)]
+    #[metis(access_control)]
+    pub struct RoleRevoked {
+        #[ink(topic)]
+        pub role: RoleId,
+        #[ink(topic)]
+        pub account: AccountId,
+        #[ink(topic)]
+        pub sender: AccountId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../access-control/ownable.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../access-control/access-control-enumerable.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../access-control/ownable.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../access-control/access-control-enumerable.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

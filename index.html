@@ -1,0 +1,402 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Overview - The Documentation of Metis</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="favicon.svg">
+                        <link rel="shortcut icon" href="favicon.png">
+                <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+                <link rel="stylesheet" href="css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="overview.html"><strong aria-hidden="true">1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="use-component.html"><strong aria-hidden="true">2.</strong> Use Component</a></li><li class="chapter-item expanded "><a href="access-control.html"><strong aria-hidden="true">3.</strong> Access Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="access-control/ownable.html"><strong aria-hidden="true">3.1.</strong> Ownable</a></li><li class="chapter-item expanded "><a href="access-control/access-control.html"><strong aria-hidden="true">3.2.</strong> Access Control</a></li><li class="chapter-item expanded "><a href="access-control/access-control-enumerable.html"><strong aria-hidden="true">3.3.</strong> Access Control Enumerable</a></li></ol></li><li class="chapter-item expanded "><a href="governance.html"><strong aria-hidden="true">4.</strong> Governance</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="governance/timelock-controller.html"><strong aria-hidden="true">4.1.</strong> Timelock Controller</a></li></ol></li><li class="chapter-item expanded "><a href="tokens.html"><strong aria-hidden="true">5.</strong> Tokens</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="tokens/erc20.html"><strong aria-hidden="true">5.1.</strong> ERC20</a></li><li class="chapter-item expanded "><a href="tokens/erc721.html"><strong aria-hidden="true">5.2.</strong> ERC721</a></li><li class="chapter-item expanded "><a href="tokens/erc777.html"><strong aria-hidden="true">5.3.</strong> ERC777</a></li><li class="chapter-item expanded "><a href="tokens/erc1155.html"><strong aria-hidden="true">5.4.</strong> ERC1155</a></li></ol></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">6.</strong> Utilities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="utilities/escrow.html"><strong aria-hidden="true">6.1.</strong> Escrow</a></li></ol></li><li class="chapter-item expanded "><a href="security.html"><strong aria-hidden="true">7.</strong> Security</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="security/pausable.html"><strong aria-hidden="true">7.1.</strong> Pausable</a></li><li class="chapter-item expanded "><a href="security/reentrancy-guard.html"><strong aria-hidden="true">7.2.</strong> Reentrancy Guard</a></li></ol></li><li class="chapter-item expanded "><a href="tools.html"><strong aria-hidden="true">8.</strong> Tools</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="tools/erc165.html"><strong aria-hidden="true">8.1.</strong> ERC165</a></li></ol></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Documentation of Metis</h1>
+
+                    <div class="right-buttons">
+                                                <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="overview"><a class="header" href="#overview">Overview</a></h1>
+<p><a href="https://github.com/patractlabs/metis">Metis</a> will be the Wasm contract standard library developed by Patract Labs. Patract Labs will work with community forces to formulate various Wasm contract standards, develop corresponding implementations of ink! and Ask! versions, and conduct audits by professional institutions.</p>
+<h2 id="0-motivation"><a class="header" href="#0-motivation">0. Motivation</a></h2>
+<p>We believe that in the Wasm contract ecosystem, a development library similar to Openzeppelin-contracts is very necessary. This is Metis. For the sake of simplicity and readability, the patterns and meta-language provided by this library should be as consistent with Openzeppelin-contracts as possible, so as to reduce the burden on developers and effectively absorb the experience accumulated in the Solidity ecosystem.</p>
+<p>But you need to realize that the Wasm contract development based on ink! and Ask! is very different from the EVM contract development based on Solidity. Wasm's mature system support allows developers to use a variety of different languages and tools to develop smart contracts. Based on these mature or rapid iteration platforms, developers can enjoy a large number of underlying facilities support and development experience accumulation, but different languages and tools often have different considerations and trade-offs. This means that developers will use completely different codes to express the same mechanism and design, which will bring huge communication costs and mental burdens to the community.</p>
+<p>Faced with such problems, we need to summarize and accumulate the implementation model in the development of smart contracts. This idea was introduced in the book &quot;Implementation Patterns&quot; by Kent Beck. The purpose of summarizing the implementation mode is to clearly and accurately express the developer's intentions and ideas through these clear patterns, so that &quot;code that others can understand&quot; can be implemented. In contract development, this idea is very important.</p>
+<p>From Openzeppelin-contracts, we can see that it summarizes several implementation models in the development of smart contracts, such as the &quot;contract expansion model&quot; based on the Solidity inheritance grammar. These implementation models are valuable experience accumulated in the Solidity ecology. Of course, different languages have different ways of practicing these modes. Metis will implement these modes and provide corresponding support on different platforms. For example, in Rust, it is obvious that you cannot directly use inheritance to implement contract expansion. For this, Metis will provide code implementation examples and provide a series of help libraries to reduce the developer's mental cost.</p>
+<p>Metis will be more than just a Wasm contract standard library. We hope that through the practice of Metis, we can fully inherit and absorb previous contract development experience while exploring the best practices of Wasm contract development.</p>
+<h2 id="1-problem"><a class="header" href="#1-problem">1. Problem</a></h2>
+<p>At present, contract-based developers mainly face the following problems:</p>
+<ul>
+<li>Lack of reliable implementation of common contracts (such as ERC20)</li>
+<li>It is difficult to achieve contract combination and expansion similar to the Solidity inheritance mechanism</li>
+<li>Lack of a series of reliable public components to implement contracts</li>
+<li>Lack of experience accumulation and model summary based on ink! development contracts</li>
+</ul>
+<p>The above problems severely limit the current ink!-based contract development ecology. Metis will solve these problems while avoiding the existing problems in Solidity.</p>
+<h2 id="2-contract-standard-library"><a class="header" href="#2-contract-standard-library">2. Contract Standard Library</a></h2>
+<p>Metis will implement a series of common components, similar to the Openzeppelin-contracts development library. These components will be thoroughly tested and code audited. These components will be as consistent as possible with Openzeppelin-contracts, which can reduce the burden on developers and effectively absorb the experience accumulated in the Solidity ecosystem.</p>
+<p>Metis will include the following components:</p>
+<ul>
+<li>Openzeppelin-contracts-like components, including basic Access and Security components, as well as Token and Governance components</li>
+<li>Component developed for ink! contracts, wasm-based contracts can support better abstraction mechanisms, and we can implement more complex and practical components</li>
+<li>Summarizing abstract components from mature contract projects, metis will absorb the experience and accumulation of the community, including both the mature Solidity ecology and emerging blockchain contract projects.</li>
+<li>The expansion of ink! contracts, including basic data structures for different scenarios, etc.</li>
+</ul>
+<p>In the previous version of Metis, we will first implement Openzeppelin-contracts-like components for developers to use. These components include:</p>
+<ul>
+<li>Token: ERC20, ERC721, ERC777, ERC1155 and the expansion contract of the above Token contract</li>
+<li>Access: Ownable, AccessControl, TimelockController</li>
+<li>Security: PullPayment, ReentrancyGuard, Pausable</li>
+</ul>
+<h2 id="3-ink-component"><a class="header" href="#3-ink-component">3. ink! component</a></h2>
+<p>Most of Metis development libraries are composed of contract components. In Solidity, the introduction of contract components can be implemented based on inheritance. Generally, the contract components will include the following parts:</p>
+<ul>
+<li>Component Storage: The storage state related to the logic of the component itself, these states do not need to be exposed to the outside</li>
+<li>Component Message: The externally-facing Message of the component</li>
+<li>Component Event: The event that the component's own logic will  emit</li>
+<li>Component internal interface: an interface for other logic in the contract to call</li>
+</ul>
+<p>For example, common Ownable contracts:</p>
+<pre><code class="language-Solidity">abstract contract Ownable is Context {
+    // Component Storage
+    address private _owner;
+
+    // Component Event
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
+    
+    // Component internal interface
+    modifier onlyOwner() {
+        ...
+    }
+
+    // Component Event
+    function renounceOwnership() public virtual onlyOwner {
+        ...
+    }
+
+    ...
+}
+</code></pre>
+<p>If a contract needs to be Ownable, just inherit the contract:</p>
+<pre><code class="language-Solidity">contract Escrow is Ownable {
+...
+}
+</code></pre>
+<p>Similarly, other components can also have Ownable through inheritance:</p>
+<pre><code class="language-Solidity">contract Pausable is Ownable {
+  ...
+  function unpause() public onlyOwner whenPaused {
+      ...
+  }
+}
+</code></pre>
+<p>The intention of inheritance here is actually composition rather than an <code>is-a</code> relationship. Although excessive use of inheritance in Solidity will cause many problems, inheritance for specific intentions is still an important way to achieve it.</p>
+<p>In contract development based on ink!, through metis, we can also achieve the same motivation based on generics and traits:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>...
+
+#[metis::contract] // metis contract macro, will use ink_lang::contract auto
+mod flipper {
+    ...
+
+    #[ink(storage)]
+    #[import(ownable)] // flipper import the ownable
+    pub struct Flipper {
+        ownable: ownable::Data&lt;Flipper&gt;, // data by ownable
+
+        value: bool,
+    }
+
+    #[ink(event)]
+    #[metis(ownable)] // event in ink! will refactor
+    pub struct OwnershipTransferred {
+        //...
+    }
+
+    impl Flipper {
+        //...
+
+        #[ink(message)]
+        pub fn flip(&amp;mut self) {
+            // check owner
+            ownable::Impl::ensure_caller_is_owner(self);
+
+            self.value = !self.value;
+        }
+
+        //...
+
+        #[ink(message)]
+        pub fn renounce_ownership(&amp;mut self) {
+            ownable::Impl::renounce_ownership(self) // owner message
+        }
+
+        //...
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Metis assists developers to achieve the same function through a series of helper macros. In order to improve the auditability of the contract, here we hope that users clearly implement storage, event and message declarations.</p>
+<p>At the same time, metis has improved the implementation of components:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//...
+
+// Storage
+#[metis::component::storage]
+pub struct Data&lt;E&gt;
+where
+    E: Env,
+{
+    owner: Lazy&lt;Option&lt;E::AccountId&gt;&gt;,
+}
+
+// Event trait
+pub trait EventEmit&lt;E: Env&gt;: EnvAccess&lt;E&gt; {
+    //...
+}
+
+// Impl trait
+pub trait Impl&lt;E: Env&gt;: Storage&lt;E&gt; + EventEmit&lt;E&gt; {
+    // logics
+    fn init(&amp;mut self) {
+        self.get_mut().set_ownership(&amp;Some(Self::caller()));
+    }
+
+    fn renounce_ownership(&amp;mut self) {
+        self.ensure_caller_is_owner();
+
+        self.emit_event_ownership_transferred(
+            self.get().get_ownership().clone(),
+            None);
+
+        self.get_mut().set_ownership(&amp;None);
+    }
+
+    //...
+
+    /// Panic if `owner` is not an owner
+    fn ensure_owner(&amp;self, owner: &amp;E::AccountId) {
+        assert!(&amp;self.get().get_ownership().clone().unwrap() == owner);
+    }
+
+    //...
+}
+
+<span class="boring">}
+</span></code></pre></pre>
+<p>Such components can extend their functions by inheriting other components, such as an ERC20 component with the function of destroying tokens:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Impl&lt;E&gt;: erc20::Impl&lt;E&gt;
+where
+    E: Env,
+{
+    fn _burn(&amp;mut self, account: &amp;E::AccountId, amount: E::Balance) -&gt; Result&lt;()&gt; {
+        //...
+    }
+
+    fn burn(&amp;mut self, amount: E::Balance) -&gt; Result&lt;()&gt; {
+        self._burn(&amp;Self::caller(), amount)
+    }
+
+    fn burn_from(&amp;mut self, account: &amp;E::AccountId, amount: E::Balance) -&gt; Result&lt;()&gt; {
+        //...
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Based on metis, we can implement various contract combination modes implemented by Solidity through inheritance under limited intent, and at the same time, with the help of rust's zero-cost abstraction, these abstractions will not bring additional performance consumption.</p>
+<h2 id="4-overall-roadmap"><a class="header" href="#4-overall-roadmap">4. Overall Roadmap</a></h2>
+<p>Metis for ink! is divided into several milestones:</p>
+<ul>
+<li><strong>[M1]</strong> Implement basic component macros and components, improve component testing support, developers can build regular DAPPs based on Metis</li>
+<li><strong>[M2]</strong> Complete component macros, complete component development support, developers can build custom components. Complete the api support corresponding to the metis component.</li>
+<li><strong>[M3]</strong> Rich component library, complete component and API support for governance and financial mechanism, perfect mathematical library suitable for contract development to support DeFi-type contracts that require complex calculations.</li>
+</ul>
+<p>Considering that the current ink! and contract-pallet are still in iteration, some metis features will be implemented based on subsequent improvements, including:</p>
+<ul>
+<li>Contract proxy and upgradeable support will depend on the improvement of subsequent contract calls, by <a href="https://github.com/paritytech/ink/issues/739">739</a>.</li>
+<li>The Event in the component, the Event in the current ink! cannot be independent of the contract, by <a href="https://github.com/paritytech/ink/issues/759">759</a>, the event in the current component is only an early implementation, and it will be refactored based on the improvement of ink! in the future.</li>
+</ul>
+<p>With the richness and completeness of the ink! contract community, metis will further implement more public components and libraries to assist developers in developing large-scale contract projects. Therefore, we may arrange [MR] milestones. It will be developed based on the iterative schedule of ink!</p>
+<p><strong>[MR]</strong> According to the ink!'s iterative progress, community feedback, contract upgrades, contract proxy and cross-contract call support, refactor Event-related implementations, improve basic components and add development assistance macros to reduce duplication while ensuring auditability Code.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                                                    <a rel="next" href="use-component.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                                    <a rel="next" href="use-component.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

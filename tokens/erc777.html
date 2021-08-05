@@ -1,0 +1,1576 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ERC777 - The Documentation of Metis</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../favicon.svg">
+                        <link rel="shortcut icon" href="../favicon.png">
+                <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+                <link rel="stylesheet" href="../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../overview.html"><strong aria-hidden="true">1.</strong> Overview</a></li><li class="chapter-item expanded "><a href="../use-component.html"><strong aria-hidden="true">2.</strong> Use Component</a></li><li class="chapter-item expanded "><a href="../access-control.html"><strong aria-hidden="true">3.</strong> Access Control</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../access-control/ownable.html"><strong aria-hidden="true">3.1.</strong> Ownable</a></li><li class="chapter-item expanded "><a href="../access-control/access-control.html"><strong aria-hidden="true">3.2.</strong> Access Control</a></li><li class="chapter-item expanded "><a href="../access-control/access-control-enumerable.html"><strong aria-hidden="true">3.3.</strong> Access Control Enumerable</a></li></ol></li><li class="chapter-item expanded "><a href="../governance.html"><strong aria-hidden="true">4.</strong> Governance</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../governance/timelock-controller.html"><strong aria-hidden="true">4.1.</strong> Timelock Controller</a></li></ol></li><li class="chapter-item expanded "><a href="../tokens.html"><strong aria-hidden="true">5.</strong> Tokens</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tokens/erc20.html"><strong aria-hidden="true">5.1.</strong> ERC20</a></li><li class="chapter-item expanded "><a href="../tokens/erc721.html"><strong aria-hidden="true">5.2.</strong> ERC721</a></li><li class="chapter-item expanded "><a href="../tokens/erc777.html" class="active"><strong aria-hidden="true">5.3.</strong> ERC777</a></li><li class="chapter-item expanded "><a href="../tokens/erc1155.html"><strong aria-hidden="true">5.4.</strong> ERC1155</a></li></ol></li><li class="chapter-item expanded "><a href="../utilities.html"><strong aria-hidden="true">6.</strong> Utilities</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../utilities/escrow.html"><strong aria-hidden="true">6.1.</strong> Escrow</a></li></ol></li><li class="chapter-item expanded "><a href="../security.html"><strong aria-hidden="true">7.</strong> Security</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../security/pausable.html"><strong aria-hidden="true">7.1.</strong> Pausable</a></li><li class="chapter-item expanded "><a href="../security/reentrancy-guard.html"><strong aria-hidden="true">7.2.</strong> Reentrancy Guard</a></li></ol></li><li class="chapter-item expanded "><a href="../tools.html"><strong aria-hidden="true">8.</strong> Tools</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tools/erc165.html"><strong aria-hidden="true">8.1.</strong> ERC165</a></li></ol></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Documentation of Metis</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="erc777"><a class="header" href="#erc777">ERC777</a></h1>
+<p>Details of ERC777 can be found in <a href="https://eips.ethereum.org/EIPS/eip-777">ERC777</a>.</p>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<p>To make a new erc777-like token, we should import erc777 at first:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[metis_lang::contract]
+pub mod erc777_contract {
+    use super::super::behavior;
+    pub use erc777::{
+        Error,
+        Result,
+    };
+    use metis_erc777 as erc777;
+    use metis_lang::{
+        import,
+        metis,
+    };
+
+    #[ink(storage)]
+    #[import(erc777)]
+    pub struct Erc777 {
+        erc777: erc777::Data&lt;Erc777&gt;,
+    }
+
+    // Note: Now version of metis not support auto impl for erc777
+    #[cfg(not(feature = &quot;ink-as-dependency&quot;))]
+    impl erc777::Impl&lt;Erc777&gt; for Erc777 {}
+}
+<span class="boring">}
+</span></code></pre></pre>
+<blockquote>
+<p>Note: Now version of metis not support auto impl for erc777.</p>
+<p>Should add:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>   #[cfg(not(feature = &quot;ink-as-dependency&quot;))]
+   impl erc777::Impl&lt;Erc777&gt; for Erc777 {}
+<span class="boring">}
+</span></code></pre></pre>
+</blockquote>
+<p>Then add the event for erc777:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>     /// Event emitted when a token transfer occurs.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Transfer {
+        #[ink(topic)]
+        pub from: Option&lt;AccountId&gt;,
+        #[ink(topic)]
+        pub to: Option&lt;AccountId&gt;,
+        pub value: Balance,
+    }
+
+    /// Event emitted when an approval occurs that `spender` is allowed to withdraw
+    /// up to the amount of `value` tokens from `owner`.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Approval {
+        #[ink(topic)]
+        pub owner: AccountId,
+        #[ink(topic)]
+        pub spender: AccountId,
+        pub value: Balance,
+    }
+
+    /// Indicate a send of `amount` of tokens from the `from` address to the `to`
+    /// address by the `operator` address.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of
+    /// a send or an ERC-20 transfer process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Sent {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: AccountId,
+        #[ink(topic)]
+        pub to: AccountId,
+        pub amount: Balance,
+        pub data: Vec&lt;u8&gt;,
+        pub operator_data: Vec&lt;u8&gt;,
+    }
+
+    /// Indicate the minting of `amount` of tokens to the `to` address by
+    /// the `operator` address.
+    ///
+    /// NOTE: This event MUST NOT be emitted outside of a mint process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Minted {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub to: AccountId,
+        pub amount: Balance,
+        pub data: Vec&lt;u8&gt;,
+        pub operator_data: Vec&lt;u8&gt;,
+    }
+
+    /// Indicate the burning of `amount` of tokens from the `from` address
+    /// by the `operator` address.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of a burn process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Burned {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: AccountId,
+        pub amount: Balance,
+        pub data: Vec&lt;u8&gt;,
+        pub operator_data: Vec&lt;u8&gt;,
+    }
+
+    /// Indicates the authorization of `operator` as an operator for `holder`.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside
+    /// of an operator authorization process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct AuthorizedOperator {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub token_holder: AccountId,
+    }
+
+    /// Indicates the revocation of `operator` as an operator for `holder`.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside
+    /// of an operator revocation process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct RevokedOperator {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub token_holder: AccountId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>impl the constructor for contract:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    impl Erc777 {
+        #[ink(constructor)]
+        pub fn new(
+            name: String,
+            symbol: String,
+            decimals: u8,
+            initial_supply: Balance,
+        ) -&gt; Self {
+            let mut instance = Self {
+                erc777: erc777::Data::new(),
+            };
+
+            erc777::Impl::init(&amp;mut instance, 
+                name, symbol, decimals,
+                initial_supply);
+
+            // other logics
+            instance
+        }
+    }
+
+Then implement the messages for contract:
+
+```rust
+    impl Erc777 {
+        /// Returns the name of the token.
+        #[ink(message)]
+        pub fn name(&amp;self) -&gt; String {
+            erc777::Impl::name(self)
+        }
+
+        /// Returns the symbol of the token, usually a shorter version of the name.
+        #[ink(message)]
+        pub fn symbol(&amp;self) -&gt; String {
+            erc777::Impl::symbol(self)
+        }
+
+        /// Returns the number of decimals used to get its user representation.
+        /// For example, if `decimals` equals `2`, a balance of `505` tokens should
+        /// be displayed to a user as `5,05` (`505 / 10 ** 2`).
+        ///
+        /// Tokens usually opt for a value of 18, imitating the relationship between
+        /// Ether and Wei in ETH. This is the value `ERC20` uses, unless this function is
+        /// overridden;
+        ///
+        /// NOTE: This information is only used for _display_ purposes: it in
+        /// no way affects any of the arithmetic of the contract
+        #[ink(message)]
+        pub fn decimals(&amp;self) -&gt; u8 {
+            erc777::Impl::decimals(self)
+        }
+
+        /// Returns the smallest part of the token that is not divisible. This
+        /// means all token operations (creation, movement and destruction) must have
+        /// amounts that are a multiple of this number.
+        ///
+        /// For most token contracts, this value will equal 1.
+        #[ink(message)]
+        pub fn granularity(&amp;self) -&gt; Balance {
+            erc777::Impl::granularity(self)
+        }
+
+        /// Returns the amount of tokens in existence.
+        #[ink(message)]
+        pub fn total_supply(&amp;self) -&gt; Balance {
+            erc777::Impl::total_supply(self)
+        }
+
+        /// Returns the amount of tokens owned by `account`.
+        #[ink(message)]
+        pub fn balance_of(&amp;self, owner: AccountId) -&gt; Balance {
+            erc777::Impl::balance_of(self, &amp;owner)
+        }
+
+        /// Moves `amount` tokens from the caller's account to `recipient`.
+        ///
+        /// If send or receive hooks are registered for the caller and `recipient`,
+        /// the corresponding functions will be called with `data` and empty
+        /// `operator_data`. See `erc777_sender` and `erc777_recipient`.
+        ///
+        /// Emits a `Sent` event.
+        ///
+        /// Requirements
+        ///
+        /// - the caller must have at least `amount` tokens.
+        /// - `recipient` cannot be the zero address.
+        /// - if `recipient` is a contract, it must implement the `erc777_recipient` interface.
+        #[ink(message)]
+        pub fn send(
+            &amp;mut self,
+            recipient: AccountId,
+            amount: Balance,
+            data: Vec&lt;u8&gt;,
+        ) -&gt; Result&lt;()&gt; {
+            erc777::Impl::send(self, recipient, amount, data)
+        }
+
+        /// Moves `amount` tokens from the caller's account to `recipient`.
+        ///
+        /// Returns a boolean value indicating whether the operation succeeded.
+        ///
+        /// Emits a `Transfer` event.
+        #[ink(message)]
+        pub fn transfer(&amp;mut self, to: AccountId, value: Balance) -&gt; Result&lt;()&gt; {
+            erc777::Impl::transfer(self, &amp;to, value)
+        }
+
+        /// Destroys `amount` tokens from the caller's account, reducing the
+        /// total supply.
+        ///
+        /// If a send hook is registered for the caller, the corresponding function
+        /// will be called with `data` and empty `operator_data`. See `erc777_sender`.
+        ///
+        /// Emits a `Burned` event.
+        ///
+        /// Requirements
+        ///
+        /// - the caller must have at least `amount` tokens.
+        #[ink(message)]
+        pub fn burn(&amp;mut self, amount: Balance, data: Vec&lt;u8&gt;) -&gt; Result&lt;()&gt; {
+            erc777::Impl::burn(self, amount, data)
+        }
+
+        /// Returns true if an account is an operator of `token_holder`.
+        /// Operators can send and burn tokens on behalf of their owners. All
+        /// accounts are their own operator.
+        ///
+        /// See `operator_send` and `operator_burn`.
+        #[ink(message)]
+        pub fn is_operator_for(
+            &amp;self,
+            operator: AccountId,
+            token_holder: AccountId,
+        ) -&gt; bool {
+            erc777::Impl::is_operator_for(self, operator, token_holder)
+        }
+
+        /// Make an account an operator of the caller.
+        ///
+        /// See `is_operator_for`.
+        ///
+        /// Emits an `AuthorizedOperator` event.
+        ///
+        /// Requirements
+        ///
+        /// - `operator` cannot be calling address.
+        #[ink(message)]
+        pub fn authorize_operator(&amp;mut self, operator: AccountId) {
+            erc777::Impl::authorize_operator(self, operator)
+        }
+
+        /// Revoke an account's operator status for the caller.
+        ///
+        /// See `is_operator_for` and `default_operators`.
+        ///
+        /// Emits a `RevokedOperator` event.
+        ///
+        /// Requirements
+        ///
+        /// - `operator` cannot be calling address.
+        #[ink(message)]
+        pub fn revoke_operator(&amp;mut self, operator: AccountId) {
+            erc777::Impl::revoke_operator(self, operator)
+        }
+
+        /// Returns the list of default operators. These accounts are operators
+        /// for all token holders, even if `authorize_operator` was never called on
+        /// them.
+        ///
+        /// This list is immutable, but individual holders may revoke these via
+        /// `revoke_operator`, in which case `is_operator_for` will return false.
+        #[ink(message)]
+        pub fn default_operators(&amp;self) -&gt; Vec&lt;AccountId&gt; {
+            erc777::Impl::default_operators(self)
+        }
+
+        /// Moves `amount` tokens from `sender` to `recipient`. The caller must
+        /// be an operator of `sender`.
+        ///
+        /// If send or receive hooks are registered for `sender` and `recipient`,
+        /// the corresponding functions will be called with `data` and
+        /// `operator_data`. See `erc777_sender` and `erc777_recipient`.
+        ///
+        /// Emits a `Sent` event.
+        ///
+        /// Requirements
+        ///
+        /// - `sender` cannot be the zero address.
+        /// - `sender` must have at least `amount` tokens.
+        /// - the caller must be an operator for `sender`.
+        /// - `recipient` cannot be the zero address.
+        /// - if `recipient` is a contract, it must implement the `erc777_recipient` interface.
+        #[ink(message)]
+        pub fn operator_send(
+            &amp;mut self,
+            sender: AccountId,
+            recipient: AccountId,
+            amount: Balance,
+            data: Vec&lt;u8&gt;,
+            operator_data: Vec&lt;u8&gt;,
+        ) -&gt; Result&lt;()&gt; {
+            erc777::Impl::operator_send(
+                self,
+                sender,
+                recipient,
+                amount,
+                data,
+                operator_data,
+            )
+        }
+
+        /// Destroys `amount` tokens from `account`, reducing the total supply.
+        /// The caller must be an operator of `account`.
+        ///
+        /// If a send hook is registered for `account`, the corresponding function
+        /// will be called with `data` and `operator_data`. See `erc777_sender`.
+        ///
+        /// Emits a `Burned` event.
+        ///
+        /// Requirements
+        ///
+        /// - `account` cannot be the zero address.
+        /// - `account` must have at least `amount` tokens.
+        /// - the caller must be an operator for `account`.
+        #[ink(message)]
+        pub fn operator_burn(
+            &amp;mut self,
+            account: AccountId,
+            amount: Balance,
+            data: Vec&lt;u8&gt;,
+            operator_data: Vec&lt;u8&gt;,
+        ) -&gt; Result&lt;()&gt; {
+            erc777::Impl::operator_burn(self, account, amount, data, operator_data)
+        }
+
+        /// Returns the remaining number of tokens that `spender` will be
+        /// allowed to spend on behalf of `owner` through `transfer_from`. This is
+        /// zero by default.
+        ///
+        /// This value changes when `approve` or `transfer_from` are called.
+        #[ink(message)]
+        pub fn allowance(&amp;self, owner: AccountId, spender: AccountId) -&gt; Balance {
+            erc777::Impl::allowance(self, &amp;owner, &amp;spender)
+        }
+
+        /// Sets `amount` as the allowance of `spender` over the caller's tokens.
+        ///
+        /// Returns a boolean value indicating whether the operation succeeded.
+        ///
+        /// IMPORTANT: Beware that changing an allowance with this method brings the risk
+        /// that someone may use both the old and the new allowance by unfortunate
+        /// transaction ordering. One possible solution to mitigate this race
+        /// condition is to first reduce the spender's allowance to 0 and set the
+        /// desired value afterwards:
+        /// &lt;https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729&gt;
+        ///
+        /// Emits an `Approval` event.
+        #[ink(message)]
+        pub fn approve(&amp;mut self, spender: AccountId, value: Balance) -&gt; Result&lt;()&gt; {
+            erc777::Impl::approve(self, &amp;spender, value)
+        }
+
+        /// Moves `amount` tokens from `sender` to `recipient` using the
+        /// allowance mechanism. `amount` is then deducted from the caller's
+        /// allowance.
+        ///
+        /// Returns a boolean value indicating whether the operation succeeded.
+        ///
+        /// Emits a `Transfer` event.
+        #[ink(message)]
+        pub fn transfer_from(
+            &amp;mut self,
+            from: AccountId,
+            to: AccountId,
+            value: Balance,
+        ) -&gt; Result&lt;()&gt; {
+            erc777::Impl::transfer_from(self, &amp;from, &amp;to, value)
+        }
+
+        /// Creates `amount` tokens and assigns them to `account`, increasing
+        /// the total supply.
+        ///
+        /// If a send hook is registered for `account`, the corresponding function
+        /// will be called with `operator`, `data` and `operator_data`.
+        ///
+        /// See `erc777_sender` and `erc777_recipient`.
+        ///
+        /// Emits `Minted` and `Transfer` events.
+        ///
+        /// Requirements
+        ///
+        /// - `account` cannot be the zero address.
+        /// - if `account` is a contract, it must implement the `erc777_recipient` interface.
+        #[ink(message)]
+        pub fn mint(&amp;mut self, to: AccountId, value: Balance) -&gt; Result&lt;()&gt; {
+            erc777::Impl::_mint(self, to, value, Vec::default(), Vec::default())
+        }
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<p>In the end, we can add some other messages.</p>
+<h2 id="messages-for-txs"><a class="header" href="#messages-for-txs">Messages for Txs</a></h2>
+<h3 id="send"><a class="header" href="#send">send</a></h3>
+<p>Moves <code>amount</code> tokens from the caller's account to <code>recipient</code>.</p>
+<p>If send or receive hooks are registered for the caller and <code>recipient</code>,
+the corresponding functions will be called with <code>data</code> and empty
+<code>operator_data</code>. See <code>erc777_sender</code> and <code>erc777_recipient</code>.</p>
+<p>Emits a <code>Sent</code> event.</p>
+<p>Requirements</p>
+<ul>
+<li>the caller must have at least <code>amount</code> tokens.</li>
+<li><code>recipient</code> cannot be the zero address.</li>
+<li>if <code>recipient</code> is a contract, it must implement the <code>erc777_recipient</code> interface.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Moves `amount` tokens from the caller's account to `recipient`.
+    ///
+    /// If send or receive hooks are registered for the caller and `recipient`,
+    /// the corresponding functions will be called with `data` and empty
+    /// `operator_data`. See `erc777_sender` and `erc777_recipient`.
+    ///
+    /// Emits a `Sent` event.
+    ///
+    /// Requirements
+    ///
+    /// - the caller must have at least `amount` tokens.
+    /// - `recipient` cannot be the zero address.
+    /// - if `recipient` is a contract, it must implement the `erc777_recipient`
+    /// interface.
+    fn send(
+        &amp;mut self,
+        recipient: E::AccountId,
+        amount: E::Balance,
+        data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        self._send(
+            Self::caller(),
+            recipient,
+            amount,
+            data,
+            Vec::default(),
+            true,
+        )
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="transfer"><a class="header" href="#transfer">transfer</a></h3>
+<p>Moves <code>amount</code> tokens from the caller's account to <code>recipient</code>.</p>
+<p>Returns a boolean value indicating whether the operation succeeded.</p>
+<p>Emits a <code>Transfer</code> event.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Moves `amount` tokens from the caller's account to `recipient`.
+    ///
+    /// Returns a boolean value indicating whether the operation succeeded.
+    ///
+    /// Emits a `Transfer` event.
+    fn transfer(&amp;mut self, recipient: &amp;E::AccountId, amount: E::Balance) -&gt; Result&lt;()&gt; {
+        let null_account = &amp;E::AccountId::default();
+        let from = &amp;Self::caller();
+
+        if recipient == null_account {
+            return Err(Error::AccountIsZero)
+        }
+
+        let null_data = &amp;Vec::&lt;u8&gt;::default();
+
+        self._call_tokens_to_send(
+            &amp;from,
+            &amp;Some(&amp;from),
+            &amp;Some(&amp;recipient),
+            &amp;amount,
+            null_data,
+            null_data,
+        );
+
+        self._move(&amp;from, &amp;from, &amp;recipient, &amp;amount, null_data, null_data)?;
+
+        self._call_tokens_received(
+            &amp;from,
+            &amp;Some(&amp;from),
+            &amp;Some(&amp;recipient),
+            &amp;amount,
+            null_data,
+            null_data,
+            false,
+        );
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="burn"><a class="header" href="#burn">burn</a></h3>
+<p>Destroys <code>amount</code> tokens from the caller's account, reducing the
+total supply.</p>
+<p>If a send hook is registered for the caller, the corresponding function
+will be called with <code>data</code> and empty <code>operator_data</code>. See <code>erc777_sender</code>.</p>
+<p>Emits a <code>Burned</code> event.</p>
+<p>Requirements</p>
+<ul>
+<li>the caller must have at least <code>amount</code> tokens.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Destroys `amount` tokens from the caller's account, reducing the
+    /// total supply.
+    ///
+    /// If a send hook is registered for the caller, the corresponding function
+    /// will be called with `data` and empty `operator_data`. See `erc777_sender`.
+    ///
+    /// Emits a `Burned` event.
+    ///
+    /// Requirements
+    ///
+    /// - the caller must have at least `amount` tokens.
+    fn burn(&amp;mut self, amount: E::Balance, data: Vec&lt;u8&gt;) -&gt; Result&lt;()&gt; {
+        self._burn(Self::caller(), amount, data, Vec::default())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="authorize_operator"><a class="header" href="#authorize_operator">authorize_operator</a></h3>
+<p>Make an account an operator of the caller.</p>
+<p>See <code>is_operator_for</code>.</p>
+<p>Emits an <code>AuthorizedOperator</code> event.</p>
+<p>Requirements</p>
+<ul>
+<li><code>operator</code> cannot be calling address.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Make an account an operator of the caller.
+    ///
+    /// See `is_operator_for`.
+    ///
+    /// Emits an `AuthorizedOperator` event.
+    ///
+    /// Requirements
+    ///
+    /// - `operator` cannot be calling address.
+    fn authorize_operator(&amp;mut self, operator: E::AccountId) {
+        let caller = Self::caller();
+        assert!(caller != operator, &quot;ERC777: authorizing self as operator&quot;);
+
+        let key = (caller.clone(), operator.clone());
+
+        if self.get().is_default_operator(&amp;operator) {
+            self.get_mut().revoked_default_operators.take(&amp;key);
+        } else {
+            self.get_mut().operators.insert(key, ());
+        }
+
+        self.emit_event_authorized_operator(operator, caller);
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="revoke_operator"><a class="header" href="#revoke_operator">revoke_operator</a></h3>
+<p>Revoke an account's operator status for the caller.</p>
+<p>See <code>is_operator_for</code> and <code>default_operators</code>.</p>
+<p>Emits a <code>RevokedOperator</code> event.</p>
+<p>Requirements</p>
+<ul>
+<li><code>operator</code> cannot be calling address.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Revoke an account's operator status for the caller.
+    ///
+    /// See `is_operator_for` and `default_operators`.
+    ///
+    /// Emits a `RevokedOperator` event.
+    ///
+    /// Requirements
+    ///
+    /// - `operator` cannot be calling address.
+    fn revoke_operator(&amp;mut self, operator: E::AccountId) {
+        let caller = Self::caller();
+        assert!(caller != operator, &quot;ERC777: revoke self as operator&quot;);
+
+        let key = (caller.clone(), operator.clone());
+
+        if self.get().is_default_operator(&amp;operator) {
+            self.get_mut().revoked_default_operators.insert(key, ());
+        } else {
+            self.get_mut().operators.take(&amp;key);
+        }
+
+        self.emit_event_revoked_operator(operator, caller);
+    }
+
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="operator_send"><a class="header" href="#operator_send">operator_send</a></h3>
+<p>Moves <code>amount</code> tokens from <code>sender</code> to <code>recipient</code>. The caller must
+be an operator of <code>sender</code>.</p>
+<p>If send or receive hooks are registered for <code>sender</code> and <code>recipient</code>,
+the corresponding functions will be called with <code>data</code> and
+<code>operator_data</code>. See <code>erc777_sender</code> and <code>erc777_recipient</code>.</p>
+<p>Emits a <code>Sent</code> event.</p>
+<p>Requirements</p>
+<ul>
+<li><code>sender</code> cannot be the zero address.</li>
+<li><code>sender</code> must have at least <code>amount</code> tokens.</li>
+<li>the caller must be an operator for <code>sender</code>.</li>
+<li><code>recipient</code> cannot be the zero address.</li>
+<li>if <code>recipient</code> is a contract, it must implement the <code>erc777_recipient</code> interface.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Moves `amount` tokens from `sender` to `recipient`. The caller must
+    /// be an operator of `sender`.
+    ///
+    /// If send or receive hooks are registered for `sender` and `recipient`,
+    /// the corresponding functions will be called with `data` and
+    /// `operator_data`. See `erc777_sender` and `erc777_recipient`.
+    ///
+    /// Emits a `Sent` event.
+    ///
+    /// Requirements
+    ///
+    /// - `sender` cannot be the zero address.
+    /// - `sender` must have at least `amount` tokens.
+    /// - the caller must be an operator for `sender`.
+    /// - `recipient` cannot be the zero address.
+    /// - if `recipient` is a contract, it must implement the `erc777_recipient` interface.
+    fn operator_send(
+        &amp;mut self,
+        sender: E::AccountId,
+        recipient: E::AccountId,
+        amount: E::Balance,
+        data: Vec&lt;u8&gt;,
+        operator_data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        assert!(
+            self.get().is_operator_for(&amp;Self::caller(), &amp;sender),
+            &quot;ERC777: caller is not an operator for holder&quot;
+        );
+
+        self._send(sender, recipient, amount, data, operator_data, true)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="operator_burn"><a class="header" href="#operator_burn">operator_burn</a></h3>
+<p>Destroys <code>amount</code> tokens from <code>account</code>, reducing the total supply.
+The caller must be an operator of <code>account</code>.</p>
+<p>If a send hook is registered for <code>account</code>, the corresponding function
+will be called with <code>data</code> and <code>operator_data</code>. See <code>erc777_sender</code>.</p>
+<p>Emits a <code>Burned</code> event.</p>
+<p>Requirements</p>
+<ul>
+<li><code>account</code> cannot be the zero address.</li>
+<li><code>account</code> must have at least <code>amount</code> tokens.</li>
+<li>the caller must be an operator for <code>account</code>.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Destroys `amount` tokens from `account`, reducing the total supply.
+    /// The caller must be an operator of `account`.
+    ///
+    /// If a send hook is registered for `account`, the corresponding function
+    /// will be called with `data` and `operator_data`. See `erc777_sender`.
+    ///
+    /// Emits a `Burned` event.
+    ///
+    /// Requirements
+    ///
+    /// - `account` cannot be the zero address.
+    /// - `account` must have at least `amount` tokens.
+    /// - the caller must be an operator for `account`.
+    fn operator_burn(
+        &amp;mut self,
+        account: E::AccountId,
+        amount: E::Balance,
+        data: Vec&lt;u8&gt;,
+        operator_data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        assert!(
+            self.get().is_operator_for(&amp;Self::caller(), &amp;account),
+            &quot;ERC777: caller is not an operator for holder&quot;
+        );
+
+        self._burn(account, amount, data, operator_data)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="approve"><a class="header" href="#approve">approve</a></h3>
+<p>Sets <code>amount</code> as the allowance of <code>spender</code> over the caller's tokens.</p>
+<p>Returns a boolean value indicating whether the operation succeeded.</p>
+<p>IMPORTANT: Beware that changing an allowance with this method brings the risk
+that someone may use both the old and the new allowance by unfortunate
+transaction ordering. One possible solution to mitigate this race
+condition is to first reduce the spender's allowance to 0 and set the
+desired value afterwards:
+<a href="https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729">https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729</a></p>
+<p>Emits an <code>Approval</code> event.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Sets `amount` as the allowance of `spender` over the caller's tokens.
+    ///
+    /// Returns a boolean value indicating whether the operation succeeded.
+    ///
+    /// IMPORTANT: Beware that changing an allowance with this method brings the risk
+    /// that someone may use both the old and the new allowance by unfortunate
+    /// transaction ordering. One possible solution to mitigate this race
+    /// condition is to first reduce the spender's allowance to 0 and set the
+    /// desired value afterwards:
+    /// &lt;https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729&gt;
+    ///
+    /// Emits an `Approval` event.
+    fn approve(&amp;mut self, spender: &amp;E::AccountId, amount: E::Balance) -&gt; Result&lt;()&gt; {
+        self._approve(&amp;Self::caller(), spender, amount)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="transfer_from"><a class="header" href="#transfer_from">transfer_from</a></h3>
+<p>Moves <code>amount</code> tokens from <code>sender</code> to <code>recipient</code> using the
+allowance mechanism. <code>amount</code> is then deducted from the caller's
+allowance.</p>
+<p>Returns a boolean value indicating whether the operation succeeded.</p>
+<p>Emits a <code>Transfer</code> event.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Moves `amount` tokens from `sender` to `recipient` using the
+    /// allowance mechanism. `amount` is then deducted from the caller's
+    /// allowance.
+    ///
+    /// Returns a boolean value indicating whether the operation succeeded.
+    ///
+    /// Emits a `Transfer` event.
+    fn transfer_from(
+        &amp;mut self,
+        holder: &amp;E::AccountId,
+        recipient: &amp;E::AccountId,
+        amount: E::Balance,
+    ) -&gt; Result&lt;()&gt; {
+        let caller = &amp;Self::caller();
+        let null_account = &amp;E::AccountId::default();
+
+        if recipient == null_account {
+            return Err(Error::AccountIsZero)
+        }
+
+        let current_allowance = self.get().allowance(holder, caller);
+        if current_allowance &lt; amount {
+            return Err(Error::InsufficientAllowance)
+        }
+
+        let spender = Self::caller();
+
+        self._call_tokens_to_send(
+            &amp;spender,
+            &amp;Some(&amp;holder),
+            &amp;Some(&amp;recipient),
+            &amp;amount,
+            &amp;Vec::default(),
+            &amp;Vec::default(),
+        );
+
+        self._approve(holder, caller, current_allowance - amount)?;
+
+        self._move(
+            &amp;spender,
+            &amp;holder,
+            &amp;recipient,
+            &amp;amount,
+            &amp;Vec::default(),
+            &amp;Vec::default(),
+        )?;
+
+        self._call_tokens_received(
+            &amp;spender,
+            &amp;Some(&amp;holder),
+            &amp;Some(&amp;recipient),
+            &amp;amount,
+            &amp;Vec::default(),
+            &amp;Vec::default(),
+            false,
+        );
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="message-for-querys"><a class="header" href="#message-for-querys">Message for Querys</a></h2>
+<h3 id="name"><a class="header" href="#name">name</a></h3>
+<p>Returns the name of the token.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the name of the token.
+    fn name(&amp;self) -&gt; String {
+        self.get().name().clone()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="symbol"><a class="header" href="#symbol">symbol</a></h3>
+<p>Returns the symbol of the token, usually a shorter version of the name.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the symbol of the token, usually a shorter version of the name.
+    fn symbol(&amp;self) -&gt; String {
+        self.get().symbol().clone()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="decimals"><a class="header" href="#decimals">decimals</a></h3>
+<p>Returns the number of decimals used to get its user representation.
+For example, if <code>decimals</code> equals <code>2</code>, a balance of <code>505</code> tokens should
+be displayed to a user as <code>5,05</code> (<code>505 / 10 ** 2</code>).</p>
+<p>Tokens usually opt for a value of 18, imitating the relationship between
+Ether and Wei in ETH. This is the value <code>ERC20</code> uses, unless this function is
+overridden;</p>
+<blockquote>
+<p>NOTE: This information is only used for <em>display</em> purposes: it in
+no way affects any of the arithmetic of the contract</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the number of decimals used to get its user representation.
+    /// For example, if `decimals` equals `2`, a balance of `505` tokens should
+    /// be displayed to a user as `5,05` (`505 / 10 ** 2`).
+    ///
+    /// Tokens usually opt for a value of 18, imitating the relationship between
+    /// Ether and Wei in ETH. This is the value `ERC20` uses, unless this function is
+    /// overridden;
+    ///
+    /// NOTE: This information is only used for _display_ purposes: it in
+    /// no way affects any of the arithmetic of the contract
+    fn decimals(&amp;self) -&gt; u8 {
+        self.get().decimals().clone()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="granularity"><a class="header" href="#granularity">granularity</a></h3>
+<p>Returns the smallest part of the token that is not divisible. This
+means all token operations (creation, movement and destruction) must have
+amounts that are a multiple of this number.</p>
+<p>For most token contracts, this value will equal 1.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the smallest part of the token that is not divisible. This
+    /// means all token operations (creation, movement and destruction) must have
+    /// amounts that are a multiple of this number.
+    ///
+    /// For most token contracts, this value will equal 1.
+    fn granularity(&amp;self) -&gt; E::Balance {
+        E::Balance::from(1_u8)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="total_supply"><a class="header" href="#total_supply">total_supply</a></h3>
+<p>Returns the amount of tokens in existence.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the amount of tokens in existence.
+    fn total_supply(&amp;self) -&gt; E::Balance {
+        self.get().total_supply()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="balance_of"><a class="header" href="#balance_of">balance_of</a></h3>
+<p>Returns the amount of tokens owned by <code>account</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the amount of tokens owned by `account`.
+    fn balance_of(&amp;self, account: &amp;E::AccountId) -&gt; E::Balance {
+        self.get().balance_of(account)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="is_operator_for"><a class="header" href="#is_operator_for">is_operator_for</a></h3>
+<p>Returns true if an account is an operator of <code>token_holder</code>.
+Operators can send and burn tokens on behalf of their owners. All
+accounts are their own operator.</p>
+<p>See <code>operator_send</code> and <code>operator_burn</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns true if an account is an operator of `token_holder`.
+    /// Operators can send and burn tokens on behalf of their owners. All
+    /// accounts are their own operator.
+    ///
+    /// See `operator_send` and `operator_burn`.
+    fn is_operator_for(
+        &amp;self,
+        operator: E::AccountId,
+        token_holder: E::AccountId,
+    ) -&gt; bool {
+        self.get().is_operator_for(&amp;operator, &amp;token_holder)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="default_operators"><a class="header" href="#default_operators">default_operators</a></h3>
+<p>Returns the list of default operators. These accounts are operators
+for all token holders, even if <code>authorize_operator</code> was never called on
+them.</p>
+<p>This list is immutable, but individual holders may revoke these via
+<code>revoke_operator</code>, in which case <code>is_operator_for</code> will return false.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the list of default operators. These accounts are operators
+    /// for all token holders, even if `authorize_operator` was never called on
+    /// them.
+    ///
+    /// This list is immutable, but individual holders may revoke these via
+    /// `revoke_operator`, in which case `is_operator_for` will return false.
+    fn default_operators(&amp;self) -&gt; Vec&lt;E::AccountId&gt; {
+        self.get().default_operators_array.clone()
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="allowance"><a class="header" href="#allowance">allowance</a></h3>
+<p>Returns the remaining number of tokens that <code>spender</code> will be
+allowed to spend on behalf of <code>owner</code> through <code>transfer_from</code>. This is
+zero by default.</p>
+<p>This value changes when <code>approve</code> or <code>transfer_from</code> are called.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Returns the remaining number of tokens that `spender` will be
+    /// allowed to spend on behalf of `owner` through `transfer_from`. This is
+    /// zero by default.
+    ///
+    /// This value changes when `approve` or `transfer_from` are called.
+    fn allowance(&amp;self, owner: &amp;E::AccountId, spender: &amp;E::AccountId) -&gt; E::Balance {
+        self.get().allowance(owner, spender)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="apis"><a class="header" href="#apis">APIs</a></h2>
+<p>There are some api can help developer to add self-defined messages:</p>
+<ul>
+<li><code>_mint</code></li>
+<li><code>_mint_required_reception_ack</code></li>
+<li><code>_burn</code></li>
+</ul>
+<h3 id="_mint"><a class="header" href="#_mint">_mint</a></h3>
+<p>Creates <code>amount</code> tokens and assigns them to <code>account</code>, increasing
+the total supply.</p>
+<p>If a send hook is registered for <code>account</code>, the corresponding function
+will be called with <code>operator</code>, <code>data</code> and <code>operator_data</code>.</p>
+<p>See <code>erc777_sender</code> and <code>erc777_recipient</code>.</p>
+<p>Emits <code>Minted</code> and <code>Transfer</code> events.</p>
+<p>Requirements</p>
+<ul>
+<li><code>account</code> cannot be the zero address.</li>
+<li>if <code>account</code> is a contract, it must implement the <code>erc777_recipient</code> interface.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Creates `amount` tokens and assigns them to `account`, increasing
+    /// the total supply.
+    ///
+    /// If a send hook is registered for `account`, the corresponding function
+    /// will be called with `operator`, `data` and `operator_data`.
+    ///
+    /// See `erc777_sender` and `erc777_recipient`.
+    ///
+    /// Emits `Minted` and `Transfer` events.
+    ///
+    /// Requirements
+    ///
+    /// - `account` cannot be the zero address.
+    /// - if `account` is a contract, it must implement the `erc777_recipient` interface.
+    fn _mint(
+        &amp;mut self,
+        account: E::AccountId,
+        amount: E::Balance,
+        user_data: Vec&lt;u8&gt;,
+        operator_data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        self._mint_required_reception_ack(account, amount, user_data, operator_data, true)
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="_mint_required_reception_ack"><a class="header" href="#_mint_required_reception_ack">_mint_required_reception_ack</a></h3>
+<p>Creates <code>amount</code> tokens and assigns them to <code>account</code>, increasing
+the total supply.</p>
+<p>If <code>requireReceptionAck</code> is set to true, and if a send hook is
+registered for <code>account</code>, the corresponding function will be called with
+<code>operator</code>, <code>data</code> and <code>operator_data</code>.</p>
+<p>See <code>erc777_sender</code> and <code>erc777_recipient</code>.</p>
+<p>Emits <code>Minted</code> and <code>Transfer</code> events.</p>
+<p>Requirements</p>
+<ul>
+<li><code>account</code> cannot be the zero address.</li>
+<li>if <code>account</code> is a contract, it must implement the <code>erc777_recipient</code> interface.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Creates `amount` tokens and assigns them to `account`, increasing
+    /// the total supply.
+    ///
+    /// If `requireReceptionAck` is set to true, and if a send hook is
+    /// registered for `account`, the corresponding function will be called with
+    /// `operator`, `data` and `operator_data`.
+    ///
+    /// See `erc777_sender` and `erc777_recipient`.
+    ///
+    /// Emits `Minted` and `Transfer` events.
+    ///
+    /// Requirements
+    ///
+    /// - `account` cannot be the zero address.
+    /// - if `account` is a contract, it must implement the `erc777_recipient` interface.
+    fn _mint_required_reception_ack(
+        &amp;mut self,
+        account: E::AccountId,
+        amount: E::Balance,
+        user_data: Vec&lt;u8&gt;,
+        operator_data: Vec&lt;u8&gt;,
+        required_reception_ack: bool,
+    ) -&gt; Result&lt;()&gt; {
+        let null_account = E::AccountId::default();
+
+        if account == null_account {
+            return Err(Error::AccountIsZero)
+        }
+
+        let operator = Self::caller();
+
+        self._before_token_transfer(&amp;operator, &amp;None, &amp;Some(&amp;account), &amp;amount)?;
+
+        // Update state variables
+        let current_total = self.get().total_supply();
+        let current_balance = self.get().balance_of(&amp;account);
+
+        self.get_mut().set_total_supply(current_total + amount);
+        self.get_mut()
+            .set_balance(&amp;account, current_balance + amount);
+
+        self._call_tokens_received(
+            &amp;operator,
+            &amp;None,
+            &amp;Some(&amp;account),
+            &amp;amount,
+            &amp;user_data,
+            &amp;operator_data,
+            required_reception_ack,
+        );
+
+        self.emit_event_minted(
+            operator,
+            account.clone(),
+            amount,
+            user_data,
+            operator_data,
+        );
+        self.emit_event_transfer(None, Some(account), amount);
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="_burn"><a class="header" href="#_burn">_burn</a></h3>
+<p>Burn tokens</p>
+<p>Params:</p>
+<ul>
+<li>from address token holder address</li>
+<li>amount uint256 amount of tokens to burn</li>
+<li>data bytes extra information provided by the token holder</li>
+<li>operator_data bytes extra information provided by the operator (if any)</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Burn tokens
+    /// 
+    /// Params:
+    /// 
+    /// - from address token holder address
+    /// - amount uint256 amount of tokens to burn
+    /// - data bytes extra information provided by the token holder
+    /// - operator_data bytes extra information provided by the operator (if any)
+    fn _burn(
+        &amp;mut self,
+        from: E::AccountId,
+        amount: E::Balance,
+        data: Vec&lt;u8&gt;,
+        operator_data: Vec&lt;u8&gt;,
+    ) -&gt; Result&lt;()&gt; {
+        let null_account = E::AccountId::default();
+
+        assert!(from != null_account, &quot;ERC777: burn from the zero address&quot;);
+
+        let operator = Self::caller();
+
+        self._call_tokens_to_send(
+            &amp;operator,
+            &amp;Some(&amp;from),
+            &amp;None,
+            &amp;amount,
+            &amp;data,
+            &amp;operator_data,
+        );
+
+        self._before_token_transfer(&amp;operator, &amp;Some(&amp;from), &amp;None, &amp;amount)?;
+
+        // Update state variables
+        let from_balance = self.get().balance_of(&amp;from);
+        assert!(
+            from_balance &gt;= amount,
+            &quot;ERC777: burn amount exceeds balance&quot;
+        );
+        self.get_mut().set_balance(&amp;from, from_balance - amount);
+
+        let current_total = self.get().total_supply();
+        self.get_mut().set_total_supply(current_total - amount);
+
+        self.emit_event_burned(operator, from.clone(), amount, data, operator_data);
+        self.emit_event_transfer(Some(from), None, amount);
+
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="hooks"><a class="header" href="#hooks">Hooks</a></h2>
+<h3 id="_before_token_transfer"><a class="header" href="#_before_token_transfer">_before_token_transfer</a></h3>
+<p>Hook that is called before any token transfer. This includes
+calls to <code>send</code>, <code>transfer</code>, <code>operator_send</code>, minting and burning.</p>
+<p>Calling conditions:</p>
+<ul>
+<li>when <code>from</code> and <code>to</code> are both non-zero, <code>amount</code> of <code>from</code>'s tokens
+will be to transferred to <code>to</code>.</li>
+<li>when <code>from</code> is zero, <code>amount</code> tokens will be minted for <code>to</code>.</li>
+<li>when <code>to</code> is zero, <code>amount</code> of <code>from</code>'s tokens will be burned.</li>
+<li><code>from</code> and <code>to</code> are never both zero.</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Hook that is called before any token transfer. This includes
+    /// calls to `send`, `transfer`, `operator_send`, minting and burning.
+    ///
+    /// Calling conditions:
+    ///
+    /// - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+    /// will be to transferred to `to`.
+    /// - when `from` is zero, `amount` tokens will be minted for `to`.
+    /// - when `to` is zero, `amount` of ``from``'s tokens will be burned.
+    /// - `from` and `to` are never both zero.
+    fn _before_token_transfer(
+        &amp;mut self,
+        _operator: &amp;E::AccountId,
+        _from: &amp;Option&lt;&amp;E::AccountId&gt;,
+        _to: &amp;Option&lt;&amp;E::AccountId&gt;,
+        _amount: &amp;E::Balance,
+    ) -&gt; Result&lt;()&gt; {
+        Ok(())
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="events"><a class="header" href="#events">Events</a></h2>
+<h3 id="transfer-1"><a class="header" href="#transfer-1">Transfer</a></h3>
+<p>Event emitted when a token transfer occurs.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Event emitted when a token transfer occurs.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Transfer {
+        #[ink(topic)]
+        pub from: Option&lt;AccountId&gt;,
+        #[ink(topic)]
+        pub to: Option&lt;AccountId&gt;,
+        pub value: Balance,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="approval"><a class="header" href="#approval">Approval</a></h3>
+<p>Event emitted when an approval occurs that <code>spender</code> is allowed to
+withdraw up to the amount of <code>value</code> tokens from <code>owner</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Event emitted when an approval occurs that `spender` is allowed to 
+    /// withdraw up to the amount of `value` tokens from `owner`.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Approval {
+        #[ink(topic)]
+        pub owner: AccountId,
+        #[ink(topic)]
+        pub spender: AccountId,
+        pub value: Balance,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="sent"><a class="header" href="#sent">Sent</a></h3>
+<p>Indicate a send of <code>amount</code> of tokens from the <code>from</code> address to the <code>to</code>
+address by the <code>operator</code> address.</p>
+<blockquote>
+<p>NOTE: This event MUST NOT be emitted outside of a send or an ERC-20 transfer process.</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Indicate a send of `amount` of tokens from the `from` address to the `to`
+    /// address by the `operator` address.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of a send or an ERC-20 transfer process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Sent {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: AccountId,
+        #[ink(topic)]
+        pub to: AccountId,
+        pub amount: Balance,
+        pub data: Vec&lt;u8&gt;,
+        pub operator_data: Vec&lt;u8&gt;,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="minted"><a class="header" href="#minted">Minted</a></h3>
+<p>Indicate the minting of <code>amount</code> of tokens to the <code>to</code> address by
+the <code>operator</code> address.</p>
+<blockquote>
+<p>NOTE: This event MUST NOT be emitted outside of a mint process.</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Indicate the minting of `amount` of tokens to the `to` address by
+    /// the `operator` address.
+    ///
+    /// NOTE: This event MUST NOT be emitted outside of a mint process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Minted {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub to: AccountId,
+        pub amount: Balance,
+        pub data: Vec&lt;u8&gt;,
+        pub operator_data: Vec&lt;u8&gt;,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="burned"><a class="header" href="#burned">Burned</a></h3>
+<p>Indicate the burning of <code>amount</code> of tokens from the <code>from</code> address
+by the <code>operator</code> address.</p>
+<blockquote>
+<p>NOTE: This event MUST NOT be emitted outside of a burn process.</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Indicate the burning of `amount` of tokens from the `from` address
+    /// by the `operator` address.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of a burn process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct Burned {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub from: AccountId,
+        pub amount: Balance,
+        pub data: Vec&lt;u8&gt;,
+        pub operator_data: Vec&lt;u8&gt;,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="authorizedoperator"><a class="header" href="#authorizedoperator">AuthorizedOperator</a></h3>
+<p>Indicates the authorization of <code>operator</code> as an operator for <code>holder</code>.</p>
+<blockquote>
+<p>NOTE: This event MUST NOT be emitted outside of an operator authorization process.</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Indicates the authorization of `operator` as an operator for `holder`.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of an operator authorization process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct AuthorizedOperator {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub token_holder: AccountId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="revokedoperator"><a class="header" href="#revokedoperator">RevokedOperator</a></h3>
+<p>Indicates the revocation of <code>operator</code> as an operator for <code>holder</code>.</p>
+<blockquote>
+<p>NOTE: This event MUST NOT be emitted outside of an operator revocation process.</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>    /// Indicates the revocation of `operator` as an operator for `holder`.
+    /// 
+    /// NOTE: This event MUST NOT be emitted outside of an operator revocation process.
+    #[ink(event)]
+    #[metis(erc777)]
+    pub struct RevokedOperator {
+        #[ink(topic)]
+        pub operator: AccountId,
+        #[ink(topic)]
+        pub token_holder: AccountId,
+    }
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../tokens/erc721.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../tokens/erc1155.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../tokens/erc721.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../tokens/erc1155.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>
