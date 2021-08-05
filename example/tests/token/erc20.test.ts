@@ -50,7 +50,7 @@ describe("ERC20 Test", () => {
 
     await expect(contract.tx.transfer(Bob, 1000))
       .to.emit(contract, 'Transfer')
-      .withArgs(sender.address, Bob, 1000);;
+      .withArgs(sender.address, Bob, 1000);
 
     expect((await contract.query.balanceOf(sender.address)).output).to.equal(initial_supply - 1000);
     expect((await contract.query.balanceOf(Bob)).output).to.equal(1000);
