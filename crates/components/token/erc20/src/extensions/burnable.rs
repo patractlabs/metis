@@ -14,7 +14,7 @@ where
 {
     /// Destroys `amount` tokens from the caller.
     fn burn(&mut self, amount: E::Balance) -> Result<()> {
-        self._burn(&Self::caller(), amount)
+        self._burn(Self::caller(), amount)
     }
 
     /// Destroys `amount` tokens from `account`, deducting from the caller's
@@ -26,14 +26,14 @@ where
     ///
     /// - the caller must have allowance for ``accounts``'s tokens of at least
     /// `amount`.
-    fn burn_from(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
-        let caller = &Self::caller();
-        let current_allowance = self.get().allowance(account, caller);
+    fn burn_from(&mut self, account: E::AccountId, amount: E::Balance) -> Result<()> {
+        let caller = Self::caller();
+        let current_allowance = self.get().allowance(account.clone(), caller.clone());
         if current_allowance < amount{
             return Err(Error::InsufficientAllowance);
         }
         
-        self._approve(account, caller, amount)?;
+        self._approve(account.clone(), caller, amount)?;
 
         self._burn(account, amount)
     }

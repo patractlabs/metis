@@ -2,7 +2,7 @@
 
 [Metis](https://github.com/patractlabs/metis) will be the Wasm contract standard library developed by Patract Labs. Patract Labs will work with community forces to formulate various Wasm contract standards, develop corresponding implementations of ink! and Ask! versions, and conduct audits by professional institutions.
 
-## 0. Motivation
+## Motivation
 
 We believe that in the Wasm contract ecosystem, a development library similar to Openzeppelin-contracts is very necessary. This is Metis. For the sake of simplicity and readability, the patterns and meta-language provided by this library should be as consistent with Openzeppelin-contracts as possible, so as to reduce the burden on developers and effectively absorb the experience accumulated in the Solidity ecosystem.
 
@@ -14,7 +14,7 @@ From Openzeppelin-contracts, we can see that it summarizes several implementatio
 
 Metis will be more than just a Wasm contract standard library. We hope that through the practice of Metis, we can fully inherit and absorb previous contract development experience while exploring the best practices of Wasm contract development.
 
-## 1. Problem
+## Problem
 
 At present, contract-based developers mainly face the following problems:
 
@@ -25,7 +25,7 @@ At present, contract-based developers mainly face the following problems:
 
 The above problems severely limit the current ink!-based contract development ecology. Metis will solve these problems while avoiding the existing problems in Solidity.
 
-## 2. Contract Standard Library
+## Contract Standard Library
 
 Metis will implement a series of common components, similar to the Openzeppelin-contracts development library. These components will be thoroughly tested and code audited. These components will be as consistent as possible with Openzeppelin-contracts, which can reduce the burden on developers and effectively absorb the experience accumulated in the Solidity ecosystem.
 
@@ -42,7 +42,7 @@ In the previous version of Metis, we will first implement Openzeppelin-contracts
 - Access: Ownable, AccessControl, TimelockController
 - Security: PullPayment, ReentrancyGuard, Pausable
 
-## 3. ink! component
+## ink! component
 
 Most of Metis development libraries are composed of contract components. In Solidity, the introduction of contract components can be implemented based on inheritance. Generally, the contract components will include the following parts:
 
@@ -53,7 +53,7 @@ Most of Metis development libraries are composed of contract components. In Soli
 
 For example, common Ownable contracts:
 
-```Solidity
+```solidity
 abstract contract Ownable is Context {
     // Component Storage
     address private _owner;
@@ -80,7 +80,7 @@ abstract contract Ownable is Context {
 
 If a contract needs to be Ownable, just inherit the contract:
 
-```Solidity
+```solidity
 contract Escrow is Ownable {
 ...
 }
@@ -88,7 +88,7 @@ contract Escrow is Ownable {
 
 Similarly, other components can also have Ownable through inheritance:
 
-```Solidity
+```solidity
 contract Pausable is Ownable {
   ...
   function unpause() public onlyOwner whenPaused {
@@ -218,7 +218,7 @@ where
 
 Based on metis, we can implement various contract combination modes implemented by Solidity through inheritance under limited intent, and at the same time, with the help of rust's zero-cost abstraction, these abstractions will not bring additional performance consumption.
 
-## 4. Overall Roadmap
+## Overall Roadmap
 
 Metis for ink! is divided into several milestones:
 

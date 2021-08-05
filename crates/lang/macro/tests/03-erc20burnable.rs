@@ -33,7 +33,7 @@ pub mod erc20burnable {
             &mut self,
             _from: &AccountId,
             _to: &AccountId,
-            _amount: Balance,
+            _amount: &Balance,
         ) -> Result<()> {
             Ok(())
         }
@@ -101,7 +101,7 @@ pub mod erc20burnable {
         /// `amount`.
         #[ink(message)]
         pub fn burn_from(&mut self, account: AccountId, amount: Balance) -> Result<()> {
-            erc20::burnable::Impl::burn_from(self, &account, amount)
+            erc20::burnable::Impl::burn_from(self, account, amount)
         }
 
         /// Returns the total token supply.
@@ -115,7 +115,7 @@ pub mod erc20burnable {
         /// Returns `0` if the account is non-existent.
         #[ink(message)]
         pub fn balance_of(&self, owner: AccountId) -> Balance {
-            erc20::Impl::balance_of(self, &owner)
+            erc20::Impl::balance_of(self, owner)
         }
 
         /// Returns the amount which `spender` is still allowed to withdraw from `owner`.
@@ -123,7 +123,7 @@ pub mod erc20burnable {
         /// Returns `0` if no allowance has been set `0`.
         #[ink(message)]
         pub fn allowance(&self, owner: AccountId, spender: AccountId) -> Balance {
-            erc20::Impl::allowance(self, &owner, &spender)
+            erc20::Impl::allowance(self, owner, spender)
         }
 
         /// Transfers `value` amount of tokens from the caller's account to account `to`.
@@ -136,7 +136,7 @@ pub mod erc20burnable {
         /// the caller's account balance.
         #[ink(message)]
         pub fn transfer(&mut self, to: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::transfer(self, &to, value)
+            erc20::Impl::transfer(self, to, value)
         }
 
         /// Allows `spender` to withdraw from the caller's account multiple times, up to
@@ -147,7 +147,7 @@ pub mod erc20burnable {
         /// An `Approval` event is emitted.
         #[ink(message)]
         pub fn approve(&mut self, spender: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::approve(self, &spender, value)
+            erc20::Impl::approve(self, spender, value)
         }
 
         /// Transfers `value` tokens on the behalf of `from` to the account `to`.
@@ -171,7 +171,7 @@ pub mod erc20burnable {
             to: AccountId,
             value: Balance,
         ) -> Result<()> {
-            erc20::Impl::transfer_from(self, &from, &to, value)
+            erc20::Impl::transfer_from(self, from, to, value)
         }
     }
 

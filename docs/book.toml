@@ -1,6 +1,0 @@
-[book]
-authors = ["patract labs <https://github.com/patractlabs>"]
-language = "en"
-multilingual = false
-src = "src"
-title = "The Documentation of Metis"

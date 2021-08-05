@@ -162,19 +162,19 @@ where
     }
 
     fn balance_of(&self, owner: E::AccountId) -> E::Balance {
-        Impl::balance_of(self, &owner)
+        Impl::balance_of(self, owner)
     }
 
     fn allowance(&self, owner: E::AccountId, spender: E::AccountId) -> E::Balance {
-        Impl::allowance(self, &owner, &spender)
+        Impl::allowance(self, owner, spender)
     }
 
     fn transfer(&mut self, to: E::AccountId, value: E::Balance) -> Result<()> {
-        Impl::transfer(self, &to, value)
+        Impl::transfer(self, to, value)
     }
 
     fn approve(&mut self, spender: E::AccountId, value: E::Balance) -> Result<()> {
-        Impl::approve(self, &spender, value)
+        Impl::approve(self, spender, value)
     }
 
     fn transfer_from(
@@ -183,7 +183,7 @@ where
         to: E::AccountId,
         value: E::Balance,
     ) -> Result<()> {
-        Impl::transfer_from(self, &from, &to, value)
+        Impl::transfer_from(self, from, to, value)
     }
 }
 

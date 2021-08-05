@@ -60,13 +60,13 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Initialize the erc20 component
     fn init(&mut self, name: String, symbol: String, decimals: u8, initial_supply: E::Balance) {
-        let caller = &Self::caller();
+        let caller = Self::caller();
 
         self.get_mut().set_total_supply(initial_supply);
-        self.get_mut().set_balance(caller, initial_supply);
+        self.get_mut().set_balance(caller.clone(), initial_supply);
         self.get_mut().set_symbols(name, symbol, decimals);
 
-        self.emit_event_transfer(None, Some(caller.clone()), initial_supply);
+        self.emit_event_transfer(None, Some(caller), initial_supply);
     }
 
     /// Hook that is called before any transfer of tokens. This includes
@@ -83,7 +83,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         &mut self,
         _from: &E::AccountId,
         _to: &E::AccountId,
-        _amount: E::Balance,
+        _amount: &E::Balance,
     ) -> Result<()>{
         Ok(())
     }
@@ -118,8 +118,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Returns the amount of tokens owned by `account`.
-    fn balance_of(&self, account: &E::AccountId) -> E::Balance {
-        self.get().balance_of(account)
+    fn balance_of(&self, account: E::AccountId) -> E::Balance {
+        self.get().balance_of(&account)
     }
 
     /// Returns the remaining number of tokens that `spender` will be
@@ -127,7 +127,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// zero by default.
     ///
     /// This value changes when `approve` or `transfer_from` are called.
-    fn allowance(&self, owner: &E::AccountId, spender: &E::AccountId) -> E::Balance {
+    fn allowance(&self, owner: E::AccountId, spender: E::AccountId) -> E::Balance {
         self.get().allowance(owner, spender)
     }
 
@@ -136,8 +136,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Returns a Result indicating whether the operation succeeded.
     ///
     /// Emits a `Transfer` event.
-    fn transfer(&mut self, to: &E::AccountId, value: E::Balance) -> Result<()> {
-        self._transfer_from_to(&Self::caller(), to, value)
+    fn transfer(&mut self, to: E::AccountId, value: E::Balance) -> Result<()> {
+        self._transfer_from_to(Self::caller(), to, value)
     }
 
     /// Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -152,8 +152,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// <https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729>
     ///
     /// Emits an `Approval` event.
-    fn approve(&mut self, spender: &E::AccountId, amount: E::Balance) -> Result<()> {
-        self._approve(&Self::caller(), spender, amount)
+    fn approve(&mut self, spender: E::AccountId, amount: E::Balance) -> Result<()> {
+        self._approve(Self::caller(), spender, amount)
     }
 
     /// Moves `amount` tokens from `sender` to `recipient` using the
@@ -165,18 +165,18 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Emits a {Transfer} event.
     fn transfer_from(
         &mut self,
-        from: &E::AccountId,
-        to: &E::AccountId,
+        from: E::AccountId,
+        to: E::AccountId,
         amount: E::Balance,
     ) -> Result<()> {
-        let caller = &Self::caller();
+        let caller = Self::caller();
 
-        let current_allowance = self.get().allowance(from, caller);
+        let current_allowance = self.get().allowance(from.clone(), caller.clone());
         if current_allowance < amount {
             return Err(Error::InsufficientAllowance)
         }
 
-        self._transfer_from_to(from, to, amount)?;
+        self._transfer_from_to(from.clone(), to.clone(), amount.clone())?;
 
         self._approve(from, caller, current_allowance - amount)?;
 
@@ -186,18 +186,18 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// The implementation of approve, for extensions call
     fn _approve(
         &mut self,
-        owner: &E::AccountId,
-        spender: &E::AccountId,
+        owner: E::AccountId,
+        spender: E::AccountId,
         amount: E::Balance,
     ) -> Result<()> {
-        let null_account = &E::AccountId::default();
+        let null_account = E::AccountId::default();
 
         if owner == null_account || spender == null_account {
             return Err(Error::AccountIsZero)
         }
 
-        self.get_mut().set_allowance(owner, spender, amount);
-        self.emit_event_approval(owner.clone(), spender.clone(), amount);
+        self.get_mut().set_allowance(owner.clone(), spender.clone(), amount.clone());
+        self.emit_event_approval(owner, spender, amount);
 
         Ok(())
     }
@@ -216,29 +216,29 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `sender` must have a balance of at least `amount`.
     fn _transfer_from_to(
         &mut self,
-        sender: &E::AccountId,
-        recipient: &E::AccountId,
+        sender: E::AccountId,
+        recipient: E::AccountId,
         amount: E::Balance,
     ) -> Result<()> {
-        let null_account = &E::AccountId::default();
+        let null_account = E::AccountId::default();
 
         if sender == null_account || recipient == null_account {
             return Err(Error::AccountIsZero)
         }
 
-        self._before_token_transfer(sender, recipient, amount)?;
+        self._before_token_transfer(&sender, &recipient, &amount)?;
 
-        let sender_balance = self.get().balance_of(sender);
+        let sender_balance = self.get().balance_of(&sender);
         if sender_balance < amount {
             return Err(Error::InsufficientBalance)
         }
 
-        self.get_mut().set_balance(sender, sender_balance - amount);
-        let recipient_balance = self.get().balance_of(recipient);
+        self.get_mut().set_balance(sender.clone(), sender_balance - amount);
+        let recipient_balance = self.get().balance_of(&recipient);
         self.get_mut()
-            .set_balance(recipient, recipient_balance + amount);
+            .set_balance(recipient.clone(), recipient_balance + amount);
 
-        self.emit_event_transfer(Some(sender.clone()), Some(recipient.clone()), amount);
+        self.emit_event_transfer(Some(sender), Some(recipient), amount);
 
         Ok(())
     }
@@ -251,16 +251,16 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Requirements:
     ///
     /// - `account` must have at least `amount` tokens.
-    fn _burn(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
-        let null_account = &E::AccountId::default();
+    fn _burn(&mut self, account: E::AccountId, amount: E::Balance) -> Result<()> {
+        let null_account = E::AccountId::default();
 
-        if account == &E::AccountId::default() {
+        if account == null_account {
             return Err(Error::AccountIsZero)
         }
 
-        self._before_token_transfer(account, null_account, amount)?;
+        self._before_token_transfer(&account, &null_account, &amount)?;
 
-        let account_balance = self.get().balance_of(account);
+        let account_balance = self.get().balance_of(&account);
         let total_supply = self.get().total_supply();
 
         if account_balance < amount {
@@ -268,10 +268,10 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         }
 
         self.get_mut()
-            .set_balance(account, account_balance - amount);
+            .set_balance(account.clone(), account_balance - amount);
         self.get_mut().set_total_supply(total_supply - amount);
 
-        self.emit_event_transfer(Some(account.clone()), None, amount);
+        self.emit_event_transfer(Some(account), None, amount);
 
         Ok(())
     }
@@ -284,22 +284,22 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Requirements:
     ///
     /// - `account` cannot be the zero address.
-    fn _mint(&mut self, account: &E::AccountId, amount: E::Balance) -> Result<()> {
-        let null_account = &E::AccountId::default();
+    fn _mint(&mut self, account: E::AccountId, amount: E::Balance) -> Result<()> {
+        let null_account = E::AccountId::default();
         if account == null_account {
             return Err(Error::AccountIsZero)
         }
 
-        self._before_token_transfer(null_account, account, amount)?;
+        self._before_token_transfer(&null_account, &account, &amount)?;
 
         let total_supply = self.get().total_supply();
-        let account_balance = self.get().balance_of(account);
+        let account_balance = self.get().balance_of(&account);
 
         self.get_mut().set_total_supply(total_supply + amount);
         self.get_mut()
-            .set_balance(account, account_balance + amount);
+            .set_balance(account.clone(), account_balance + amount);
 
-        self.emit_event_transfer(None, Some(account.clone()), amount);
+        self.emit_event_transfer(None, Some(account), amount);
 
         Ok(())
     }
