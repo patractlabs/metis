@@ -25,8 +25,8 @@ impl-serde = "0.3.1"
 convert_case = "0.4.0"
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive", "full"] }
 
-ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang_ir = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang_codegen = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink", default-features = false }
 
 [features]
 default = ["std"]
