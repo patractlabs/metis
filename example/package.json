@@ -15,7 +15,7 @@
   "dependencies": {
     "@redspot/chai": "^0.11.8",
     "@redspot/decimals": "^0.11.8",
-    "@redspot/explorer": "^0.11.5",
+    "@redspot/explorer": "^0.11.8",
     "@redspot/gas-reporter": "^0.11.8",
     "@redspot/known-types": "^0.11.8",
     "@redspot/patract": "^0.11.8",

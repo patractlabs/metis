@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { artifacts, network, patract } from "redspot";
+import { buildTx } from '@redspot/patract/buildTx'
 import { hexToU8a } from '@polkadot/util';
-import { Null, Text, Option, TypeRegistry } from '@polkadot/types';
-import { AccountId } from '@polkadot/types/interfaces/runtime';
+import { Text, Option, TypeRegistry } from '@polkadot/types';
 
 const registry = new TypeRegistry();
 
@@ -57,8 +57,8 @@ function shouldBehaveLikeERC1155(errorPrefix, contractName) {
 
     const fee = 50000000000;
 
-    await api.tx.balances.transfer(this.firstTokenHolder, fee).signAndSend(this.sender);
-    await api.tx.balances.transfer(this.secondTokenHolder, fee).signAndSend(this.sender);
+    await buildTx(api.registry, api.tx.balances.transfer(this.firstTokenHolder, fee), this.sender);
+    await buildTx(api.registry, api.tx.balances.transfer(this.secondTokenHolder, fee), this.sender);
   })
 
   beforeEach(async function () {
