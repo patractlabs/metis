@@ -21,18 +21,18 @@ Since ink! is under development, developers need to use metis according to their
     ink_lang = { version = "3.0.0-rc4", default-features = false }
     ```
     For this situation, Metis provides different branch/tag to support different ink! version. Like here ink! version
-    is `3.0.0-rc4`, then Metis provides branch `ink-3.0.0-rc4` to allow developer to use the same ink! source. In this 
+    is `3.0.0-rc4`, then Metis provides branch `ink/3.0.0-rc4` to allow developer to use the same ink! source. In this 
     branch, Metis' dependencies for ink! will point to `ink_lang = { version = "3.0.0-rc4", default-features = false }` as well:
 
     ```toml
     [dependencies]
     ink_lang = { version = "3.0.0-rc4", default-features = false }
-    metis_lang = { github = "https://github.com/patractlabs/metis", branch = "ink-3.0.0-rc4", default-features = false }
+    metis_lang = { github = "https://github.com/patractlabs/metis", branch = "ink/3.0.0-rc4", default-features = false }
     ```
     
     For now, the relationship between Metis branch/tag and ink! release version are following:
     
-    * ink!: `3.0.0-rc4` | Metis branch: `ink-3.0.0-rc4`
+    * ink!: `3.0.0-rc4` | Metis branch: `ink/3.0.0-rc4`
 
 2. developers use ink! dependencies from github repo:
 
