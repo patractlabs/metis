@@ -16,8 +16,8 @@ proc-macro2 = "1"
 blake2 = "0.9"
 impl-serde = "0.3.1"
 
-ink_lang_ir = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink", default-features = false }
-ink_lang_codegen = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang_ir = { version = "3.0.0-rc4", default-features = false }
+ink_lang_codegen = { version = "3.0.0-rc4", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
 scale-info = { version = "0.6", default-features = false, features = ["derive"] }
@@ -31,14 +31,14 @@ metis_contract = { path = "../contract" }
 metis_erc20 = { path = "../../components/token/erc20" }
 metis_ownable = { path = "../../components/access/ownable" }
 
-ink_primitives = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
-ink_metadata = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
-ink_storage = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
-ink_lang = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
-ink_lang_ir = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
-ink_lang_codegen = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
-ink_env = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
-ink_prelude = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink" }
+ink_primitives = { version = "3.0.0-rc4" }
+ink_metadata = { version = "3.0.0-rc4" }
+ink_storage = { version = "3.0.0-rc4" }
+ink_lang = { version = "3.0.0-rc4" }
+ink_lang_ir = { version = "3.0.0-rc4" }
+ink_lang_codegen = { version = "3.0.0-rc4" }
+ink_env = { version = "3.0.0-rc4" }
+ink_prelude = { version = "3.0.0-rc4" }
 
 scale = { package = "parity-scale-codec", version = "2.1", features = ["derive"] }
 scale-info = { version = "0.6", features = ["derive"] }

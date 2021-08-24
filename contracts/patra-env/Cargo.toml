@@ -5,7 +5,7 @@ authors = ["tyler <tyler@patract.io>"]
 edition = "2018"
 
 [dependencies]
-ink_env = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink", default-features = false }
+ink_env = { version = "3.0.0-rc4", default-features = false }
 
 [lib]
 name = "patra_env"
