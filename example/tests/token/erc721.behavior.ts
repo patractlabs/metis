@@ -1,7 +1,8 @@
 import { expect } from "chai";
 import { artifacts, network, patract } from "redspot";
+import { buildTx } from '@redspot/patract/buildTx'
 import { hexToU8a } from '@polkadot/util';
-import { Null, Text, Option, TypeRegistry } from '@polkadot/types';
+import { Text, Option, TypeRegistry } from '@polkadot/types';
 import { AccountId } from '@polkadot/types/interfaces/runtime';
 
 const registry = new TypeRegistry();
@@ -54,7 +55,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
     //  'ERC721',
     // ]);
 
-    before(async function (){
+    before(async function () {
         const { signerAddresses, sender } = await setup(contractName);
 
         this.sender = signerAddresses[0]
@@ -67,11 +68,11 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
 
         const fee = 50000000000;
 
-        await api.tx.balances.transfer(this.newOwner, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.approved, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.anotherApproved, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.operator, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.other, fee).signAndSend(this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.newOwner, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.approved, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.anotherApproved, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.operator, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.other, fee), this.owner);
     })
 
     beforeEach(async function () {

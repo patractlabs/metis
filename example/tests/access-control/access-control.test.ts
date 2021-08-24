@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { artifacts, network, patract } from "redspot";
+import { buildTx } from '@redspot/patract/buildTx'
 import { hexToU8a } from '@polkadot/util';
 
 const { getContractFactory, getRandomSigner } = patract;
@@ -25,9 +26,9 @@ describe("access-control-flip", () => {
     const Carol = signerAddresses[2];
     const Dan = signerAddresses[3];
 
-    await api.tx.balances.transfer(Bob, 50000000000).signAndSend(Alice);
-    await api.tx.balances.transfer(Carol, 50000000000).signAndSend(Alice);
-    await api.tx.balances.transfer(Dan, 50000000000).signAndSend(Alice);
+    await buildTx(api.registry, api.tx.balances.transfer(Bob, 50000000000), Alice);
+    await buildTx(api.registry, api.tx.balances.transfer(Carol, 50000000000), Alice);
+    await buildTx(api.registry, api.tx.balances.transfer(Dan, 50000000000), Alice);
   }
 
   async function setup() {
