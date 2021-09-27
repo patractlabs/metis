@@ -8,7 +8,9 @@ pub mod contract {
         import,
         metis,
     };
+
     use metis_ownable as ownable;
+    use metis_receiver_erc721 as receiver_erc721;
 
     #[cfg(not(feature = "ink-as-dependency"))]
     use ::ink_storage::{
@@ -17,9 +19,10 @@ pub mod contract {
     };
 
     #[ink(storage)]
-    #[import(ownable)]
+    #[import(ownable, receiver_erc721)]
     pub struct Erc721Receiver {
         ownable: ownable::Data<Erc721Receiver>,
+        receiver_erc721: receiver_erc721::Data,
 
         is_receive: Lazy<bool>,
         erc721_receive: StorageHashMap<AccountId, ()>,
@@ -27,6 +30,7 @@ pub mod contract {
 
     /// Emitted when contract is received the erc721 `token_id` token is transferred from `from` to `to`.
     #[ink(event)]
+    #[metis(receiver_erc721)]
     pub struct Erc721Received {
         #[ink(topic)]
         pub operator: AccountId,
@@ -66,6 +70,7 @@ pub mod contract {
 
                 is_receive: Lazy::new(false),
                 erc721_receive: StorageHashMap::new(),
+                receiver_erc721: receiver_erc721::Data::default(),
             }
         }
 
@@ -119,14 +124,9 @@ pub mod contract {
             );
 
             if self.erc721_receive.contains_key(&Self::env().caller()) {
-                Self::env().emit_event(Erc721Received {
-                    operator,
-                    from,
-                    token_id,
-                    data,
-                });
-
-                [90u8, 119u8, 73u8, 174u8]
+                receiver_erc721::Impl::on_erc721_received(
+                    self, operator, from, token_id, data,
+                )
             } else {
                 [0u8, 0u8, 0u8, 0u8]
             }

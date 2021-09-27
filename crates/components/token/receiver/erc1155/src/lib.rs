@@ -2,6 +2,10 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+use ink_prelude::{
+    vec,
+    vec::Vec,
+};
 use metis_erc1155::TokenId;
 use metis_lang::{
     Env,
