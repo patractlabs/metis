@@ -15,11 +15,11 @@ pub use metis_contract::{
 
 pub use metis_lang_macro::{
     contract,
+    hash,
     import,
     metis,
-    stub,
     reentrancy_guard,
-    supports,
-    hash,
     selector_id,
+    stub,
+    supports,
 };

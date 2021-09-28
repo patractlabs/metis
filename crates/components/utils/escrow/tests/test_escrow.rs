@@ -129,7 +129,7 @@ pub mod mock {
             set_sender(accounts.alice, 0);
             set_balance(accounts.alice, 0);
             set_balance(contract_id(), 123456);
-            
+
             escrow.withdraw(accounts.alice);
 
             assert_eq!(

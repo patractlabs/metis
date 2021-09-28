@@ -40,7 +40,7 @@ pub mod erc20burnable {
     }
     // burnable
     impl erc20::burnable::Impl<Erc20Burnable> for Erc20Burnable {}
-    
+
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
     #[metis(erc20)]

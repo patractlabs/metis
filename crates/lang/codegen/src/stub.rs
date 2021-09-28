@@ -1,8 +1,6 @@
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
-use syn::{
-    parse::Result,
-};
+use syn::parse::Result;
 
 pub fn generate_code(_attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {
     let typ = syn::parse2::<syn::ItemStruct>(input.clone())?;
@@ -20,7 +18,7 @@ pub fn generate_code(_attr: TokenStream2, input: TokenStream2) -> Result<TokenSt
                 type Timestamp = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::Timestamp;
                 type BlockNumber = <::ink_env::DefaultEnvironment as ::ink_env::Environment>::BlockNumber;
             }
-    
+
             impl<E> metis_lang::FromAccountId<E> for #ident
             where
                 E: metis_lang::Env,

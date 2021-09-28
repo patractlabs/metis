@@ -26,25 +26,16 @@ pub use module::Data;
 /// The `EventEmit` impl the event emit api for ownable component.
 pub trait EventEmit<E: Env>: EnvAccess<E> {
     /// Emit Deposited event
-    fn emit_event_deposited(
-        &mut self,
-        payee: E::AccountId,
-        amount: E::Balance,
-    );
+    fn emit_event_deposited(&mut self, payee: E::AccountId, amount: E::Balance);
 
     /// Emit Withdrawn event
-    fn emit_event_withdrawn(
-        &mut self,
-        payee: E::AccountId,
-        amount: E::Balance,
-    );
+    fn emit_event_withdrawn(&mut self, payee: E::AccountId, amount: E::Balance);
 }
 
 /// The `Impl` define ownable component impl funcs
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> + Ownable<E> {
     /// init Initializes the contract setting the deployer as the initial owner.
-    fn init(&mut self) {
-    }
+    fn init(&mut self) {}
 
     /// Return the deposits of payee
     fn deposits_of(&self, payee: &E::AccountId) -> E::Balance {

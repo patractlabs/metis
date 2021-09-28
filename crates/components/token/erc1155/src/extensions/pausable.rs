@@ -8,9 +8,7 @@ use crate::{
     Result,
     TokenId,
 };
-use ink_prelude::{
-    vec::Vec,
-};
+use ink_prelude::vec::Vec;
 use metis_lang::Env;
 
 pub trait Impl<E>: ERC1155<E> + metis_pausable::Impl<E>

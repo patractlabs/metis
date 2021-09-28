@@ -19,7 +19,7 @@ pub mod erc777_contract {
         erc777: erc777::Data<Erc777>,
     }
 
-    // TODO: gen by marco with erc777 component
+    // TODO: gen by macro with erc777 component
     #[cfg(not(feature = "ink-as-dependency"))]
     impl erc777::Impl<Erc777> for Erc777 {}
 
@@ -50,7 +50,7 @@ pub mod erc777_contract {
 
     /// Indicate a send of `amount` of tokens from the `from` address to the `to`
     /// address by the `operator` address.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of a send or an ERC-20 transfer process.
     #[ink(event)]
     #[metis(erc777)]
@@ -84,7 +84,7 @@ pub mod erc777_contract {
 
     /// Indicate the burning of `amount` of tokens from the `from` address
     /// by the `operator` address.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of a burn process.
     #[ink(event)]
     #[metis(erc777)]
@@ -99,7 +99,7 @@ pub mod erc777_contract {
     }
 
     /// Indicates the authorization of `operator` as an operator for `holder`.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of an operator authorization process.
     #[ink(event)]
     #[metis(erc777)]
@@ -111,7 +111,7 @@ pub mod erc777_contract {
     }
 
     /// Indicates the revocation of `operator` as an operator for `holder`.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of an operator revocation process.
     #[ink(event)]
     #[metis(erc777)]

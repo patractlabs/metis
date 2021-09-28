@@ -2,8 +2,8 @@ pub use super::module::Data;
 use ink_lang::ForwardCallMut;
 use ink_prelude::{
     string::String,
-    vec::Vec,
     vec,
+    vec::Vec,
 };
 pub use metis_lang::{
     Env,
@@ -140,11 +140,11 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
-    /// 
+    ///
     /// Emits an `ApprovalForAll` event.
-    /// 
+    ///
     /// Requirements:
-    /// 
+    ///
     /// - `operator` cannot be the caller.
     fn set_approval_for_all(&mut self, operator: E::AccountId, approved: bool) {
         let caller = Self::caller();
@@ -160,7 +160,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Returns true if `operator` is approved to transfer ``account``'s tokens.
-    /// 
+    ///
     /// See `set_approval_for_all`.
     fn is_approved_for_all(
         &self,
@@ -594,7 +594,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             .fire();
 
         let is_ok = match resp {
-            Ok(selector_id) => selector_id == metis_lang::selector_id!(on_erc1155_received),
+            Ok(selector_id) => {
+                selector_id == metis_lang::selector_id!(on_erc1155_received)
+            }
             Err(err) => {
                 match err {
                     ink_env::Error::NotCallable => true,
@@ -640,7 +642,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             .fire();
 
         let is_ok = match resp {
-            Ok(selector_id) => selector_id == metis_lang::selector_id!(on_erc1155_batch_received),
+            Ok(selector_id) => {
+                selector_id == metis_lang::selector_id!(on_erc1155_batch_received)
+            }
             Err(err) => {
                 match err {
                     ink_env::Error::NotCallable => true,

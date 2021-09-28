@@ -47,6 +47,4 @@ mod stub {
     }
 }
 
-pub use stub::{
-    ERC1155Receiver as ERC1155ReceiverStub,
-};
+pub use stub::ERC1155Receiver as ERC1155ReceiverStub;

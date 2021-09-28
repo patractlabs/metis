@@ -59,7 +59,13 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 /// }
 pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Initialize the erc20 component
-    fn init(&mut self, name: String, symbol: String, decimals: u8, initial_supply: E::Balance) {
+    fn init(
+        &mut self,
+        name: String,
+        symbol: String,
+        decimals: u8,
+        initial_supply: E::Balance,
+    ) {
         let caller = Self::caller();
 
         self.get_mut().set_total_supply(initial_supply);
@@ -84,7 +90,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
         _from: &E::AccountId,
         _to: &E::AccountId,
         _amount: &E::Balance,
-    ) -> Result<()>{
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -196,7 +202,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             return Err(Error::AccountIsZero)
         }
 
-        self.get_mut().set_allowance(owner.clone(), spender.clone(), amount.clone());
+        self.get_mut()
+            .set_allowance(owner.clone(), spender.clone(), amount.clone());
         self.emit_event_approval(owner, spender, amount);
 
         Ok(())
@@ -233,7 +240,8 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             return Err(Error::InsufficientBalance)
         }
 
-        self.get_mut().set_balance(sender.clone(), sender_balance - amount);
+        self.get_mut()
+            .set_balance(sender.clone(), sender_balance - amount);
         let recipient_balance = self.get().balance_of(&recipient);
         self.get_mut()
             .set_balance(recipient.clone(), recipient_balance + amount);

@@ -6,7 +6,7 @@ mod flipper {
         import,
         metis,
     };
-    
+
     use metis_ownable as ownable;
     use metis_pausable as pausable;
 

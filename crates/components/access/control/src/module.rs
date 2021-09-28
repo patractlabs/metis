@@ -64,7 +64,7 @@ where
         let key = (role, account);
 
         if self.roles.contains_key(&key) {
-            return Err(Error::AccountRoleExists);
+            return Err(Error::AccountRoleExists)
         }
 
         self.roles.insert(key, ());

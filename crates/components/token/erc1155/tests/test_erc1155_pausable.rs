@@ -24,7 +24,7 @@ mod erc1155_pausable_tests {
         let erc1155 = Erc1155Pausable::new(String::from("MockErc1155Token"));
         let token_a = TokenId::new([0x0a; 32]);
 
-        // for metadatas
+        // for metaDatas
         assert_eq!(
             String::from("MockErc1155Token"),
             erc1155.url(token_a),

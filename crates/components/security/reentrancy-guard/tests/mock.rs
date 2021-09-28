@@ -6,7 +6,7 @@ mod flipper {
         import,
         metis,
     };
-    
+
     use metis_ownable as ownable;
     use metis_reentrancy_guard as reentrancy_guard;
 
@@ -99,7 +99,7 @@ mod flipper {
 
         #[ink::test]
         #[should_panic]
-        fn call_reentrant_should_panic(){
+        fn call_reentrant_should_panic() {
             let mut flipper = Flipper::new(false);
             assert_eq!(flipper.get(), false);
             flipper.flip_panic();

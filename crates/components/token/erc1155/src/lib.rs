@@ -3,8 +3,8 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod basic;
-mod module;
 mod extensions;
+mod module;
 
 pub use metis_lang::{
     Env,

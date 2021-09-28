@@ -28,9 +28,7 @@ pub mod default {
 }
 
 pub mod burnable {
-    pub use super::extensions::burnable::{
-        Impl,
-    };
+    pub use super::extensions::burnable::Impl;
 }
 
 pub mod enumerable {
@@ -41,9 +39,7 @@ pub mod enumerable {
 }
 
 pub mod pausable {
-    pub use super::extensions::pausable::{
-        Impl,
-    };
+    pub use super::extensions::pausable::Impl;
 }
 
 pub mod urlstorage {

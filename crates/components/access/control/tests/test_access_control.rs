@@ -110,10 +110,7 @@ mod access_control_tests {
             sender,
         }) = decoded_event
         {
-            assert_eq!(
-                role, expected_role,
-                "encountered invalid RoleGranted.role"
-            );
+            assert_eq!(role, expected_role, "encountered invalid RoleGranted.role");
             assert_eq!(
                 account, expected_account,
                 "encountered invalid RoleGranted.account"
@@ -168,10 +165,7 @@ mod access_control_tests {
             sender,
         }) = decoded_event
         {
-            assert_eq!(
-                role, expected_role,
-                "encountered invalid RoleRevoked.role"
-            );
+            assert_eq!(role, expected_role, "encountered invalid RoleRevoked.role");
             assert_eq!(
                 account, expected_account,
                 "encountered invalid RoleRevoked.account"

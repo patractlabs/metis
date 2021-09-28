@@ -4,10 +4,10 @@ use ink_env::AccountId;
 use ink_lang as ink;
 
 /// # Example: Implementation
-/// 
+///
 /// ```
 /// #![cfg_attr(not(feature = "std"), no_std)]
-/// 
+///
 /// use ink_lang as ink;
 ///
 /// #[ink::contract]

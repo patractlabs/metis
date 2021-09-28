@@ -128,11 +128,11 @@ pub mod contract {
         }
 
         /// Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
-        /// 
+        ///
         /// Emits an `ApprovalForAll` event.
-        /// 
+        ///
         /// Requirements:
-        /// 
+        ///
         /// - `operator` cannot be the caller.
         #[ink(message)]
         pub fn set_approval_for_all(&mut self, operator: AccountId, approved: bool) {
@@ -140,7 +140,7 @@ pub mod contract {
         }
 
         /// Returns true if `operator` is approved to transfer ``account``'s tokens.
-        /// 
+        ///
         /// See `set_approval_for_all`.
         #[ink(message)]
         pub fn is_approved_for_all(

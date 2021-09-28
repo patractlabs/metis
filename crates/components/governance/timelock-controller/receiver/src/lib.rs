@@ -17,16 +17,10 @@ mod stub {
         }
 
         #[ink(message, payable)]
-        pub fn on_call(
-            &mut self,
-            _operator: AccountId,
-            _data: Vec<u8>,
-        ) -> bool {
+        pub fn on_call(&mut self, _operator: AccountId, _data: Vec<u8>) -> bool {
             unimplemented!()
         }
     }
 }
 
-pub use stub::{
-    Receiver,
-};
+pub use stub::Receiver;

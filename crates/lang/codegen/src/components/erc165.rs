@@ -83,9 +83,12 @@ fn generate_supports_message(func_params: FuncParams) -> Result<TokenStream2> {
         .map(|f| calculate_interface_id(&f.attrs))
         .into_iter()
         .collect::<Vec<_>>();
-    
+
     // for supports_interface
-    interface_ids.push(calculate_interface_id(&vec![Ident::new("supports_interface", Span::call_site())]));
+    interface_ids.push(calculate_interface_id(&vec![Ident::new(
+        "supports_interface",
+        Span::call_site(),
+    )]));
 
     let match_id_trues = interface_ids
         .iter()

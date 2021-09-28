@@ -1,6 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-pub use self::erc20::{Error, IErc20, Result};
+pub use self::erc20::{
+    Error,
+    IErc20,
+    Result,
+};
 pub mod events {
     // pub use crate::erc20::{Transfer, Approval};
 }
@@ -85,7 +89,12 @@ mod erc20 {
 
         /// Transfers `value` tokens on the behalf of `from` to the account `to`.
         #[ink(message)]
-        fn transfer_from(&mut self, from: AccountId, to: AccountId, value: Balance) -> Result<()>;
+        fn transfer_from(
+            &mut self,
+            from: AccountId,
+            to: AccountId,
+            value: Balance,
+        ) -> Result<()>;
 
         /// Allows `spender` to withdraw from the caller's account multiple times, up to
         /// the `value` amount.

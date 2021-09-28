@@ -47,7 +47,10 @@ where
     E: Env,
 {
     pub fn get(&self, payee: &E::AccountId) -> E::Balance {
-        self.deposits.get(payee).copied().unwrap_or(E::Balance::from(0_u8))
+        self.deposits
+            .get(payee)
+            .copied()
+            .unwrap_or(E::Balance::from(0_u8))
     }
 
     pub fn add(&mut self, payee: &E::AccountId, amt: &E::Balance) {

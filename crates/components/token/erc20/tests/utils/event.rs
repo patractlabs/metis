@@ -6,8 +6,8 @@ use ink_env::{
         CryptoHash,
         HashOutput,
     },
-    Hash,
     Clear,
+    Hash,
 };
 
 /// assert_emitted_event_len check event emitted current len is expected
@@ -74,4 +74,3 @@ where
     result.as_mut()[0..copy_len].copy_from_slice(&hash_output[0..copy_len]);
     result
 }
-

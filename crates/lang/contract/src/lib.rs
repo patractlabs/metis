@@ -13,8 +13,8 @@ pub use traits::{
 };
 
 pub use ink_env::hash::{
-    HashOutput,
     CryptoHash,
+    HashOutput,
 };
 
 pub trait Env: 'static {
@@ -48,7 +48,9 @@ pub trait EnvAccess<E: Env> {
     fn balance() -> E::Balance;
     fn transfer(destination: E::AccountId, value: E::Balance) -> ink_env::Result<()>;
     fn block_timestamp() -> E::Timestamp;
-    fn hash_bytes<H>(input: &[u8]) -> <H as HashOutput>::Type where H : CryptoHash;
+    fn hash_bytes<H>(input: &[u8]) -> <H as HashOutput>::Type
+    where
+        H: CryptoHash;
 }
 
 pub trait FromAccountId<E>

@@ -28,10 +28,7 @@ mod stub {
         ) -> [u8; 4] {
             unimplemented!()
         }
-
     }
 }
 
-pub use stub::{
-    ERC721Receiver as ERC721ReceiverStub,
-};
+pub use stub::ERC721Receiver as ERC721ReceiverStub;
