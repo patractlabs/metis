@@ -6,29 +6,31 @@ edition = "2018"
 
 [dependencies]
 ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
+ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = [
+    "derive"
+], optional = true }
 ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_prelude = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-
-scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
-scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
+scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = [
+    "derive"
+] }
+scale-info = { version = "0.6", default-features = false, features = [
+    "derive"
+], optional = true }
 num-traits = { version = "0.2", default-features = false, features = ["i128"] }
 hex = { version = "0.4", default-features = false }
-
 metis_lang = { path = "../../../../crates/lang", default-features = false }
 metis_ownable = { path = "../../../../crates/components/access/ownable/", default-features = false }
 metis_erc721 = { path = "../../../../crates/components/token/erc721/", default-features = false }
 metis_erc1155 = { path = "../../../../crates/components/token/erc1155/", default-features = false }
+metis_receiver_erc1155 = { path = "../../../../crates/components/token/receiver/erc1155/", default-features = false }
 
 [lib]
 name = "erc1155_token_receiver"
 path = "lib.rs"
-crate-type = [
-    "cdylib",
-    "rlib",
-] # Used for ABI generation.
+crate-type = ["cdylib", "rlib"] # Used for ABI generation.
 
 [features]
 default = ["std"]
@@ -45,6 +47,7 @@ std = [
     "metis_lang/std",
     "metis_erc721/std",
     "metis_erc1155/std",
-    "metis_ownable/std"
+    "metis_ownable/std",
+    "metis_receiver_erc1155/std",
 ]
 ink-as-dependency = []
