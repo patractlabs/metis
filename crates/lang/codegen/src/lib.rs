@@ -1,8 +1,8 @@
+mod components;
 mod env;
 mod event;
 mod import;
 mod utils;
-mod components;
 
 use ink_lang_ir::Contract;
 use proc_macro2::TokenStream as TokenStream2;
@@ -11,9 +11,11 @@ use syn::Result;
 
 pub mod stub;
 
-pub mod component{
-    pub use super::components::erc165;
-    pub use super::components::reentrancy_guard;
+pub mod component {
+    pub use super::components::{
+        erc165,
+        reentrancy_guard,
+    };
 }
 
 pub fn generate_code(attr: TokenStream2, input: TokenStream2) -> Result<TokenStream2> {

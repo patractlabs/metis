@@ -23,11 +23,11 @@ pub fn metis(_: TokenStream, item: TokenStream) -> TokenStream {
     item
 }
 
-/// The marco to generate _supports_interface for impl erc165
+/// The macro to generate _supports_interface for impl erc165
 /// Use like
 ///    #[metis::supports(interface(new, default), interface(flip, get))]
 ///    impl Flipper {}
-/// This will generate this two interface: 
+/// This will generate this two interface:
 ///   - Selector(new) ^ Selector(default)
 ///   - Selector(flip) ^ Selector(get)
 #[proc_macro_attribute]
@@ -35,25 +35,26 @@ pub fn supports(attr: TokenStream, item: TokenStream) -> TokenStream {
     erc165::generate(attr.into(), item.into()).into()
 }
 
-/// The marco to generate reentrancy_guard check for message which need nonreentrancy
+/// The macro to generate reentrancy_guard check for message which need nonreentrancy
 #[proc_macro_attribute]
 pub fn reentrancy_guard(attr: TokenStream, item: TokenStream) -> TokenStream {
     reentrancy_guard::generate(attr.into(), item.into()).into()
 }
 
-/// The marco to generate stub code in metis
+/// The macro to generate stub code in metis
 #[proc_macro_attribute]
 pub fn stub(attr: TokenStream, item: TokenStream) -> TokenStream {
     stub::generate(attr.into(), item.into()).into()
 }
 
-/// The marco to generate hash by input.
+/// The macro to generate hash by input.
 #[proc_macro]
 pub fn hash(input: TokenStream) -> TokenStream {
     match utils::generate_hash_string_or_err(input.into()) {
         Ok(tokens) => tokens,
         Err(err) => err.to_compile_error(),
-    }.into()
+    }
+    .into()
 }
 
 /// Gen selector id form input message name.
@@ -62,5 +63,6 @@ pub fn selector_id(input: TokenStream) -> TokenStream {
     match utils::generate_msg_selector_id_or_err(input.into()) {
         Ok(tokens) => tokens,
         Err(err) => err.to_compile_error(),
-    }.into()
+    }
+    .into()
 }

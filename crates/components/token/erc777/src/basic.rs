@@ -48,7 +48,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 
     /// Indicate a send of `amount` of tokens from the `from` address to the `to`
     /// address by the `operator` address.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of a send or an ERC-20 transfer process.
     fn emit_event_sent(
         &mut self,
@@ -75,7 +75,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
 
     /// Indicate the burning of `amount` of tokens from the `from` address
     /// by the `operator` address.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of a burn process.
     fn emit_event_burned(
         &mut self,
@@ -87,7 +87,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
     );
 
     /// Indicates the authorization of `operator` as an operator for `holder`.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of an operator authorization process.
     fn emit_event_authorized_operator(
         &mut self,
@@ -96,7 +96,7 @@ pub trait EventEmit<E: Env>: EnvAccess<E> {
     );
 
     /// Indicates the revocation of `operator` as an operator for `holder`.
-    /// 
+    ///
     /// NOTE: This event MUST NOT be emitted outside of an operator revocation process.
     fn emit_event_revoked_operator(
         &mut self,
@@ -555,9 +555,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Send tokens
-    /// 
+    ///
     /// Params :
-    /// 
+    ///
     /// - from address token holder address
     /// - to address recipient address
     /// - amount uint256 amount of tokens to transfer
@@ -606,9 +606,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Burn tokens
-    /// 
+    ///
     /// Params:
-    /// 
+    ///
     /// - from address token holder address
     /// - amount uint256 amount of tokens to burn
     /// - data bytes extra information provided by the token holder
@@ -707,9 +707,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Call from.tokensToSend() if the interface is registered
-    /// 
+    ///
     /// Params:
-    /// 
+    ///
     /// - operator address operator requesting the transfer
     /// - from address token holder address
     /// - to address recipient address
@@ -731,9 +731,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// Call to.tokensReceived() if the interface is registered.
     /// Reverts if the recipient is a contract but
     /// tokensReceived() was not registered for the recipient
-    /// 
+    ///
     /// Params:
-    /// 
+    ///
     /// - operator address operator requesting the transfer
     /// - from address token holder address
     /// - to address recipient address

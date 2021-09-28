@@ -19,9 +19,7 @@ pub use access_control::{
 };
 use ink_env::hash::Blake2x256;
 use ink_lang::ForwardCallMut;
-use ink_prelude::{
-    vec::Vec,
-};
+use ink_prelude::vec::Vec;
 use metis_access_control as access_control;
 use metis_lang::{
     Env,

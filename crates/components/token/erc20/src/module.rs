@@ -102,7 +102,6 @@ impl<E: Env> Data<E> {
         spender: E::AccountId,
         value: E::Balance,
     ) {
-        self.allowances
-            .insert((owner, spender), value);
+        self.allowances.insert((owner, spender), value);
     }
 }

@@ -244,7 +244,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     }
 
     /// Safely transfers `token_id` token from `from` to `to`,
-    /// checking first that contract recipients are aware of 
+    /// checking first that contract recipients are aware of
     /// the ERC721 protocol to prevent tokens from being forever locked.
     ///
     /// Requirements:
@@ -254,7 +254,7 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
     /// - `token_id` token must exist and be owned by `from`.
     /// - If the caller is not `from`, it must be have been allowed to
     ///   move this token by either `approve` or `set_approval_for_all`.
-    /// - If `to` refers to a smart contract, it must implement 
+    /// - If `to` refers to a smart contract, it must implement
     ///   `on_erc721_received`, which is called upon a safe transfer.
     ///
     /// Emits a `Transfer` event.
@@ -521,7 +521,9 @@ pub trait Impl<E: Env>: Storage<E, Data<E>> + EventEmit<E> {
             .fire();
 
         match resp {
-            Ok(selector_id) => selector_id == metis_lang::selector_id!(on_erc721_received),
+            Ok(selector_id) => {
+                selector_id == metis_lang::selector_id!(on_erc721_received)
+            }
             Err(err) => {
                 match err {
                     ink_env::Error::NotCallable => true,

@@ -95,7 +95,7 @@ impl<E: Env> Data<E> {
             }
             Entry::Vacant(entry) => {
                 entry.insert(amount);
-            },
+            }
         };
     }
 

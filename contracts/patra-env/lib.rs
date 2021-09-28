@@ -5,7 +5,8 @@ use ink_env::Environment;
 pub enum PatraEnvironment {}
 
 impl Environment for PatraEnvironment {
-    const MAX_EVENT_TOPICS: usize = <ink_env::DefaultEnvironment as Environment>::MAX_EVENT_TOPICS;
+    const MAX_EVENT_TOPICS: usize =
+        <ink_env::DefaultEnvironment as Environment>::MAX_EVENT_TOPICS;
 
     type AccountId = <ink_env::DefaultEnvironment as Environment>::AccountId;
     type Balance = <ink_env::DefaultEnvironment as Environment>::Balance;

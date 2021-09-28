@@ -11,8 +11,8 @@ pub mod mock {
         Result,
         RoleId,
     };
-    use metis_access_control_enumerable as access_control_enumerable;
     use metis_access_control as access_control;
+    use metis_access_control_enumerable as access_control_enumerable;
     use metis_lang::{
         import,
         metis,
@@ -22,12 +22,12 @@ pub mod mock {
     #[import(access_control, access_control_enumerable)]
     pub struct AccessControl {
         access_control: access_control::Data<AccessControl>,
-        access_control_enumerable : access_control_enumerable::Data<AccessControl>,
+        access_control_enumerable: access_control_enumerable::Data<AccessControl>,
 
         value: bool,
     }
 
-    impl access_control_enumerable::Impl<AccessControl> for AccessControl{}
+    impl access_control_enumerable::Impl<AccessControl> for AccessControl {}
 
     /// Emitted when `new_admin_role` is set as ``role``'s admin role, replacing `previous_admin_role`
     #[ink(event)]
@@ -88,9 +88,21 @@ pub mod mock {
                 value: init_value,
             };
 
-            access_control_enumerable::Impl::_setup_role(&mut instance, ROLE_ID_FLIPER, fliper);
-            access_control_enumerable::Impl::_setup_role(&mut instance, ROLE_ID_SETTER, setter);
-            access_control_enumerable::Impl::_setup_role(&mut instance, ROLE_ID_ADMIN, admin);
+            access_control_enumerable::Impl::_setup_role(
+                &mut instance,
+                ROLE_ID_FLIPER,
+                fliper,
+            );
+            access_control_enumerable::Impl::_setup_role(
+                &mut instance,
+                ROLE_ID_SETTER,
+                setter,
+            );
+            access_control_enumerable::Impl::_setup_role(
+                &mut instance,
+                ROLE_ID_ADMIN,
+                admin,
+            );
 
             access_control_enumerable::Impl::_set_role_admin(
                 &mut instance,
@@ -155,7 +167,7 @@ pub mod mock {
         pub fn get_role_member(&self, role: RoleId, index: u32) -> AccountId {
             access_control_enumerable::Impl::get_role_member(self, &role, index as usize)
         }
-    
+
         #[ink(message)]
         pub fn get_role_member_count(&self, role: RoleId) -> u32 {
             access_control_enumerable::Impl::get_role_member_count(self, &role) as u32

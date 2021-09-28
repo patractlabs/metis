@@ -1,8 +1,8 @@
 use metis_lang::Env;
 
 use crate::erc20::{
-    Result,
     Error,
+    Result,
 };
 
 /// Extension of {ERC20} that allows token holders to destroy both their own
@@ -29,10 +29,10 @@ where
     fn burn_from(&mut self, account: E::AccountId, amount: E::Balance) -> Result<()> {
         let caller = Self::caller();
         let current_allowance = self.get().allowance(account.clone(), caller.clone());
-        if current_allowance < amount{
-            return Err(Error::InsufficientAllowance);
+        if current_allowance < amount {
+            return Err(Error::InsufficientAllowance)
         }
-        
+
         self._approve(account.clone(), caller, amount)?;
 
         self._burn(account, amount)

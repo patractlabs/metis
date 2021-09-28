@@ -32,7 +32,7 @@ pub mod erc20ownable {
         erc20: erc20::Data<Erc20Ownable>,
     }
 
-    // TODO: gen by marco with erc20 component
+    // TODO: gen by macro with erc20 component
     impl erc20::Impl<Erc20Ownable> for Erc20Ownable {}
 
     /// Event emitted when a token transfer occurs.
