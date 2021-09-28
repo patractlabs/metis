@@ -52,8 +52,8 @@ impl TokenId {
 
     #[cfg(not(feature = "alloc"))]
     pub fn to_string(&self) -> String {
-        let mut output = [0; 64 + 1];
+        let mut output = [0; 64];
         hex::encode_to_slice(self.0, &mut output).unwrap();
-        String::from( ::core::str::from_utf8(&output).unwrap())
+        String::from(::core::str::from_utf8(&output).unwrap())
     }
 }

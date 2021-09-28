@@ -362,10 +362,10 @@
     "@polkadot/api" "^4.17.1"
     "@polkadot/api-contract" "^4.17.1"
 
-"@redspot/explorer@^0.11.5":
+"@redspot/explorer@^0.11.8":
   version "0.11.8"
-  resolved "https://registry.yarnpkg.com/@redspot/explorer/-/explorer-0.11.8.tgz#45e503cd63d4651c620a5acac01b9905f968682e"
-  integrity sha512-qeMAENqiXDX42Aiq87nc+etkQAZ+HOz4bB8cxWTwpi6m2EPfHT0ZOSv89zHWJG54PK+1ec4UfS1Fx4H+L9zX2w==
+  resolved "https://registry.nlark.com/@redspot/explorer/download/@redspot/explorer-0.11.8.tgz#45e503cd63d4651c620a5acac01b9905f968682e"
+  integrity sha1-ReUDzWPUZRxiClrKwBuZBfloaC4=
   dependencies:
     cors "^2.8.5"
     express "^4.17.1"

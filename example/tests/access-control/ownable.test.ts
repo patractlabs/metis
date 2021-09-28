@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 import { expect } from 'chai';
 import { patract, network, artifacts } from 'redspot';
+import { buildTx } from '@redspot/patract/buildTx'
 import type { Text } from '@polkadot/types';
 
 const { getContractFactory, getRandomSigner } = patract;
@@ -12,7 +13,7 @@ async function expectRevert(promise, expectedError) {
   try {
     await promise;
   } catch (exp) {
-    expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+    expect(exp.error.message).to.equal("contracts.ContractTrapped")
   }
 }
 
@@ -28,7 +29,7 @@ describe('ERC20', () => {
     const abi = artifacts.readArtifact('ownable_erc20');
     const receiver = addresses[1];
 
-    await api.tx.balances.transfer(receiver, 50000000000).signAndSend(addresses[0]);
+    await buildTx(api.registry, api.tx.balances.transfer(receiver, 50000000000), addresses[0]);
 
     return { sender, contractFactory, contract, abi, receiver, Alice, one };
   }

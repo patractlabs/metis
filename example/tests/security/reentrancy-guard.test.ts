@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { artifacts, network, patract } from "redspot";
-import { hexToU8a } from '@polkadot/util';
+import { buildTx } from '@redspot/patract/buildTx'
 
 const { getContractFactory, getRandomSigner } = patract;
 
@@ -24,9 +24,9 @@ describe("reentrancy-guard test", () => {
     const Carol = signerAddresses[2];
     const Dan = signerAddresses[3];
 
-    await api.tx.balances.transfer(Bob, 50000000000).signAndSend(Alice);
-    await api.tx.balances.transfer(Carol, 50000000000).signAndSend(Alice);
-    await api.tx.balances.transfer(Dan, 50000000000).signAndSend(Alice);
+    await await buildTx(api.registry, api.tx.balances.transfer(Bob, 50000000000), Alice);
+    await await buildTx(api.registry, api.tx.balances.transfer(Carol, 50000000000), Alice);
+    await await buildTx(api.registry, api.tx.balances.transfer(Dan, 50000000000), Alice);
   }
 
   async function setup() {
@@ -77,7 +77,7 @@ describe("reentrancy-guard test", () => {
       try {
         await contract.tx.flipPanic();
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       expect((await contract.query.get()).output).to.equal(true);
@@ -96,8 +96,7 @@ describe("reentrancy-guard test", () => {
       try {
         await caller.connect(Bob).tx.doSth();
       } catch (exp) {
-        console.error(exp);
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       expect((await contract.query.get()).output).to.equal(true);
@@ -118,8 +117,7 @@ describe("reentrancy-guard test", () => {
       try {
         await caller.connect(Bob).tx.doSth();
       } catch (exp) {
-        console.error(exp);
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       expect((await contract.query.get()).output).to.equal(true);

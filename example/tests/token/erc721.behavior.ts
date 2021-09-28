@@ -1,7 +1,9 @@
 import { expect } from "chai";
+import { TransactionResponse } from '@redspot/patract/types';
 import { artifacts, network, patract } from "redspot";
+import { buildTx } from '@redspot/patract/buildTx'
 import { hexToU8a } from '@polkadot/util';
-import { Null, Text, Option, TypeRegistry } from '@polkadot/types';
+import { Text, Option, TypeRegistry } from '@polkadot/types';
 import { AccountId } from '@polkadot/types/interfaces/runtime';
 
 const registry = new TypeRegistry();
@@ -29,7 +31,8 @@ async function expectRevert(promise, expectedError) {
     try {
         await promise;
     } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        let res = exp as TransactionResponse;
+        expect(res.error?.message).to.equal("contracts.ContractTrapped")
     }
 }
 
@@ -54,7 +57,7 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
     //  'ERC721',
     // ]);
 
-    before(async function (){
+    before(async function () {
         const { signerAddresses, sender } = await setup(contractName);
 
         this.sender = signerAddresses[0]
@@ -67,11 +70,11 @@ async function shouldBehaveLikeERC721(errorPrefix, contractName) {
 
         const fee = 50000000000;
 
-        await api.tx.balances.transfer(this.newOwner, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.approved, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.anotherApproved, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.operator, fee).signAndSend(this.owner);
-        await api.tx.balances.transfer(this.other, fee).signAndSend(this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.newOwner, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.approved, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.anotherApproved, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.operator, fee), this.owner);
+        await buildTx(api.registry, api.tx.balances.transfer(this.other, fee), this.owner);
     })
 
     beforeEach(async function () {
@@ -711,7 +714,7 @@ async function shouldBehaveLikeERC721Metadata(errorPrefix, contractName) {
             });
 
             it('return empty string by default', async function () {
-                expect((await this.token.query.tokenUrl(firstTokenId)).output).to.equal(null);
+                expect((await this.token.query.tokenUrl(secondTokenId)).output).to.equal(null);
             });
 
             it('reverts when queried for non existent token id', async function () {

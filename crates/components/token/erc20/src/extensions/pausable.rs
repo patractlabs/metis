@@ -23,7 +23,7 @@ impl<E: Env, I: Impl<E>> crate::hookable::Impl<E> for I {
         &mut self,
         _from: &E::AccountId,
         _to: &E::AccountId,
-        _amount: E::Balance,
+        _amount: &E::Balance,
     ) -> Result<()> {
         metis_pausable::Impl::<E>::ensure_not_paused(self);
 

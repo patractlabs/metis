@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { artifacts, network, patract } from "redspot";
-import { hexToU8a } from '@polkadot/util';
-import { textSpanOverlapsWith } from "typescript";
+import { buildTx } from '@redspot/patract/buildTx'
 
 const { getContractFactory, getRandomSigner } = patract;
 
@@ -48,12 +47,12 @@ describe("escrow test", () => {
       const signerAddresses = await getAddresses();
       const Bob = signerAddresses[1];
 
-      await api.tx.balances.transfer(Bob, 50000000000).signAndSend(Alice);
+      await buildTx(api.registry, api.tx.balances.transfer(Bob, 50000000000), Alice);
 
       await contract.tx.deposit(Bob);
       expect((await contract.query.depositsOf(Bob)).output).to.equal(0);
 
-      await contract.tx.deposit(Bob, {value: 1000});
+      await contract.tx.deposit(Bob, { value: 1000 });
       expect((await contract.query.depositsOf(Bob)).output).to.equal(1000);
 
       await contract.tx.withdraw(Bob);

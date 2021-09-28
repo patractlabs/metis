@@ -162,22 +162,22 @@ pub mod erc20_contract {
 
         #[ink(message)]
         pub fn balance_of(&self, owner: AccountId) -> Balance {
-            erc20::Impl::balance_of(self, &owner)
+            erc20::Impl::balance_of(self, owner)
         }
 
         #[ink(message)]
         pub fn allowance(&self, owner: AccountId, spender: AccountId) -> Balance {
-            erc20::Impl::allowance(self, &owner, &spender)
+            erc20::Impl::allowance(self, owner, spender)
         }
 
         #[ink(message)]
         pub fn transfer(&mut self, to: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::transfer(self, &to, value)
+            erc20::Impl::transfer(self, to, value)
         }
 
         #[ink(message)]
         pub fn approve(&mut self, spender: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::approve(self, &spender, value)
+            erc20::Impl::approve(self, spender, value)
         }
 
         #[ink(message)]
@@ -187,17 +187,17 @@ pub mod erc20_contract {
             to: AccountId,
             value: Balance,
         ) -> Result<()> {
-            erc20::Impl::transfer_from(self, &from, &to, value)
+            erc20::Impl::transfer_from(self, from, to, value)
         }
 
         #[ink(message)]
         pub fn mint(&mut self, to: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::_mint(self, &to, value)
+            erc20::Impl::_mint(self, to, value)
         }
 
         #[ink(message)]
         pub fn burn(&mut self, to: AccountId, value: Balance) -> Result<()> {
-            erc20::Impl::_burn(self, &to, value)
+            erc20::Impl::_burn(self, to, value)
         }
 
         #[ink(message)]
@@ -207,7 +207,7 @@ pub mod erc20_contract {
             to: AccountId,
             value: Balance,
         ) -> Result<()> {
-            erc20::Impl::_transfer_from_to(self, &from, &to, value)
+            erc20::Impl::_transfer_from_to(self, from, to, value)
         }
 
         #[ink(message)]
@@ -217,7 +217,7 @@ pub mod erc20_contract {
             spender: AccountId,
             value: Balance,
         ) -> Result<()> {
-            erc20::Impl::_approve(self, &owner, &spender, value)
+            erc20::Impl::_approve(self, owner, spender, value)
         }
     }
 }

@@ -1,9 +1,8 @@
 import { expect } from "chai";
-import { artifacts, network, patract } from "redspot";
+import { network, patract } from "redspot";
+import { buildTx } from '@redspot/patract/buildTx'
 import { hexToU8a } from '@polkadot/util';
-import { Null, Text, Option, TypeRegistry } from '@polkadot/types';
-import { AccountId } from '@polkadot/types/interfaces/runtime';
-import contractFactory from "@redspot/patract/contractFactory";
+import { TypeRegistry } from '@polkadot/types';
 
 const registry = new TypeRegistry();
 
@@ -39,7 +38,7 @@ async function waitBlock(num) {
 
     for (let i = 0; i < num; i++) {
         console.log("do a transfer ", i, "/", num);
-        await api.tx.balances.transfer(signerAddresses[10], 1).signAndSend(signerAddresses[0]);
+        await buildTx(api.registry, api.tx.balances.transfer(signerAddresses[10], 1), signerAddresses[0]);
     }
 }
 
@@ -62,11 +61,11 @@ async function shouldBehaveLikeTimelockController() {
 
         const fee = 50000000000;
 
-        await api.tx.balances.transfer(this.alice, fee).signAndSend(this.deployer);
-        await api.tx.balances.transfer(this.bob, fee).signAndSend(this.deployer);
-        await api.tx.balances.transfer(this.carol, fee).signAndSend(this.deployer);
-        await api.tx.balances.transfer(this.dan, fee).signAndSend(this.deployer);
-        await api.tx.balances.transfer(this.eve, fee).signAndSend(this.deployer);
+        await buildTx(api.registry, api.tx.balances.transfer(this.alice, fee), this.deployer);
+        await buildTx(api.registry, api.tx.balances.transfer(this.bob, fee), this.deployer);
+        await buildTx(api.registry, api.tx.balances.transfer(this.carol, fee), this.deployer);
+        await buildTx(api.registry, api.tx.balances.transfer(this.dan, fee), this.deployer);
+        await buildTx(api.registry, api.tx.balances.transfer(this.eve, fee), this.deployer);
     })
 
     beforeEach(async function () {
@@ -125,7 +124,7 @@ async function shouldBehaveLikeTimelockController() {
                     delay);
                 await logs;
 
-                expectEventInLogs("TimelockController", "CallScheduled", 
+                expectEventInLogs("TimelockController", "CallScheduled",
                     id,
                     this.receiver.address,
                     100,
@@ -143,7 +142,7 @@ async function shouldBehaveLikeTimelockController() {
 
     context('executed', function () {
         const delay = 5;
-        
+
         it('schedule new is ok', async function () {
             let id = (await this.contract.query.hashOperation(
                 this.receiver.address,
@@ -164,7 +163,7 @@ async function shouldBehaveLikeTimelockController() {
                 delay);
             await logs;
 
-            expectEventInLogs("TimelockController", "CallScheduled", 
+            expectEventInLogs("TimelockController", "CallScheduled",
                 id,
                 this.receiver.address,
                 100,
@@ -189,10 +188,10 @@ async function shouldBehaveLikeTimelockController() {
                 100,
                 data,
                 null,
-                salt, {value: 100});
+                salt, { value: 100 });
             await logs;
 
-            expectEventInLogs("TimelockController", "CallExecuted", 
+            expectEventInLogs("TimelockController", "CallExecuted",
                 id,
                 this.receiver.address,
                 100,
