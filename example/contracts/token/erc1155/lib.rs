@@ -24,7 +24,7 @@ pub mod contract {
         erc1155: erc1155::Data<Erc1155>,
     }
 
-    // TODO: gen by marco with Erc1155 component
+    // TODO: gen by macro with Erc1155 component
     impl erc1155::Impl<Erc1155> for Erc1155 {
         fn _before_token_transfer(
             &mut self,

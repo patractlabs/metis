@@ -88,7 +88,7 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Dan).tx.grantRole(ROLE_FILTER, Dan));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error?.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -125,13 +125,13 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Dan).tx.grantRole(ROLE_SETTER, Dan));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       try {
         (await contract.connect(Alice).tx.grantRole(ROLE_SETTER, Dan));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -151,7 +151,7 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Carol).tx.grantRole(ROLE_FILTER, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -174,7 +174,7 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Carol).tx.revokeRole(ROLE_FILTER, Dan));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -213,13 +213,13 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Bob).tx.revokeRole(ROLE_FILTER, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       try {
         (await contract.connect(Alice).tx.revokeRole(ROLE_FILTER, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -251,7 +251,7 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Carol).tx.revokeRole(ROLE_FILTER, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -274,7 +274,7 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Alice).tx.renounceRole(ROLE_ADMIN, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -313,13 +313,13 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Carol).tx.renounceRole(ROLE_FILTER, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       try {
         (await contract.connect(Bob).tx.renounceRole(ROLE_FILTER, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -348,7 +348,7 @@ describe("access-control-flip", () => {
       try {
         (await contract.connect(Alice).tx.renounceRole(ROLE_FILTER, Alice));
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       // status should not change
@@ -371,7 +371,7 @@ describe("access-control-flip", () => {
       try {
         await contract.connect(Dan).tx.flip();
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       expect((await contract.query.get()).output).to.equal(true);
@@ -403,7 +403,7 @@ describe("access-control-flip", () => {
       try {
         await contract.connect(Bob).tx.flip();
       } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        expect(exp.error.message).to.equal("contracts.ContractTrapped")
       }
 
       expect((await contract.query.get()).output).to.equal(true);

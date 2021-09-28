@@ -18,33 +18,33 @@ Since ink! is under development, developers need to use metis according to their
     e.g.:
     ```toml
     [dependencies]
-    ink_lang = { version = "3.0.0-rc4", default-features = false }
+    ink_lang = { version = "3.0.0-rc5", default-features = false }
     ```
     For this situation, Metis provides different branch/tag to support different ink! version. Like here ink! version
-    is `3.0.0-rc4`, then Metis provides branch `ink/3.0.0-rc4` to allow developer to use the same ink! source. In this 
-    branch, Metis' dependencies for ink! will point to `ink_lang = { version = "3.0.0-rc4", default-features = false }` as well:
+    is `3.0.0-rc5`, then Metis provides branch `ink/3.0.0-rc5` to allow developer to use the same ink! source. In this 
+    branch, Metis' dependencies for ink! will point to `ink_lang = { version = "3.0.0-rc5", default-features = false }` as well:
 
     ```toml
     [dependencies]
-    ink_lang = { version = "3.0.0-rc4", default-features = false }
-    metis_lang = { github = "https://github.com/patractlabs/metis", branch = "ink/3.0.0-rc4", default-features = false }
+    ink_lang = { version = "3.0.0-rc5", default-features = false }
+    metis_lang = { github = "https://github.com/patractlabs/metis", branch = "ink/3.0.0-rc5", default-features = false }
     ```
     
     For now, the relationship between Metis branch/tag and ink! release version are following:
     
-    * ink!: `3.0.0-rc4` | Metis branch: `ink/3.0.0-rc4`
+    * ink!: `3.0.0-rc5` | Metis branch: `ink/3.0.0-rc5`
 
 2. developers use ink! dependencies from github repo:
 
     e.g.:
     ```toml
     [dependencies]
-    ink_lang = { version = "3.0.0-rc4", git = "https://github.com/paritytech/ink", default-features = false }
+    ink_lang = { version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false }
     ```
     For this situation, developer should use Metis master branch directly. In master, Metis' dependencies for ink! will be github repo as well.
 
     ```toml
     [dependencies]
-    ink_lang = { version = "3.0.0-rc4", default-features = false }
+    ink_lang = { version = "3.0.0-rc5", default-features = false }
     metis_lang = { github = "https://github.com/patractlabs/metis", default-features = false }
     ```

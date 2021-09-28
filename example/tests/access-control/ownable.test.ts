@@ -13,7 +13,7 @@ async function expectRevert(promise, expectedError) {
   try {
     await promise;
   } catch (exp) {
-    expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+    expect(exp.error.message).to.equal("contracts.ContractTrapped")
   }
 }
 

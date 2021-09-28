@@ -11,11 +11,22 @@ use metis_lang::{
 };
 
 #[cfg(not(feature = "ink-as-dependency"))]
-use ::ink_storage::traits::SpreadLayout;
+use ::ink_storage::{
+    lazy::Lazy,
+    traits::SpreadLayout,
+};
 
 #[cfg_attr(feature = "std", derive(::ink_storage::traits::StorageLayout))]
-#[derive(Debug, SpreadLayout, Default)]
-pub struct Data {}
+#[derive(Debug, SpreadLayout)]
+pub struct Data {
+    v: Lazy<u8>,
+}
+
+impl Default for Data {
+    fn default() -> Self {
+        Self { v: Lazy::default() }
+    }
+}
 
 /// The `EventEmit` impl the event emit api for erc721-receiver component.
 pub trait EventEmit<E: Env>: EnvAccess<E> {

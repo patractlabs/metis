@@ -1,65 +1,53 @@
 [package]
-name = "metis_receiver_erc721"
-version = "0.1.0"
 authors = ["patract labs <https://github.com/patractlabs>"]
 edition = "2018"
+name = "metis_receiver_erc721"
+version = "0.1.0"
 
 [dependencies]
-ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = [
-    "derive"
-], optional = true }
-ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_prelude = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = [
-    "derive"
-] }
-scale-info = { version = "0.6", default-features = false, features = [
-    "derive"
-] }
-num-traits = { version = "0.2", default-features = false, features = ["i128"] }
-hex = { version = "0.4", default-features = false }
-metis_lang = { path = "../../../../lang/", default-features = false }
-metis_erc721 = { path = "../../../token/erc721/", default-features = false }
+hex = {version = "0.4", default-features = false}
+ink_env = {version = "3.0.0-rc5", default-features = false}
+ink_lang = {version = "3.0.0-rc5", default-features = false}
+ink_lang_ir = {version = "3.0.0-rc5", default-features = false}
+ink_metadata = {version = "3.0.0-rc5", default-features = false, features = ["derive"], optional = true}
+ink_prelude = {version = "3.0.0-rc5", default-features = false}
+ink_primitives = {version = "3.0.0-rc5", default-features = false}
+ink_storage = {version = "3.0.0-rc5", default-features = false}
+metis_erc721 = {path = "../../../token/erc721/", default-features = false}
+metis_lang = {path = "../../../../lang/", default-features = false}
+num-traits = {version = "0.2", default-features = false, features = ["i128"]}
+scale = {package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"]}
+scale-info = {version = "0.6", default-features = false, features = ["derive"]}
 
 [dev-dependencies]
-trybuild = { version = "1.0", features = ["diff"] }
-ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_lang_ir = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_lang_codegen = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink" }
-scale = { package = "parity-scale-codec", version = "2.1", features = [
-    "derive"
-] }
-scale-info = { version = "0.6", features = ["derive"] }
-num-traits = { version = "0.2", features = ["i128"] }
-hex = { version = "0.4" }
-metis_lang = { path = "../../../../lang/" }
-metis_receiver_erc721 = { path = "." }
-metis_erc721 = { path = "../../erc721/" }
-metis_ownable = { path = "../../../access/ownable/"}
-
-[[test]]
-name = "test_mock"
-path = "tests/mock.rs"
+hex = {version = "0.4"}
+ink_env = {version = "3.0.0-rc5"}
+ink_lang = {version = "3.0.0-rc5"}
+ink_lang_codegen = {version = "3.0.0-rc5"}
+ink_lang_ir = {version = "3.0.0-rc5"}
+ink_metadata = {version = "3.0.0-rc5"}
+ink_primitives = {version = "3.0.0-rc5"}
+ink_storage = {version = "3.0.0-rc5"}
+metis_erc721 = {path = "../../erc721/"}
+metis_lang = {path = "../../../../lang/"}
+metis_receiver_erc721 = {path = "."}
+num-traits = {version = "0.2", features = ["i128"]}
+scale = {package = "parity-scale-codec", version = "2.1", features = ["derive"]}
+scale-info = {version = "0.6", features = ["derive"]}
+trybuild = {version = "1.0", features = ["diff"]}
 
 [features]
 default = ["std"]
-std = [
-    "ink_metadata/std",
-    "ink_storage/std",
-    "ink_prelude/std",
-    "ink_primitives/std",
-    "ink_env/std",
-    "ink_lang/std",
-    "scale/std",
-    "scale-info/std",
-    "metis_lang/std",
-]
 ink-as-dependency = []
+std = [
+  "ink_metadata/std",
+  "ink_storage/std",
+  "ink_prelude/std",
+  "ink_primitives/std",
+  "ink_env/std",
+  "ink_lang/std",
+  "scale/std",
+  "scale-info/std",
+  "metis_lang/std",
+  "metis_erc721/std",
+]

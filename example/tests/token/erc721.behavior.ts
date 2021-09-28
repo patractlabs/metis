@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { TransactionResponse } from '@redspot/patract/types';
 import { artifacts, network, patract } from "redspot";
 import { buildTx } from '@redspot/patract/buildTx'
 import { hexToU8a } from '@polkadot/util';
@@ -30,7 +31,8 @@ async function expectRevert(promise, expectedError) {
     try {
         await promise;
     } catch (exp) {
-        expect(exp.error.message).to.equal("contracts.ContractTrapped( Contract trapped during execution.)")
+        let res = exp as TransactionResponse;
+        expect(res.error?.message).to.equal("contracts.ContractTrapped")
     }
 }
 
@@ -712,7 +714,7 @@ async function shouldBehaveLikeERC721Metadata(errorPrefix, contractName) {
             });
 
             it('return empty string by default', async function () {
-                expect((await this.token.query.tokenUrl(firstTokenId)).output).to.equal(null);
+                expect((await this.token.query.tokenUrl(secondTokenId)).output).to.equal(null);
             });
 
             it('reverts when queried for non existent token id', async function () {
