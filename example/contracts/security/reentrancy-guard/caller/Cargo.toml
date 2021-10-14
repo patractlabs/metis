@@ -11,7 +11,7 @@ ink_metadata = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"
 ink_primitives = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
 ink_storage = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
 scale = {package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"]}
-scale-info = {version = "0.6", default-features = false, features = ["derive"], optional = true}
+scale-info = {version = "1.0", default-features = false, features = ["derive"], optional = true}
 
 metis_lang = {path = "../../../../../crates/lang", default-features = false}
 metis_reentrancy_guard = {path = "../../../../../crates/components/security/reentrancy-guard", default-features = false}
