@@ -17,7 +17,7 @@ metis_erc721 = {path = "../../../token/erc721/", default-features = false}
 metis_lang = {path = "../../../../lang/", default-features = false}
 num-traits = {version = "0.2", default-features = false, features = ["i128"]}
 scale = {package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"]}
-scale-info = {version = "0.6", default-features = false, features = ["derive"]}
+scale-info = {version = "1.0", default-features = false, features = ["derive"]}
 
 [dev-dependencies]
 hex = {version = "0.4"}
@@ -33,7 +33,7 @@ metis_lang = {path = "../../../../lang/"}
 metis_receiver_erc721 = {path = "."}
 num-traits = {version = "0.2", features = ["i128"]}
 scale = {package = "parity-scale-codec", version = "2.1", features = ["derive"]}
-scale-info = {version = "0.6", features = ["derive"]}
+scale-info = {version = "1.0", features = ["derive"]}
 trybuild = {version = "1.0", features = ["diff"]}
 
 [features]

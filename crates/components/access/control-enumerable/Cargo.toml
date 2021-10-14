@@ -12,7 +12,7 @@ ink_storage = {version = "3.0.0-rc5", default-features = false}
 
 num-traits = {version = "0.2", default-features = false, features = ["i128"]}
 scale = {package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"]}
-scale-info = {version = "0.6", default-features = false, features = ["derive"]}
+scale-info = {version = "1.0", default-features = false, features = ["derive"]}
 
 metis_access_control = {path = "../control/", default-features = false}
 metis_lang = {path = "../../../lang/", default-features = false}
@@ -32,7 +32,7 @@ ink_storage = {version = "3.0.0-rc5"}
 
 num-traits = {version = "0.2", features = ["i128"]}
 scale = {package = "parity-scale-codec", version = "2.1", features = ["derive"]}
-scale-info = {version = "0.6", features = ["derive"]}
+scale-info = {version = "1.0", features = ["derive"]}
 
 metis_lang = {path = "../../../lang/"}
 
