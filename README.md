@@ -27,7 +27,7 @@ Since ink! is under development, developers need to use metis according to their
     ```toml
     [dependencies]
     ink_lang = { version = "3.0.0-rc5", default-features = false }
-    metis_lang = { github = "https://github.com/patractlabs/metis", branch = "ink/3.0.0-rc5", default-features = false }
+    metis_lang = { git = "https://github.com/patractlabs/metis", branch = "ink/3.0.0-rc5", default-features = false }
     ```
     
     For now, the relationship between Metis branch/tag and ink! release version are following:
@@ -46,5 +46,5 @@ Since ink! is under development, developers need to use metis according to their
     ```toml
     [dependencies]
     ink_lang = { version = "3.0.0-rc5", default-features = false }
-    metis_lang = { github = "https://github.com/patractlabs/metis", default-features = false }
+    metis_lang = { git = "https://github.com/patractlabs/metis", default-features = false }
     ```
