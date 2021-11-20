@@ -5,13 +5,13 @@ name = "metis_erc721"
 version = "0.1.0"
 
 [dependencies]
-ink_env = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
-ink_lang = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
-ink_lang_ir = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
-ink_metadata = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true}
-ink_prelude = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
-ink_primitives = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
-ink_storage = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false}
+ink_env = {version = "3.0.0-rc5", default-features = false}
+ink_lang = {version = "3.0.0-rc5", default-features = false}
+ink_lang_ir = {version = "3.0.0-rc5", default-features = false}
+ink_metadata = {version = "3.0.0-rc5", default-features = false, features = ["derive"], optional = true}
+ink_prelude = {version = "3.0.0-rc5", default-features = false}
+ink_primitives = {version = "3.0.0-rc5", default-features = false}
+ink_storage = {version = "3.0.0-rc5", default-features = false}
 
 hex = {version = "0.4", default-features = false}
 num-traits = {version = "0.2", default-features = false, features = ["i128"]}
@@ -32,13 +32,13 @@ metis_ownable = {path = "../../access/ownable"}
 metis_pausable = {path = "../../security/pausable"}
 trybuild = {version = "1.0", features = ["diff"]}
 
-ink_env = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"}
-ink_lang = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"}
-ink_lang_codegen = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"}
-ink_lang_ir = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"}
-ink_metadata = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"}
-ink_primitives = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"}
-ink_storage = {version = "3.0.0-rc5", git = "https://github.com/paritytech/ink"}
+ink_env = {version = "3.0.0-rc5"}
+ink_lang = {version = "3.0.0-rc5"}
+ink_lang_codegen = {version = "3.0.0-rc5"}
+ink_lang_ir = {version = "3.0.0-rc5"}
+ink_metadata = {version = "3.0.0-rc5"}
+ink_primitives = {version = "3.0.0-rc5"}
+ink_storage = {version = "3.0.0-rc5"}
 
 hex = {version = "0.4"}
 num-traits = {version = "0.2", features = ["i128"]}
