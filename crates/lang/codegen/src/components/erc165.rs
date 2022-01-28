@@ -64,8 +64,8 @@ fn calculate_interface_id(idents: &Vec<Ident>) -> u32 {
 
     for i in idents {
         let callable_ident = i.to_string().into_bytes();
-        let selector = ink_lang_ir::Selector::new(&callable_ident);
-        let selector_id = u32::from_be_bytes(selector.as_bytes().clone()) as usize;
+        let selector = ink_lang_ir::Selector::compute(&callable_ident);
+        let selector_id = u32::from_be_bytes(selector.to_bytes().clone()) as usize;
 
         interface_id = interface_id ^ selector_id;
     }
