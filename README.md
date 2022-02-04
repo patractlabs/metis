@@ -39,7 +39,7 @@ Since ink! is under development, developers need to use metis according to their
     e.g.:
     ```toml
     [dependencies]
-    ink_lang = { version = "3.0.0-rc5", git = "https://github.com/paritytech/ink", default-features = false }
+    ink_lang = { version = "3.0.0-rc5", default-features = false }
     ```
     For this situation, developer should use Metis master branch directly. In master, Metis' dependencies for ink! will be github repo as well.
 
